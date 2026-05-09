@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Trắc nghiệm Da liễu - Tự động chấm & cuộn câu hỏi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: #f0f4f8;
+            font-family: system-ui, 'Segoe UI', 'Roboto', 'Noto Sans', sans-serif;
+            padding: 16px 12px 80px;
+            color: #0f172a;
+        }
+
+        .app-container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 28px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            padding: 20px 18px;
+            margin-bottom: 20px;
+        }
+
+        .quiz-header {
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 12px;
+            margin-bottom: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .quiz-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1e3c72, #2b4c7c);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .badge {
+            background: #eef2ff;
+            padding: 6px 12px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #1e3c72;
+        }
+
+        .topic-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .topic-btn {
+            background: #eef2ff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.2s;
+            color: #1e293b;
+            flex: 1 0 auto;
+            text-align: center;
+        }
+
+        .topic-btn.active {
+            background: #1e3c72;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .toggle-row {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            background: #f8fafc;
+            padding: 12px 16px;
+            border-radius: 60px;
+            margin-bottom: 20px;
+        }
+
+        .toggle-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e1;
+            transition: 0.3s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #2d6a4f;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+
+        .question-card {
+            background: white;
+            border-radius: 24px;
+            margin-bottom: 20px;
+            padding: 18px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+            scroll-margin-top: 20px;
+        }
+
+        .question-text {
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 16px;
+            line-height: 1.4;
+            background: #fefce8;
+            padding: 12px;
+            border-radius: 20px;
+            border-left: 5px solid #eab308;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .status-icon {
+            font-size: 0.85rem;
+            font-weight: bold;
+            background: white;
+            border-radius: 40px;
+            padding: 4px 12px;
+            min-width: 95px;
+            text-align: center;
+        }
+
+        .status-correct {
+            color: #15803d;
+            background: #dcfce7;
+            border: 1px solid #86efac;
+        }
+
+        .status-wrong {
+            color: #b91c1c;
+            background: #fee2e2;
+            border: 1px solid #fca5a5;
+        }
+
+        .status-none {
+            color: #64748b;
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+        }
+
+        .answers {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .answer-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            background: #f9f9ff;
+            border-radius: 60px;
+            border: 2px solid #e2edff;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+
+        .answer-option:hover {
+            background: #eef2ff;
+        }
+
+        .answer-option.correct-highlight {
+            border: 3px solid #15803d;
+            background: #e8f5e9;
+        }
+
+        .answer-option.wrong-highlight {
+            border: 3px solid #dc2626;
+            background: #fee2e2;
+        }
+
+        .answer-option.selected {
+            background: #e0f2fe;
+            border-color: #0284c7;
+        }
+
+        .answer-letter {
+            font-weight: 800;
+            background: #e2e8f0;
+            width: 36px;
+            height: 36px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 60px;
+            font-size: 0.9rem;
+        }
+
+        .answer-text {
+            flex: 1;
+            font-size: 0.92rem;
+        }
+
+        .answer-status {
+            font-size: 1.2rem;
+            font-weight: bold;
+            min-width: 44px;
+            text-align: center;
+        }
+
+        .check-mark {
+            color: #15803d;
+        }
+
+        .cross-mark {
+            color: #dc2626;
+        }
+
+        .score-bar {
+            background: #e6f7ed;
+            padding: 14px 18px;
+            border-radius: 60px;
+            text-align: center;
+            font-weight: bold;
+            margin: 8px 0 16px;
+            font-size: 1rem;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .progress-text {
+            background: #1e3c72;
+            color: white;
+            border-radius: 30px;
+            padding: 4px 16px;
+        }
+
+        .welcome-message {
+            text-align: center;
+            padding: 40px 20px;
+            background: #fef9e3;
+            border-radius: 28px;
+            color: #b45309;
+            font-weight: 500;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 32px;
+            padding: 20px 10px;
+            font-size: 0.75rem;
+            color: #475569;
+            border-top: 1px solid #cbd5e1;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="card">
+        <div class="quiz-header">
+            <h2>📚 Trắc nghiệm Cssk người lớn có bệnh ngoại khoa 2</h2>
+      
+        </div>
+
+
+        <div class="topic-buttons" id="topicButtons">
+            <button data-topic="all" class="topic-btn">📖 Ôn cả môn (tất cả bài)</button>
+            <button data-topic="bai1" class="topic-btn">📗 Bài 1: Chăm sóc người bệnh vết thương phần mềm</button>
+            <button data-topic="bai2" class="topic-btn">📗 Bài 2: Chăm sóc người bệnh gãy xương – bó bột – mổ kết hợp xương</button>
+			 <button data-topic="bai3" class="topic-btn">📗 Bài 3: Chăm sóc người bệnh trật khớp</button>
+			  <button data-topic="bai4" class="topic-btn">📗 Bài 4: Chăm sóc người bệnh sốc chấn thương</button>
+			   <button data-topic="bai5" class="topic-btn">📗 Bài 5: Chăm sóc người bệnh sỏi hệ tiết niệu</button>
+			    <button data-topic="bai6" class="topic-btn">📗 Bài 6: Chăm sóc người bệnh u xơ tiền liệt tuyến</button>
+				 <button data-topic="bai7" class="topic-btn">📗 Bài 7: Chăm sóc người bệnh có hậu môn nhân tạo</button>
+				 	 <button data-topic="bai8" class="topic-btn">📗 Bài 8: Chăm sóc người bệnh tắc ruột</button>
+			 <button data-topic="bai9" class="topic-btn">📗 Bài 9: Chăm sóc người bệnh dẫn lưu màng phổi</button>
+				  
+
+        </div>
+
+      <div class="toggle-row">
+            <div class="toggle-item">
+                <span>🔄 Xáo trộn câu hỏi</span>
+                <label class="switch">
+                    <input type="checkbox" id="shuffleQuestionsToggle" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="toggle-item">
+                <span>🎲 Xáo trộn đáp án</span>
+                <label class="switch">
+                    <input type="checkbox" id="shuffleAnswersToggle" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div id="scoreContainer" class="score-bar" style="display: none;">
+        <span>🏆 Kết quả hiện tại</span>
+        <span id="liveScore" class="progress-text">0 / 0</span>
+    </div>
+
+    <div id="questionsContainer">
+        <div class="welcome-message">
+            👋 Chào bạn!<br>
+            Hãy chọn một chủ đề bên trên để bắt đầu làm bài trắc nghiệm.
+        </div>
+    </div>
+    
+    <footer>© 2014-2026 Dr.Châu</footer>
+</div>
+
+<script>
+    // ---------- DỮ LIỆU CÂU HỎI ----------
+    const QUESTION_SET = [
+        // Bài 1: Chăm sóc NB ghẻ
+{ id: 1, text: "Mô tả về vết thương phần mềm câu nào dưới đây KHÔNG phù hợp:", answers: ['Chỉ là vết thương rách da đơn thuần', 'Chỉ làm tổn thương mô mềm, da, mô liên kết dưới da', 'Có thể kèm tổn thương đứt gân, đứt thần kinh, đứt mạch máu', 'Nếu không xử trí tốt, vết thương sẽ nhiễm trùng, có thể lan rộng vào các mô kế cận'], correct: "A", topic: "bai1" },
+{ id: 2, text: "Việc phân loại vết thương tróc da dựa vào:", answers: ['Nguồn cung cấp máu cho vạt da', 'Mức độ nông sâu của tổn thương da', 'Độ dài ngắn của tổn thương da', 'Mức độ tổn thương phần mềm'], correct: "A", topic: "bai1" },
+{ id: 3, text: "Vết thương phần mềm có thể gây ra một trong các nguy cơ sau:", answers: ['Tăng o-xy đến mô tế bào', 'Đứt mạch máu và thần kinh', 'Mất nước và điện giải', 'Hoại tử mô tạo ra khuyết mất mô'], correct: "D", topic: "bai1" },
+{ id: 4, text: "NB có vết thương phần mềm cần phải chụp X-quang khi:", answers: ['Nghi ngờ tổn thương xương, dị vật', 'Khi nghi ngờ tổn thương mạch máu', 'Vết thương quá lớn, chảy máu nhiều.', 'Vết thương có kèm gãy xương'], correct: "A", topic: "bai1" },
+{ id: 5, text: "Đây là các chẩn đoán điều dưỡng thường gặp khi chăm sóc vết thương nhiễm trùng, TRỪ:", answers: ['Tổn thương sự toàn vẹn của da.', 'Rối loạn chức năng sinh lý của cơ thể.', 'Kéo dài thời gian điều trị.', 'Gián đoạn sự lành của vết thương.'], correct: "B", topic: "bai1" },
+{ id: 6, text: "Đây là các mục đích của chăm sóc vết thương, NGOẠI TRỪ:", answers: ['Có tác dụng cầm máu.', 'Để nhận định, đánh giá tình trạng vết thương.', 'Để cắt lọc tổ chức hoại tử khi cần.', 'Bôi đắp thuốc khi có chỉ định.'], correct: "D", topic: "bai1" },
+{ id: 7, text: "Khi chăm sóc vết thương:", answers: ['Phòng thay băng phải thoáng, sạch, đủ ánh sáng, gần đường đi.', 'Phòng thay băng phải thoáng, sạch, đủ ánh sáng, gần nhà vệ sinh.', 'Không dùng một dụng cụ thay băng cho nhiều người.', 'Dụng cụ thay băng xong phải đem rửa, lau khô để dùng cho lần sau.'], correct: "C", topic: "bai1" },
+{ id: 8, text: "Kỹ thuật cầm máu vết thương bằng ga-rô áp dụng trong trường hợp:", answers: ['Khi máu chảy ít hoặc vừa như các vết thương phần mềm rộng lớn.', 'Khi các vết thương động mạch nhỏ ở sâu, vết thương rộng miệng.', 'Cầm máu tốt các vết thương có tổn thương động mạch.', 'Chi bị dập nát không còn khả năng bảo tồn hoặc đã bị cắt cụt “tự nhiên”.'], correct: "D", topic: "bai1" },
+{ id: 9, text: "Người bệnh có thể có hội chứng sốc xảy ra khi vết thương phần mềm có:", answers: ['Tổn thương phối hợp với gãy xương cẳng tay', 'Tổn thương phối hợp với có dị vật', 'Tổn thương phối hợp với tổn thương mạch máu', 'Tổn thương phối hợp với chèn ép dây thần kinh'], correct: "C", topic: "bai1" },
+{ id: 10, text: "Triệu chứng có giá trị nhất để chẩn đoán vết thương tĩnh mạch là:", answers: ['Máu chảy ra ngoài và máu có màu đỏ xẫm.', 'Máu chảy tràn trên mặt da và máu có màu đỏ xẫm.', 'Máu chảy thành tia và máu có màu đỏ xẫm.', 'Máu chảy thành tia và máu có màu đỏ tươi.'], correct: "B", topic: "bai1" },
+{ id: 11, text: "Người bệnh bị vết thương dập nát cần phải xử trí:", answers: ['Theo dõi thêm', 'Cấp cứu trì hoãn', 'Chương trình', 'Cấp cứu'], correct: "D", topic: "bai1" },
+{ id: 12, text: "Đối với vết thương đâm chọc trong vết thương phần mềm thì nguy cơ thường xảy ra nhất đó là:", answers: ['Nhiễm trùng', 'sốc', 'Hoại tử', 'Tắc mạch máu do mỡ'], correct: "A", topic: "bai1" },
+{ id: 13, text: "Nguyên tắc xử trí vết thương phần mềm là càng sớm càng tốt, nên trước bao lâu:", answers: ['6h', '12h', '18h', '24h'], correct: "A", topic: "bai1" },
+{ id: 14, text: "Người bệnh có vết thương giập nát khi chăm sóc điều dưỡng chú ý đến một trong các biến chứng hay gặp sau:", answers: ['Suy hô hấp', 'Suy thận', 'Nhiễm trùng', 'Sốc'], correct: "D", topic: "bai1" },
+{ id: 15, text: "Mục đích của thay băng rửa vết thương là:", answers: ['Thay băng thường quy, chống sốc.', 'Ngăn cản sự bội nhiễm của vi khuẩn từ ngoài vào và góp phần bất động vùng vết thương làm vết thương chóng lành.', 'Để rửa, thấm hút dịch từ vết thương ra, cắt lọc những tổ chức hoại tử.', 'Câu B và C đúng.'], correct: "D", topic: "bai1" },
+{ id: 16, text: "Triệu chứng để phát hiện sự nhiễm khuẩn vết thương là:", answers: ['Đỏ chân chỉ khâu.', 'Đau nhiều vết thương.', 'Sưng nóng đỏ nơi vết thương.', 'Tất cả đều đúng.'], correct: "D", topic: "bai1" },
+{ id: 17, text: "Triệu chứng có giá trị nhất để chẩn đoán vết thương động mạch là nhìn thấy:", answers: ['Máu đỏ tươi không đông.', 'Máu chảy thành tia.', 'Máu chảy tràn trên mặt da.', 'Máu ngừng chảy khi băng ép.'], correct: "B", topic: "bai1" },
+{ id: 18, text: "Vị trí đặt garô đối với vết thương lớn là đặt trên vết thương:", answers: ['2 cm.', '3 cm.', '4 cm.', '5 cm.'], correct: "D", topic: "bai1" },
+{ id: 19, text: "Biến chứng sớm nguy hiểm nhất đối với vết thương động mạch là:", answers: ['Tắc mạch do cục máu đông.', 'Hoại tử chi do garô.', 'Sốc do mất máu.', 'Nhiễm trùng vết thương.'], correct: "C", topic: "bai1" },
+{ id: 20, text: "Vấn đề theo dõi quan trọng nhất sau mổ nối mạch máu là:", answers: ['Tình trạng nhiễm trùng vết mổ.', 'Tắc mạch do cục máu đông.', 'Lượng dịch chảy ra qua ống dẫn lưu.', 'Lượng dịch thấm qua băng.'], correct: "B", topic: "bai1" },
+        // Bài 2: Chăm sóc NB chàm
+{ id: 21, text: "Đây là các nguyên tắc bất động nạn nhân gãy xương, NGOẠI TRỪ:", answers: ['Nẹp sử dụng phải đủ dài để cố định cả khớp trên và dưới ổ gãy.', 'Không kéo nắn chỗ xương gãy mà cứ bất động theo tư thế sẵn có.', 'Cần nắn chỉnh xương thẳng và bất động chắc chắn ổ gãy.', 'Không nên cởi quần áo nạn nhân vì sẽ làm đau đớn và vô ích.'], correct: "C", topic: "bai2" },
+{ id: 22, text: "Một trong các yếu tố làm tăng nguy cơ nhiễm trùng vết mổ xương của người bệnh gãy xương là:", answers: ['Người bệnh đái tháo đường', 'Người bệnh thoát vị đĩa đệm', 'Người bệnh hen phế quản', 'Người bệnh đau vết mổ'], correct: "A", topic: "bai2" },
+{ id: 23, text: "Biểu hiện của bột quá chặt trên người bệnh gãy xương có bó bột là:", answers: ['Chi sưng nề, không cử động được', 'Chi tím, đau', 'Chi nề và đau', 'Chi đau và không cử động được'], correct: "B", topic: "bai2" },
+{ id: 24, text: "Điều dưỡng chăm sóc chi bó bột cho người bệnh gãy xương. Nên lót chi bó bột bằng gối mềm tư thế dễ chịu nhất, đối với chi dưới là:", answers: ['Duỗi thẳng kê gối chân cao 30 cm', 'Duỗi thẳng kê gối chân cao 10 cm', 'Duỗi thẳng kê gối chân cao 20 cm', 'Gập gối, kê cao kheo chân'], correct: "C", topic: "bai2" },
+{ id: 25, text: "Điều dưỡng chăm sóc chi bó bột cho người bệnh gãy xương. Đặt tư thế chi trên tốt nhất cho người bệnh là:", answers: ['Tay trên bụng, cẳng tay vuông góc với cánh tay', 'Duỗi thẳng', 'Cẳng tay vuông góc cánh tay', 'Tay trên bụng, cẳng tay vuông góc với cánh tay, bàn tay ngửa'], correct: "C", topic: "bai2" },
+{ id: 26, text: "Điều dưỡng chuẩn bị tạ cho người bệnh trước khi kéo tạ. Trọng lượng của tạ cho chi dưới thường khoảng:", answers: ['1/10 – 1/7 trọng lượng cơ thể người bệnh', '1/10 – 1/9 trọng lượng cơ thể người bệnh', '1/9 – 1/8 trọng lượng cơ thể người bệnh', '1/12 – 1/10 trọng lượng cơ thể người bệnh'], correct: "A", topic: "bai2" },
+{ id: 27, text: "Chăm sóc điều dưỡng ưu tiên số 1 của người bệnh gãy hở xương đùi:", answers: ['Rửa vết thương', 'Giảm đau', 'Thực hiện xét nghiệm trước mổ', 'Vệ sinh người bệnh trước mổ'], correct: "B", topic: "bai2" },
+{ id: 28, text: "Chăm sóc ưu tiên với người bệnh gãy hở xương đùi, can thiệp điều dưỡng cần tiến hành cho người bệnh là:", answers: ['Trấn an người bệnh, nhanh chóng báo bác sỹ để thực hiện y lệnh giảm đau.', 'Băng ép lên vị trí vết thương, buộc vào nẹp', 'Thay quần áo cho người bệnh, sát trùng xung quanh vị trí gãy.', 'Giải thích cho người bệnh hướng điều trị và những xét nghiệm cần thực hiện.'], correct: "B", topic: "bai2" },
+{ id: 29, text: "Gãy xương được định nghĩa chính xác nhất là:", answers: ['Xương bị nứt nhẹ do chấn thương', 'Sự phá huỷ đột ngột cấu trúc xương làm mất tính liên tục', 'Xương bị viêm và yếu đi', 'Xương bị cong nhưng chưa gãy'], correct: "B", topic: "bai2" },
+{ id: 30, text: "Nguyên nhân nào sau đây thuộc nhóm gãy xương do bệnh lý?", answers: ['Tai nạn giao thông', 'Ngã từ trên cao', 'Lao xương', 'Chơi thể thao mạnh'], correct: "C", topic: "bai2" },
+{ id: 31, text: "Cơ chế chấn thương gián tiếp thường gây:", answers: ['Gãy vụn phức tạp', 'Gãy chéo xoắn', 'Dập nát phần mềm nặng', 'Đứt mạch máu lớn'], correct: "B", topic: "bai2" },
+{ id: 32, text: "Đặc điểm gãy xương thường gặp ở trẻ em là:", answers: ['Gãy cổ xương đùi', 'Gãy lún đốt sống', 'Gãy cành tươi', 'Gãy xương do loãng xương'], correct: "C", topic: "bai2" },
+{ id: 33, text: "Gãy xương kín độ III có đặc điểm:", answers: ['Không tổn thương mô mềm', 'Xây xát da nhẹ', 'Tổn thương da lan rộng, có thể đứt mạch máu', 'Chỉ có rách da nhỏ'], correct: "C", topic: "bai2" },
+{ id: 34, text: "Dấu hiệu nào sau đây là triệu chứng chắc chắn của gãy xương?", answers: ['Đau', 'Sưng', 'Cử động bất thường', 'Bầm tím'], correct: "C", topic: "bai2" },
+{ id: 35, text: "Trong chẩn đoán gãy xương, phương tiện cận lâm sàng cơ bản nhất là:", answers: ['MRI', 'CT', 'Siêu âm', 'X-quang'], correct: "D", topic: "bai2" },
+{ id: 36, text: "Biến chứng nguy hiểm tức thì của gãy xương dài là:", answers: ['Teo cơ', 'Khớp giả', 'Tắc mạch do tủy xương', 'Cứng khớp'], correct: "C", topic: "bai2" },
+{ id: 37, text: "Nguyên tắc quan trọng nhất trong cấp cứu gãy xương là:", answers: ['Bất động ổ gãy', 'Nắn chỉnh xương ngay', 'Cho bệnh nhân ăn uống', 'Cho vận động sớm'], correct: "A", topic: "bai2" },
+{ id: 38, text: "Hành động nào sau đây KHÔNG ĐÚNG khi sơ cứu gãy xương?", answers: ['Cố định chi gãy', 'Cho bệnh nhân uống nước', 'Cầm máu vết thương', 'Gọi cấp cứu'], correct: "B", topic: "bai2" },
+{ id: 39, text: "Dấu hiệu gợi ý hội chứng chèn ép khoang là:", answers: ['Đau giảm dần', 'Da mềm', 'Đau tăng, da căng cứng', 'Không sưng'], correct: "C", topic: "bai2" },
+{ id: 40, text: "Trong chăm sóc bó bột, dấu hiệu cần báo bác sĩ ngay là:", answers: ['Ngứa nhẹ', 'Đau tăng, tê, mất mạch', 'Bột khô', 'NB ăn ngon'], correct: "B", topic: "bai2" },
+{ id: 41, text: "Mục đích kê cao chi sau gãy xương là:", answers: ['Làm đẹp tư thế', 'Giảm đau và tăng tuần hoàn', 'Tránh nhiễm trùng', 'Giúp ngủ ngon'], correct: "B", topic: "bai2" },
+{ id: 42, text: "Nguyên nhân táo bón ở người bệnh bó bột chi dưới là:", answers: ['Ăn nhiều', 'Uống nhiều nước', 'Tăng chuyển hóa', 'Ít vận động'], correct: "D", topic: "bai2" },
+{ id: 43, text: "Sau mổ kết hợp xương, biến chứng cần phòng ngừa do nằm lâu là:", answers: ['Gãy lại xương', 'Viêm phổi', 'Gãy hở', 'Trật khớp'], correct: "B", topic: "bai2" },
+{ id: 44, text: "Một bệnh nhân nam 35 tuổi bị tai nạn giao thông, gãy kín xương cẳng chân, đã được bó bột. Sau 6 giờ, bệnh nhân kêu đau tăng nhiều, đau không giảm khi dùng thuốc, kèm theo tê bì đầu ngón chân, chi lạnh và da căng bóng. Xử trí phù hợp nhất của điều dưỡng là:", answers: ['Trấn an bệnh nhân và theo dõi thêm', 'Cho bệnh nhân dùng thêm thuốc giảm đau', 'Báo bác sĩ ngay và chuẩn bị xẻ bột', 'Hướng dẫn bệnh nhân vận động nhẹ'], correct: "C", topic: "bai2" },
+{ id: 45, text: "Một bệnh nhân nữ 70 tuổi gãy cổ xương đùi sau té ngã. Do tuổi cao và bệnh lý tim mạch, bệnh nhân được chỉ định điều trị kéo tạ tại giường. Biến chứng ưu tiên phòng ngừa do nằm lâu ở bệnh nhân này là:", answers: ['Loét tì đè, viêm phổi và nhiễm trùng tiết niệu', 'Teo cơ chi lành', 'Chảy máu tại ổ gãy', 'Tắc mạch do tủy xương'], correct: "A", topic: "bai2" },///////bài 3
+///////bài 3
+
+{ id: 46, text: "Đối tượng hay bị trật khớp nhất là:", answers: ['Người trẻ', 'Trẻ em', 'Người già', 'Người bị loãng xương'], correct: "A", topic: "bai3" },
+{ id: 47, text: "Một trong các biến chứng của trật khớp là:", answers: ['Tràn dịch thể thanh dịch', 'Tràn máu ổ khớp', 'Thoái hóa khớp', 'Viêm cơ cốt hóa'], correct: "D", topic: "bai3" },
+{ id: 48, text: "Một trong các triệu chứng cơ năng của trật khớp là:", answers: ['Mất cơ năng của khớp', 'Biến dạng khớp', 'Dấu lò xo', 'Ổ khớp rỗng'], correct: "A", topic: "bai3" },
+{ id: 49, text: "Các triệu chứng thực thể của trật khớp. NGOẠI TRỪ:", answers: ['Biến dạng khớp', 'Đau ổ khớp', 'Dấu lò xo', 'Ổ khớp rỗng'], correct: "B", topic: "bai3" },
+{ id: 50, text: "Tập vận động cho NB sau bất động trong trật khớp cần:", answers: ['Với khớp vai sau bất động 6 tuần, người bệnh có thể tập xoay vòng vai', 'Người bệnh có thể tập duỗi khớp khuỷu sau 2 tuần bất động', 'Sau ít nhất 3 tháng người bệnh trật khớp háng mới được đi chống chân đau', 'Thường xuyên xoa bóp tại các khớp cho người bệnh'], correct: "B", topic: "bai3" },
+{ id: 51, text: "Trước khi chuyển người bệnh trật khớp lên tuyến trên nhân viên y tế cần:", answers: ['Bất động theo tư thế cơ năng', 'Bất động theo tư thế trật khớp', 'Bất động ép sát cánh tay vào thân người bệnh', 'Không cần bất động'], correct: "B", topic: "bai3" },
+{ id: 52, text: "Một trong các triệu chứng thực thể của người bệnh trật khớp điều dưỡng cần nhận định là:", answers: ['Biến dạng khớp', 'Mất cơ năng của khớp', 'Sưng', 'Đau'], correct: "A", topic: "bai3" },
+{ id: 53, text: "Triệu chứng có giá trị nhất để chẩn đoán trật khớp điều dưỡng cần nhận định là:", answers: ['Có dấu hiệu lò xo', 'Đau khớp khi bị chấn thương', 'Giảm cơ năng của khớp', 'Khớp sưng nề bầm tím khớp'], correct: "A", topic: "bai3" },
+{ id: 54, text: "Việc cần tránh trong xử trí trật khớp điều dưỡng cần hướng dẫn cho người bệnh là:", answers: ['Tự ý kéo nắn khớp', 'Bất động khớp', 'Xoa dầu nóng vào khớp', 'Tập vận động nhẹ'], correct: "A", topic: "bai3" },
+{ id: 55, text: "Việc làm bắt buộc nhất khi điều trị trật khớp mà điều dưỡng cần giáo dục cho người bệnh là:", answers: ['Kéo nắn trật khớp', 'Bất động để phục hồi bao khớp', 'Dùng thuốc giảm đau', 'Tập vận động sau khi hết đau'], correct: "B", topic: "bai3" },
+{ id: 56, text: "Biến dạng đùi khép và xoay vào trong, khớp háng gập nhẹ, chân ngắn. Tam giác Bryant không còn vuông cân.", answers: ['Trật khớp háng', 'Trật khớp vai', 'Trật khớp khuỷu', 'Trật khớp gối'], correct: "A", topic: "bai3" },
+{ id: 57, text: "Biến dạng cánh tay dạng và xoay ngoài, vai vuông, có dấu nhát rìu, mất rãnh Delta ngực. Bề dày khớp vai lớn hơn so với bên lành.", answers: ['Trật khớp háng', 'Trật khớp vai', 'Trật khớp khuỷu', 'Trật khớp gối'], correct: "B", topic: "bai3" },
+{ id: 58, text: "Biến dạng khuỷu gập nhẹ 40 - 45 , không duỗi thăng được, nhìn thấy dấu nhát rìu", answers: ['Trật khớp háng', 'Trật khớp vai', 'Trật khớp khuỷu', 'Trật khớp gối'], correct: "C", topic: "bai3" },
+{ id: 59, text: "Biến chứng của trật khớp. NGOẠI TRỪ:", answers: ['Đơ khớp, cứng khớp.', 'Viêm cơ cốt hóa', 'Nhiễm trùng', 'Lỏng khớp, trật khớp tái diễn.'], correct: "C", topic: "bai3" },
+{ id: 60, text: "Tập vận động như xoay vòng vai, bò tường, lau lưng sau thời gian bất động khớp vai là:", answers: ['1 – 3 tuần.', '3 – 6 tuần.', '6 – 9 tuần.', '9 – 12 tuần.'], correct: "A", topic: "bai3" },
+{ id: 61, text: "Một bệnh nhân nam bị trật khớp háng sau tai nạn. Khi nhập viện, chân bên tổn thương ngắn hơn, xoay trong, đau nhiều. Sau khi nắn khớp, bệnh nhân đột ngột đau tăng, chi lạnh, mất cảm giác. Xử trí ưu tiên của điều dưỡng:", answers: ['Báo bác sĩ ngay', 'Theo dõi thêm', 'Cho thuốc giảm đau', 'Cho vận động nhẹ'], correct: "A", topic: "bai3" },
+{ id: 62, text: "Một bệnh nhân trật khớp vai được bó bột bất động. Sau 1 ngày, bệnh nhân than đau tăng, tê tay, đầu ngón tím. Nguyên nhân có khả năng nhất:", answers: ['Viêm khớp', 'Chèn ép mạch máu do bột chặt', 'Gãy xương', 'Nhiễm trùng'], correct: "B", topic: "bai3" },
+{ id: 63, text: "Một bệnh nhân sau nắn trật khớp khuỷu, điều dưỡng nhận thấy bệnh nhân không dám vận động do sợ đau. Hướng xử trí phù hợp nhất:", answers: ['Để bệnh nhân nghỉ hoàn toàn', 'Ép bệnh nhân tập mạnh', 'Không cần can thiệp', 'Hướng dẫn tập vận động từ từ'], correct: "D", topic: "bai3" },
+{ id: 64, text: "Một bệnh nhân trật khớp hở có vết thương bẩn, sưng, chảy dịch. Nguy cơ lớn nhất cần theo dõi:", answers: ['Thiếu máu', 'Nhiễm trùng khớp', 'Loãng xương', 'Mất ngủ'], correct: "B", topic: "bai3" },
+{ id: 65, text: "Một bệnh nhân sau nắn trật khớp được dặn bất động nhưng tự ý vận động mạnh sớm. Hậu quả có thể xảy ra:", answers: ['Trật khớp tái diễn', 'Tăng hấp thu canxi', 'Tăng sức cơ', 'Giảm đau nhanh'], correct: "A", topic: "bai3" },
+////bài 4
+
+{ id: 66, text: "Nguyên nhân gây sốc trong bỏng là do:", answers: ['Mất máu.', 'Mất huyết tương.', 'Đau.', 'Đau và mất huyết tương.'], correct: "D", topic: "bai4" },
+{ id: 67, text: "Thể tích lượng máu mất có thể bắt đầu gây sốc là:", answers: ['5% thể tích máu của người bệnh.', '10% thể tích máu của người bệnh.', '30% thể tích máu của người bệnh.', '50% thể tích máu của người bệnh.'], correct: "C", topic: "bai4" },
+{ id: 68, text: "Khi người bệnh sốc sự chênh lệch nhiệt độ giữa ngoại vi và trung tâm có ý nghĩa đánh giá:", answers: ['Rối loạn trung tâm điều hòa thân nhiệt.', 'Mức độ co mạch trong sốc.', 'Diễn biến của huyết áp động mạch.', 'Sự thay đổi tần số tim.'], correct: "B", topic: "bai4" },
+{ id: 69, text: "Huyết áp tĩnh mạch trung ương đánh giá:", answers: ['Tình trạng hoạt động của tim.', 'Trương lực thành mạch máu.', 'Khối lượng tuần hoàn.', 'Mức độ sốc của người bệnh.'], correct: "C", topic: "bai4" },
+{ id: 70, text: "Số lượng nước tiểu bình thường của người nặng 50 kg là:", answers: ['200 ml/24 giờ.', '600 ml/24 giờ.', '1200 ml/24 giờ.', 'Trên 2000 ml/24 giờ.'], correct: "C", topic: "bai4" },
+{ id: 71, text: "Huyết áp động mạch kẹt nguy hiểm cho người bệnh là làm:", answers: ['Giảm khối lượng tuần hoàn.', 'Giảm huyết áp động mạch.', 'Tăng nguy cơ xơ vữa động mạch.', 'Giảm lưu lượng tim.'], correct: "D", topic: "bai4" },
+{ id: 72, text: "Huyết áp động mạch phụ thuộc vào:", answers: ['Sức co bóp của cơ tim, khối lượng tuần hoàn, sự vận động của người bệnh.', 'Khối lượng tuần hoàn, độ đàn hồi của thành mạch, trạng thái tâm lý của người bệnh.', 'Độ đàn hồi của thành mạch, sức co bóp của cơ tim, tuổi của người bệnh.', 'Sức co bóp của cơ tim, khối lượng tuần hoàn, độ đàn hồi của thành mạch.'], correct: "D", topic: "bai4" },
+{ id: 73, text: "Huyết áp tĩnh mạch trung tâm phụ thuộc vào:", answers: ['Sức co bóp của cơ tim.', 'Khối lượng tuần hoàn.', 'Độ đàn hồi của thành mạch.', 'Trạng thái tâm lý của người bệnh.'], correct: "B", topic: "bai4" },
+{ id: 74, text: "Hội chứng sốc gặp trong vết thương phần mềm có tổn thương phối hợp mạch máu là:", answers: ['Da niêm mạc nhợt nhạt, vã mồ hôi, đầu chi ấm', 'Mạch nhanh, huyết áp tăng', 'Người bệnh hốt hoảng, vật vã, kích thích hoặc thờ ơ với ngoại cảnh', 'Xét nghiệm hồng cầu: số lượng hồng cầu không giảm'], correct: "C", topic: "bai4" },
+{ id: 75, text: "Một bệnh nhân bị tai nạn giao thông, vào viện trong tình trạng vật vã, mạch nhanh, huyết áp tăng nhẹ. Sau 20 phút, bệnh nhân trở nên lờ đờ, da lạnh, mạch nhanh nhỏ, huyết áp tụt. Nhận định đúng nhất là:", answers: ['Bệnh nhân đang hồi phục', 'Sốc nguyên phát chuyển sang sốc thứ phát', 'Không phải sốc', 'Chỉ mất nước nhẹ'], correct: "B", topic: "bai4" },
+{ id: 76, text: "Một bệnh nhân sốc chấn thương có biểu hiện tiểu < 0,3 ml/kg/giờ, urê và creatinin tăng. Biến chứng đang xảy ra là:", answers: ['Phổi sốc', 'Suy tim', 'Thận sốc (suy thận cấp)', 'Nhiễm trùng'], correct: "C", topic: "bai4" },
+{ id: 77, text: "Trong chăm sóc bệnh nhân sốc chấn thương, dấu hiệu nào cho thấy sốc đang nặng lên?", answers: ['Da ấm, hồng', 'Mạch chậm, mạnh', 'Chênh lệch nhiệt độ trung tâm – ngoại vi tăng', 'Nước tiểu tăng'], correct: "C", topic: "bai4" },
+{ id: 78, text: "Một bệnh nhân bị chấn thương mất máu nhiều. Điều dưỡng cần ưu tiên can thiệp nào đầu tiên?", answers: ['Cho ăn uống', 'Truyền dịch/ máu nhanh chóng', 'Cho vận động', 'Chụp X-quang'], correct: "B", topic: "bai4" },
+{ id: 79, text: "Một bệnh nhân sốc sau chấn thương được theo dõi, sau 3 giờ có các dấu hiệu: HA ổn định, mạch rõ, nước tiểu >1 ml/kg/giờ, da ấm. Nhận định đúng:", answers: ['Sốc nặng hơn', 'Đã thoát sốc', 'Đang sốc nguyên phát', 'Có biến chứng phổi'], correct: "B", topic: "bai4" },
+{ id: 80, text: "Nguyên nhân chủ yếu gây sốc chấn thương là:", answers: ['Tăng huyết áp', 'Nhiễm virus', 'Tăng đường huyết', 'Giảm khối lượng tuần hoàn'], correct: "D", topic: "bai4" },
+{ id: 81, text: "Trong sốc nguyên phát, biểu hiện đặc trưng là:", answers: ['Huyết áp giảm', 'Mạch chậm', 'Kích thích, vật vã', 'Hôn mê'], correct: "C", topic: "bai4" },
+{ id: 82, text: "Dấu hiệu nào sau đây thường gặp trong sốc thứ phát?", answers: ['Mạch nhanh, nhỏ', 'Huyết áp tăng', 'Da hồng ấm', 'Tiểu nhiều'], correct: "A", topic: "bai4" },
+{ id: 83, text: "Ở bệnh nhân sốc chấn thương, lượng nước tiểu bình thường là:", answers: ['< 0,5 ml/kg/giờ', '0,3 ml/kg/giờ', '≥ 1 ml/kg/giờ', '2 ml/kg/giờ'], correct: "C", topic: "bai4" },
+{ id: 84, text: "Một trong các nguyên tắc điều trị sốc chấn thương là:", answers: ['Cho bệnh nhân vận động', 'Đặt tư thế đầu cao', 'Không cần truyền dịch', 'Đảm bảo hô hấp và tuần hoàn'], correct: "D", topic: "bai4" },
+{ id: 85, text: "Trong phòng chống sốc tại tuyến cơ sở, biện pháp quan trọng là:", answers: ['Chờ tụt huyết áp mới xử trí', 'Truyền dịch sớm', 'Không cần cố định xương', 'Không cần giữ ấm'], correct: "B", topic: "bai4" },
+///bài 5
+
+{ id: 86, text: "Cơn đau quặn thận được biểu hiện là:", answers: ['Đau lăn lộn dữ dội ở vùng thắt lưng.', 'Đau âm ỉ từng cơn vùng thắt lưng.', 'Đau âm ỉ liên tục ở vùng thắt lưng.', 'Đau dữ dội vùng thượng vị.'], correct: "A", topic: "bai5" },
+{ id: 87, text: "Cận lâm sàng cần thiết tối thiểu để giúp chẩn đoán sỏi thận là:", answers: ['X quang và siêu âm hệ tiết niệu.', 'X quang và CT scan hệ tiết niệu.', 'X quang và MRI hệ tiết niệu.', 'MRI và CT-scan hệ tiết niệu.'], correct: "A", topic: "bai5" },
+{ id: 88, text: "Sỏi hệ tiết niệu thường gặp nhất ở đối tượng nào?", answers: ['Nữ giới', 'Trẻ em', 'Nam giới', 'Người cao tuổi'], correct: "C", topic: "bai5" },
+{ id: 89, text: "Loại sỏi nào chiếm tỷ lệ cao nhất trong sỏi tiết niệu?", answers: ['Sỏi acid uric', 'Sỏi calci', 'Sỏi cystin', 'Sỏi struvit'], correct: "B", topic: "bai5" },
+{ id: 90, text: "Yếu tố nào sau đây có vai trò ức chế kết tinh muối calci trong nước tiểu?", answers: ['Oxalat', 'Natri', 'Citrat', 'Ure'], correct: "C", topic: "bai5" },
+{ id: 91, text: "Sỏi Struvit thường liên quan đến nguyên nhân nào?", answers: ['Tăng acid uric máu', 'Di truyền', 'Nhiễm khuẩn tiết niệu', 'Thiếu nước'], correct: "C", topic: "bai5" },
+{ id: 92, text: "Triệu chứng điển hình nhất của sỏi niệu quản là gì?", answers: ['Đái buốt', 'Đau quặn thận', 'Sốt cao', 'Bí tiểu'], correct: "B", topic: "bai5" },
+{ id: 93, text: "Cơn đau quặn thận thường lan theo hướng nào?", answers: ['Lên ngực', 'Xuống chân', 'Dọc theo niệu quản xuống vùng bẹn (gò mu)', 'Ra sau lưng trên'], correct: "C", topic: "bai5" },
+{ id: 94, text: "Phương pháp nào giúp xác định chính xác vị trí sỏi và đánh giá chức năng thận?", answers: ['Chụp niệu đồ tĩnh mạch (UIV)', 'X-quang bụng', 'Siêu âm', 'Xét nghiệm máu'], correct: "A", topic: "bai5" },
+{ id: 95, text: "Biến chứng nguy hiểm nhất của sỏi tiết niệu là gì?", answers: ['Suy thận', 'Đái rắt', 'Đái buốt', 'Đái đục'], correct: "A", topic: "bai5" },
+{ id: 96, text: "Để ngăn ngừa và tránh tái phát sỏi đường niệu một trong những vấn đề cần tư vấn người bệnh nên:", answers: ['Uống nhiều nước khoảng 2 lít/ ngày (đảm bảo lượng nước tiểu > 2,5 lít).', 'Ăn nhiều chất xơ.', 'Tập thể dục thường xuyên.', 'Ăn nhiều trái cây.'], correct: "A", topic: "bai5" },
+{ id: 97, text: "Lượng nước tiểu tối thiểu cần đạt để phòng ngừa sỏi tái phát là:", answers: ['1 lít/ngày', '1,5 lít/ngày', '2 lít/ngày', '≥ 2,5 lít/ngày'], correct: "D", topic: "bai5" },
+{ id: 98, text: "Trong chăm sóc sau mổ sỏi tiết niệu, cần theo dõi yếu tố nào quan trọng nhất?", answers: ['Nhịp tim', 'Huyết áp', 'Nước tiểu', 'Nhiệt độ'], correct: "C", topic: "bai5" },
+{ id: 99, text: "Triệu chứng thường gặp nhất của sỏi tiết niệu là:", answers: ['Đau đầu', 'Đau bụng quặn thận', 'Ho', 'Sốt nhẹ'], correct: "B", topic: "bai5" },
+{ id: 100, text: "Một trong những nguyên tắc quan trọng để phòng sỏi tiết niệu là:", answers: ['Hạn chế uống nước', 'Uống nhiều nước', 'Ăn nhiều muối', 'Nằm nghỉ nhiều'], correct: "B", topic: "bai5" },
+{ id: 101, text: "Dấu hiệu thường gặp khi có nhiễm khuẩn tiết niệu là:", answers: ['Đái buốt, đái rắt', 'Đau đầu', 'Ho khan', 'Đau ngực'], correct: "A", topic: "bai5" },
+{ id: 102, text: "Người bệnh sỏi niệu quản đang có cơn đau quặn thận dữ dội. Biện pháp ưu tiên nhất của điều dưỡng là gì?", answers: ['Cho uống nhiều nước ngay', 'Cho người bệnh vận động mạnh', 'Giảm đau và theo dõi sát dấu hiệu sinh tồn', 'Cho ăn uống bình thường'], correct: "C", topic: "bai5" },
+{ id: 103, text: "Một người bệnh sau mổ sỏi có dẫn lưu bể thận, nước tiểu ra ít dần và có màu đỏ tươi. Điều dưỡng cần nghĩ đến tình trạng nào trước tiên?", answers: ['Thiếu nước', 'Chảy máu sau mổ', 'Hạ đường huyết', 'Nhiễm trùng nhẹ'], correct: "B", topic: "bai5" },
+{ id: 104, text: "Vì sao người bệnh sỏi tiết niệu sau mổ cần khuyến khích uống nhiều nước (nếu không chống chỉ định)?", answers: ['Để tăng cảm giác thèm ăn', 'Để giảm đau nhanh', 'Để làm loãng nước tiểu và hạn chế kết tinh sỏi', 'Để giảm sốt'], correct: "C", topic: "bai5" },
+{ id: 105, text: "Người bệnh có sỏi kèm nhiễm khuẩn tiết niệu tái phát nhiều lần. Nguyên nhân quan trọng nhất gây hình thành sỏi trong trường hợp này là:", answers: ['Tăng calci máu', 'Nước tiểu quá acid', 'Vi khuẩn tạo men urease làm kiềm hóa nước tiểu', 'Thiếu vận động'], correct: "C", topic: "bai5" },
+///bài 6
+{ id: 106, text: "U xơ tiền liệt tuyến thường là:", answers: ['U ác tính', 'U lành tính', 'U nằm trong cơ bàng quang.', 'U nằm trong niệu đạo'], correct: "B", topic: "bai6" },
+{ id: 107, text: "U xơ tuyến tiền liệt là bệnh lý gây:", answers: ['Rối loạn đại tiện.', 'Rối loạn sinh dục.', 'Rối loạn tiểu tiện.', 'Rối loạn tiêu hoá'], correct: "C", topic: "bai6" },
+{ id: 108, text: "Cận lâm sàng giúp chẩn đoán bệnh u xơ tuyến tiền liệt là:", answers: ['Siêu âm.', 'MRI.', 'CT-scanner.', 'X- quang.'], correct: "A", topic: "bai6" },
+{ id: 109, text: "Khi người bệnh u xơ tuyến tiền liệt vào điều trị trước mổ có biểu hiện đái nhỏ giọt, thì điều dưỡng phải thường xuyên theo dõi về:", answers: ['Đái rắt', 'Đái máu', 'Đái lâu', 'Đái đau'], correct: "B", topic: "bai6" },
+{ id: 110, text: "Khi người bệnh u xơ tiền liệt tuyến có đặt dẫn lưu bàng quang trên xương mu sau mổ, thì điều dưỡng phải chăm sóc bằng các nội dung sau, NGOẠI TRỪ:", answers: ['Thay băng chân ống dẫn lưu hằng ngày', 'Theo dõi lượng nước tiểu qua sonde', 'Hướng dẫn người bệnh không được tự ý rút ống sonde', 'Súc bàng quang hằng ngày'], correct: "D", topic: "bai6" },
+{ id: 111, text: "Khi người bệnh u xơ tiền liệt tuyến có đặt thông tiểu trước mổ, thì điều dưỡng phải chăm sóc bằng các nội dung sau, NGOẠI TRỪ:", answers: ['Kẹp thông ngắt quãng hằng ngày', 'Thay thông tiểu hằng ngày', 'Bơm thuốc kháng sinh vào bàng quang hằng ngày', 'Sát trùng miệng sáo hằng ngày'], correct: "B", topic: "bai6" },
+{ id: 112, text: "Dấu hiệu nào gợi ý tắc nghẽn đường tiểu trong u xơ tiền liệt tuyến?", answers: ['Tiểu nhiều', 'Tia nước tiểu yếu, phải rặn', 'Sốt cao', 'Ho ra máu'], correct: "B", topic: "bai6" },
+{ id: 113, text: "Biến chứng của u xơ tuyến tiền liệt, NGOẠI TRỪ:", answers: ['Ung thư hoá tuyến tiền liệt.', 'Nhiễm khuẩn tiết niệu.', 'Bí tiểu hoàn toàn hoặc không.', 'Suy nhược cơ thể.'], correct: "A", topic: "bai6" },
+{ id: 114, text: "Trước mổ người bệnh u xơ tuyến tiền liệt thì cần kiểm tra bệnh kèm thường hay gặp sau đây:", answers: ['Suy chức năng tuần hoàn', 'Nhiễm trùng tiết niệu', 'Suy chức năng gan', 'COPD'], correct: "B", topic: "bai6" },
+{ id: 115, text: "U xơ tiền liệt tuyến thường gặp nhất ở đối tượng nào?", answers: ['Trẻ em', 'Nam giới trẻ tuổi', 'Nữ giới', 'Nam giới lớn tuổi'], correct: "D", topic: "bai6" },
+{ id: 116, text: "Triệu chứng thường gặp của u xơ tiền liệt tuyến là:", answers: ['Ho khan', 'Rối loạn tiểu tiện', 'Đau ngực', 'Đau đầu'], correct: "B", topic: "bai6" },
+{ id: 117, text: "Biến chứng thường gặp nhất của u xơ tiền liệt tuyến là:", answers: ['Suy gan', 'Tắc nghẽn đường tiểu', 'Viêm phổi', 'Loét dạ dày'], correct: "B", topic: "bai6" },
+{ id: 118, text: "Nguyên nhân chính liên quan đến nội tiết trong u xơ tiền liệt tuyến là:", answers: ['Dihydrotestosteron (DHT)', 'Estrogen', 'Insulin', 'Adrenalin'], correct: "A", topic: "bai6" },
+{ id: 119, text: "Trong chăm sóc trước mổ, điều dưỡng cần ưu tiên mục tiêu nào?", answers: ['Tăng vận động mạnh', 'Giảm lo lắng và giảm áp lực bàng quang', 'Hạn chế uống nước hoàn toàn', 'Không theo dõi nước tiểu'], correct: "B", topic: "bai6" },
+{ id: 120, text: "Sau mổ u xơ tiền liệt tuyến, biến chứng cần theo dõi sát nhất là:", answers: ['Đau đầu', 'Táo bón', 'Ho', 'Chảy máu và nhiễm trùng'], correct: "D", topic: "bai6" },
+{ id: 121, text: "U xơ tiền liệt tuyến là bệnh:", answers: ['Ác tính', 'Lành tính', 'Do virus gây ra', 'Bệnh truyền nhiễm'], correct: "B", topic: "bai6" },
+{ id: 122, text: "Triệu chứng hay gặp nhất về tiểu tiện trong u xơ tiền liệt tuyến là:", answers: ['Tiểu ít lần', 'Tiểu không đau ngực', 'Tiểu khó, tia yếu', 'Tiểu ra máu luôn luôn'], correct: "C", topic: "bai6" },
+{ id: 123, text: "Sau mổ u xơ tiền liệt tuyến, người bệnh có nước tiểu đỏ tươi qua ống thông, điều dưỡng cần ưu tiên xử trí nào sau đây?", answers: ['Theo dõi dấu hiệu sinh tồn và lượng nước tiểu sát', 'Khuyến khích người bệnh uống ít nước', 'Rút ống thông ngay', 'Cho người bệnh vận động mạnh để tăng tuần hoàn'], correct: "A", topic: "bai6" },
+{ id: 124, text: "Vì sao người bệnh u xơ tiền liệt tuyến cần được theo dõi sát màu sắc và số lượng nước tiểu?", answers: ['Để phát hiện sớm rối loạn tiêu hóa', 'Để đánh giá chức năng gan', 'Để phát hiện sớm tắc nghẽn và biến chứng tiết niệu', 'Để kiểm soát huyết áp'], correct: "C", topic: "bai6" },
+{ id: 125, text: "Yếu tố nào sau đây có thể làm nặng thêm tình trạng tắc nghẽn đường tiểu ở người bệnh u xơ tiền liệt tuyến?", answers: ['Uống nhiều nước', 'Nhiễm khuẩn đường tiết niệu', 'Vận động nhẹ', 'Ăn nhiều rau xanh'], correct: "B", topic: "bai6" },
+
+//bài 7
+{ id: 126, text: "Vị trí nào KHÔNG được chọn để làm hậu môn nhân tạo:", answers: ['Nằm ở vị trí thắt lưng quần', 'Ở vùng thành bụng phẳng', 'Không gần sẹo cũ, chỗ gồ xương', 'Ở vị trí người bệnh dễ chăm sóc'], correct: "A", topic: "bai7" },
+{ id: 127, text: "Mục đích chính của thành bụng phải được khâu kín với thành đại tràng của quai ruột đưa ra làm hậu môn nhân tạo là:", answers: ['Quai ruột được tưới máu tốt', 'Thành bụng không bị lỡ loét', 'Tránh cho dịch phân không trào ngược vào xoang bụng', 'Tránh làm căng quai ruột đưa ra ngoài'], correct: "C", topic: "bai7" },
+{ id: 128, text: "Trong chăm sóc quai ruột đưa ra ngoài ta cần phải đánh giá tình trạng quai ruột như thế nào?", answers: ['Màu đỏ bầm là tốt', 'Màu hồng là tốt', 'Màu tím là tốt', 'Màu xám là tốt'], correct: "B", topic: "bai7" },
+{ id: 129, text: "Thường quai ruột đưa ra ngoài được bác sĩ xẻ tháo phân khi nào:", answers: ['24h sau mổ', '12h sau mổ', '36h sau mổ', '48h sau mổ'], correct: "A", topic: "bai7" },
+{ id: 130, text: "Dung dịch chủ yếu dùng để rửa hậu môn nhân tạo là gì:", answers: ['Povidine', 'Cồn iốt', 'Cồn 70°', 'NaCl 0.9%'], correct: "D", topic: "bai7" },
+{ id: 131, text: "Bôi chất gì để bảo vệ vùng da xung quanh quai ruột của hậu môn nhân tạo:", answers: ['Oxyt kẽm', 'Bạc nitrat', 'Xanh methylene', 'Cồn 70°'], correct: "A", topic: "bai7" },
+{ id: 132, text: "Trong theo dõi sự tiến triển của quai ruột làm hậu môn nhân tạo điều nào sau đây là KHÔNG phù hợp:", answers: ['Theo dõi bao đựng phân úp vào quai ruột', 'Theo dõi độ dài quai ruột', 'Theo dõi tính chất phân đặc hay lỏng'], correct: "A", topic: "bai7" },
+{ id: 133, text: "Đối với người bệnh mở hồi tràng ra da làm hậu môn nhân tạo điều dưỡng cần chú ý:", answers: ['Tụt quai ruột', 'Nhiễm trùng vết mổ', 'Rối loạn nước điện giải', 'Chảy máu quai ruột'], correct: "C", topic: "bai7" },
+{ id: 134, text: "Người bệnh làm hậu môn nhân tạo tạm thời thường sau bao lâu người bệnh sẽ vào viện đóng hậu môn nhân tạo lại?", answers: ['3 tháng', '1 tháng', '1 năm', '9 tháng'], correct: "A", topic: "bai7" },
+{ id: 135, text: "Chăm sóc người bệnh có hậu môn nhân tạo điều dưỡng thường hay bỏ qua vấn đề quan trọng này:", answers: ['Theo dõi cơn đau', 'Vết mổ', 'Vệ sinh da', 'Tâm lý của người bệnh'], correct: "D", topic: "bai7" },
+{ id: 136, text: "Điều kiện để tiến hành đóng hậu môn nhân tạo là:", answers: ['Sau mổ làm hậu môn nhân tạo tạm thời trên 3 tháng.', 'Chuẩn bị đại tràng phần trên bằng thụt tháo sạch tại hậu môn thật.', 'Đoạn đại tràng dưới hậu môn nhân tạo thông.', 'Tất cả đều đúng.'], correct: "D", topic: "bai7" },
+{ id: 137, text: "Biến chứng hay gặp sau mổ hậu môn nhân tạo là:", answers: ['Hoại tử đoạn đại tràng đưa ra ngoài thành bụng.', 'Tụt hậu môn nhân tạo vào bên trong.', 'Nhiễm khuẩn chỗ làm hậu môn nhân tạo.', 'Tất cả đều đúng.'], correct: "D", topic: "bai7" },
+{ id: 138, text: "Phân loại hậu môn nhân tạo gồm:", answers: ['Hậu môn nhân tạo hoàn toàn, một phần.', 'Hậu môn nhân tạo một phần, tận cùng.', 'Hậu môn nhân tạo tạm thời, vĩnh viễn.', 'Hậu môn nhân tạo tận cùng, kiểu nòng súng.'], correct: "C", topic: "bai7" },
+{ id: 139, text: "Biến chứng sớm của hậu môn nhân tạo là:", answers: ['Chảy máu từ mạc treo đại tràng đưa ra hay từ thành đại tràng.', 'Teo miệng đại tràng đưa ra do sẹo da co hẹp.', 'Sa niêm mạc đại tràng.', 'Thoát vị thành bụng chỗ đưa đại tràng ra ngoài.'], correct: "A", topic: "bai7" },
+{ id: 140, text: "Trường hợp nào sau đây KHÔNG phải làm hậu môn nhân tạo:", answers: ['Viêm đại tràng hoại tử.', 'U đại tràng.', 'Vết thương đại tràng.', 'Viêm đại tràng co thắt.'], correct: "D", topic: "bai7" },
+{ id: 141, text: "Chẩn đoán chăm sóc đối với người bệnh có hậu môn nhân tạo mổ về nhưng chưa mở:", answers: ['Người bệnh có nguy cơ áp xe tổ chức dưới da quanh hậu môn nhân tạo.', 'Người bệnh có nguy cơ tắc hậu môn nhân tạo do táo bón.', 'Người bệnh trướng bụng do hậu môn nhân tạo chưa mở.', 'Người bệnh có nguy cơ viêm loét da quanh hậu môn nhân tạo do vệ sinh kém.'], correct: "C", topic: "bai7" },
+{ id: 142, text: "Mục đích chính của chăm sóc da quanh hậu môn nhân tạo là gì?", answers: ['Làm da khô và bong tróc', 'Ngăn ngừa viêm loét và kích ứng da', 'Làm tăng tiết dịch ruột', 'Giúp vết mổ nhanh chảy máu'], correct: "B", topic: "bai7" },
+{ id: 143, text: "Người bệnh có hậu môn nhân tạo cần được thay túi chứa phân khi nào?", answers: ['1 lần/tuần cố định', 'Khi túi đầy hoặc có rò rỉ', '1 lần/tháng', 'Không cần thay'], correct: "B", topic: "bai7" },
+{ id: 144, text: "Dấu hiệu bình thường của niêm mạc hậu môn nhân tạo là gì?", answers: ['Đen tím, lạnh', 'Hồng, ẩm, có thể hơi nề nhẹ', 'Khô và trắng bệch', 'Có mủ vàng'], correct: "B", topic: "bai7" },
+{ id: 145, text: "Mục tiêu quan trọng nhất khi chăm sóc hậu môn nhân tạo là:", answers: ['Giảm số lần đi tiêu', 'Đảm bảo dinh dưỡng cao', 'Duy trì hoạt động ruột và bảo vệ da quanh hậu môn nhân tạo', 'Hạn chế uống nước'], correct: "C", topic: "bai7" },
+
+///bài 8
+{ id: 146, text: "Ở tuyến y tế cơ sở, khi phát hiện tắc ruột cơ học xử trí giống như:", answers: ['Chấn thương bụng kín.', 'Viêm ruột thừa cấp.', 'Thủng ổ loét dạ dày – tá tràng.', 'Sỏi mật.'], correct: "C", topic: "bai8" },
+{ id: 147, text: "Vấn đề cần nhận định đối với tắc ruột cơ học có mất nước:", answers: ['Mắt có trũng, môi có khô không?', 'Lưỡi có bẩn không?', 'Da có xanh tái không?', 'Bụng có trướng không?'], correct: "A", topic: "bai8" },
+{ id: 148, text: "Nguyên nhân gây tắc ruột do thắt là:", answers: ['Nghẹt ruột do dây chằng', 'Do bã thức ăn', 'Do dính ruột', 'Do giun đũa.'], correct: "A", topic: "bai8" },
+{ id: 149, text: "Tính chất đau bụng do tắc ruột cơ học do bít:", answers: ['Đau bụng dữ dội', 'Đau bụng âm ỉ', 'Đau bụng liên tục', 'Đau bụng cơn.'], correct: "D", topic: "bai8" },
+{ id: 150, text: "Chăm sóc điều dưỡng trong tắc ruột cơ học trước mổ:", answers: ['Cho uống nước đường', 'Hút dịch dạ dày', 'Thụt tháo phân', 'Cho vận động.'], correct: "B", topic: "bai8" },
+{ id: 151, text: "Nguyên nhân gây tắc ruột do thắt là:", answers: ['Nghẹt ruột do dây chằng', 'Do bã thức ăn', 'Do dính ruột', 'Do giun đũa.'], correct: "A", topic: "bai8" },
+{ id: 152, text: "Tắc ruột là tình trạng:", answers: ['Ruột tăng nhu động bất thường', 'Đình chỉ lưu thông hơi, dịch và phân trong ruột', 'Ruột tiết nhiều dịch', 'Đại tiện nhiều lần'], correct: "B", topic: "bai8" },
+{ id: 153, text: "Triệu chứng thường gặp nhất của tắc ruột là:", answers: ['Đau đầu', 'Đau bụng, nôn, bí trung đại tiện', 'Ho khan', 'Tiểu buốt'], correct: "B", topic: "bai8" },
+{ id: 154, text: "Dấu hiệu X-quang điển hình của tắc ruột là:", answers: ['Hình mờ phổi', 'Mức nước – mức hơi', 'Hình tim to', 'Hình sỏi thận'], correct: "B", topic: "bai8" },
+{ id: 155, text: "Tắc ruột càng cao thì triệu chứng nào xuất hiện sớm hơn:", answers: ['Bí đại tiện', 'Nôn', 'Đầy bụng', 'Sốt'], correct: "B", topic: "bai8" },
+{ id: 156, text: "Nguyên tắc xử trí tắc ruột cơ học là:", answers: ['Mổ ngay không cần hồi sức', 'Hồi sức trước mổ rồi giải quyết nguyên nhân', 'Chỉ dùng thuốc giảm đau', 'Chỉ theo dõi'], correct: "B", topic: "bai8" },
+{ id: 157, text: "Trong tắc ruột, nôn ra dịch phân thường gặp khi:", answers: ['Tắc ruột giai đoạn sớm', 'Tắc ruột cao', 'Tắc ruột đến muộn', 'Không bao giờ xảy ra'], correct: "C", topic: "bai8" },
+{ id: 158, text: "Biện pháp quan trọng nhất trước mổ tắc ruột là:", answers: ['Cho ăn nhiều', 'Cho vận động mạnh', 'Thụt tháo', 'Đặt sonde dạ dày hút dịch'], correct: "D", topic: "bai8" },
+{ id: 159, text: "Khi chưa có nhu động ruột sau mổ, người bệnh được nuôi dưỡng bằng:", answers: ['Ăn cháo', 'Truyền tĩnh mạch', 'Ăn cơm', 'Uống sữa'], correct: "B", topic: "bai8" },
+{ id: 160, text: "Nguyên tắc điều trị tắc ruột là:", answers: ['Chỉ dùng thuốc giảm đau', 'Chỉ truyền dịch', 'Giải quyết nguyên nhân gây tắc và phục hồi lưu thông ruột', 'Chỉ theo dõi'], correct: "C", topic: "bai8" },
+{ id: 161, text: "Dấu hiệu bí trung đại tiện trong tắc ruột hoàn toàn là:", answers: ['Không xảy ra', 'Xảy ra thất thường', 'Xảy ra thường xuyên', 'Chỉ xảy ra ban đêm'], correct: "C", topic: "bai8" },
+{ id: 162, text: "Sau mổ tắc ruột, người bệnh chưa có nhu động ruột nhưng đã được cho ăn sớm, hậu quả dễ xảy ra nhất là:", answers: ['Tăng hấp thu dinh dưỡng', 'Giảm đau nhanh', 'Trướng bụng, nguy cơ bục miệng nối', 'Hồi phục nhanh hơn'], correct: "C", topic: "bai8" },
+{ id: 163, text: "Dấu hiệu thường gặp nhất của tắc ruột là:", answers: ['Tiêu chảy', 'Bí trung đại tiện', 'Ăn nhiều', 'Đi tiểu nhiều'], correct: "B", topic: "bai8" },
+{ id: 164, text: "Trong tắc ruột, nôn nhiều gây nguy hiểm chủ yếu do:", answers: ['Tăng đường huyết', 'Mất nước và điện giải', 'Tăng huyết áp', 'Giảm nhịp tim'], correct: "B", topic: "bai8" },
+{ id: 165, text: "Một người bệnh nhập viện với triệu chứng đau bụng từng cơn, nôn nhiều, bụng trướng, bí trung đại tiện. Sau đó xuất hiện mạch nhanh, huyết áp tụt, sốt cao. Nguyên nhân phù hợp nhất là:", answers: ['Tắc ruột do nghẹt gây hoại tử ruột', 'Tắc ruột cơ năng', 'Tắc ruột đơn thuần', 'Rối loạn tiêu hoá'], correct: "A", topic: "bai8" },
+
+///bài 9
+
+
+{ id: 166, text: "Có mấy loại hệ thống bình kín trong dẫn lưu màng phổi:", answers: ['1', '2', '3', '4'], correct: "C", topic: "bai9" },
+{ id: 167, text: "Để tránh tình trạng xẹp phổi cho NB dẫn lưu màng phổi, điều dưỡng phải:", answers: ['Kẹp ống dẫn lưu 3 giờ / 1 lần', 'Kiểm tra hệ thống hô hấp thường xuyên', 'Cho BN tập thở sâu', 'Cho BN vận động tại giường'], correct: "C", topic: "bai9" },
+{ id: 168, text: "Áp lực hút hệ thống dẫn lưu màng phổi là:", answers: ['10 - 12 cmH20', '12 - 15 cmH20', '15 - 20 cmH20', '20 - 25 cmH20'], correct: "C", topic: "bai9" },
+{ id: 169, text: "Lượng nước đổ vào trong bình chân không của hệ thống dẫn lưu màng phổi là bao nhiêu:", answers: ['100 ml', '500 ml', '1000 ml', '1500 ml'], correct: "B", topic: "bai9" },
+{ id: 170, text: "Hệ thống ống dẫn lưu màng phổi phải đảm bảo nguyên tắc:", answers: ['Phải kín hơi, một chiều, vô trùng, thông suốt', 'Một chiều, thông suốt.', 'Vô trùng.', 'Phải kín hơi.'], correct: "A", topic: "bai9" },
+{ id: 171, text: "Trước khi thay bình chứa dịch dẫn lưu màng phổi điều dưỡng cần phải:", answers: ['Giữ ống.', 'Kẹp ống bằng 2 kềm lớn.', 'Cố định ống bằng kềm', 'Kẹp và cố định ống.'], correct: "B", topic: "bai9" },
+{ id: 172, text: "Điều nào sau đây là đúng về thời gian theo dõi dịch ra sau đặt dẫn lưu màng phổi:", answers: ['15 phút/lần trong 1 giờ đầu ngay sau khi đặt dẫn lưu màng phổi, 1 giờ/lần trong 24h sau, 2 giờ/lần sau đó và 8 giờ/lần khi ổn định.', '30 phút/lần trong 2 giờ đầu ngay sau khi đặt dẫn lưu màng phổi, 1 giờ/lần trong 24h sau, 2 giờ/lần sau đó và 8 giờ/lần khi ổn định.', '15 phút/lần trong 1 giờ đầu ngay sau khi đặt dẫn lưu màng phổi, 1 giờ/lần trong 24h sau, 2 giờ/lần sau đó và 12 giờ/lần khi ổn định.', '30 phút/lần trong 2 giờ đầu ngay sau khi đặt dẫn lưu màng phổi, 1 giờ/lần trong 24h sau, 2 giờ/lần sau đó và 12 giờ/lần khi ổn định.'], correct: "B", topic: "bai9" },
+{ id: 173, text: "Khi bình dẫn lưu màng phổi bị bể điều dưỡng cần làm việc gì đầu tiên:", answers: ['Kẹp ngay ống dẫn lưu.', 'Báo ngay bác sĩ', 'Thay bình khác', 'Nâng ống dẫn lưu lên cao'], correct: "A", topic: "bai9" },
+{ id: 174, text: "Vị trí đặt bình dẫn lưu màng phổi đúng là:", answers: ['Thấp hơn mức tím 60 cm', 'Thấp hơn ngực NB # 60 cm', 'Cách mặt đất 15 cm', 'Thấp hơn ngực NB 15cm'], correct: "B", topic: "bai9" },
+{ id: 175, text: "Đặc điểm của dịch trong bình dẫn lưu tràn khí màng phổi như thế nào chứng tỏ hệ thống dẫn lưu kín?", answers: ['Hoàn toàn không có bọt khí', 'Có một ít bọt khí', 'Sủi bọt liên tục', 'Có sủi bọt theo nhịp thở NB'], correct: "D", topic: "bai9" }
+      ];
+
+     let currentTopic = null;
+    let shuffleQuestions = true;
+    let shuffleAnswers = true;
+    let currentQuestions = [];
+    let userSelections = {};
+    let answersMapping = new Map();
+    
+    const questionsContainer = document.getElementById("questionsContainer");
+    const scoreContainer = document.getElementById("scoreContainer");
+    const shuffleQuestionsToggle = document.getElementById("shuffleQuestionsToggle");
+    const shuffleAnswersToggle = document.getElementById("shuffleAnswersToggle");
+    const liveScoreSpan = document.getElementById("liveScore");
+    
+    function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+    
+    function getFilteredQuestions() {
+        if (!currentTopic) return [];
+        let filtered = QUESTION_SET.filter(q => currentTopic === "all" || q.topic === currentTopic);
+        let result = [...filtered];
+        if (shuffleQuestions) result = shuffleArray(result);
+        return result;
+    }
+    
+    function buildAnswerMapping(question) {
+        const originalAnswers = question.answers;
+        const correctIndex = question.correct.charCodeAt(0) - 65;
+        const correctText = originalAnswers[correctIndex];
+        
+        if (!shuffleAnswers) {
+            return {
+                displayList: [
+                    { letter: "A", text: originalAnswers[0] },
+                    { letter: "B", text: originalAnswers[1] },
+                    { letter: "C", text: originalAnswers[2] },
+                    { letter: "D", text: originalAnswers[3] }
+                ],
+                correctLetterDisplay: question.correct
+            };
+        } else {
+            let items = originalAnswers.map((text, idx) => ({ text }));
+            items = shuffleArray([...items]);
+            const displayList = items.map((item, newIdx) => ({ letter: String.fromCharCode(65+newIdx), text: item.text }));
+            const found = displayList.find(item => item.text === correctText);
+            return {
+                displayList,
+                correctLetterDisplay: found ? found.letter : "A"
+            };
+        }
+    }
+    
+    function updateAllUI() {
+        if (!currentQuestions.length) {
+            liveScoreSpan.innerText = `0 / 0`;
+            return;
+        }
+        let correctCount = 0;
+        
+        for (let q of currentQuestions) {
+            const mapping = answersMapping.get(q.id);
+            if (!mapping) continue;
+            const selectedLetter = userSelections[q.id];
+            const isCorrect = (selectedLetter && selectedLetter === mapping.correctLetterDisplay);
+            if (isCorrect) correctCount++;
+            
+            const cardDiv = document.querySelector(`.question-card[data-qid='${q.id}']`);
+            if (!cardDiv) continue;
+            
+            const iconSpan = cardDiv.querySelector('.status-icon');
+            if (iconSpan) {
+                if (!selectedLetter) {
+                    iconSpan.innerHTML = "⚪ Chưa làm";
+                    iconSpan.className = "status-icon status-none";
+                } else if (isCorrect) {
+                    iconSpan.innerHTML = "✓ Đúng";
+                    iconSpan.className = "status-icon status-correct";
+                } else {
+                    iconSpan.innerHTML = "✗ Sai";
+                    iconSpan.className = "status-icon status-wrong";
+                }
+            }
+            
+            const answerDivs = cardDiv.querySelectorAll('.answer-option');
+            for (let ansDiv of answerDivs) {
+                const letter = ansDiv.dataset.letter;
+                const isSelected = (selectedLetter === letter);
+                
+                ansDiv.classList.remove('correct-highlight', 'wrong-highlight');
+                
+                if (isSelected) {
+                    if (isCorrect) {
+                        ansDiv.classList.add('correct-highlight');
+                    } else {
+                        ansDiv.classList.add('wrong-highlight');
+                    }
+                }
+                
+                let statusSpan = ansDiv.querySelector('.answer-status');
+                if (!statusSpan) {
+                    statusSpan = document.createElement('span');
+                    statusSpan.className = 'answer-status';
+                    ansDiv.appendChild(statusSpan);
+                }
+                
+                if (isSelected && isCorrect) {
+                    statusSpan.innerHTML = '✓';
+                    statusSpan.className = 'answer-status check-mark';
+                } else if (isSelected && !isCorrect) {
+                    statusSpan.innerHTML = '✗';
+                    statusSpan.className = 'answer-status cross-mark';
+                } else {
+                    statusSpan.innerHTML = '';
+                }
+            }
+        }
+        liveScoreSpan.innerText = `${correctCount} / ${currentQuestions.length}`;
+    }
+    
+    function onAnswerClick(questionId, selectedLetter) {
+        userSelections[questionId] = selectedLetter;
+        
+        const questionCard = document.querySelector(`.question-card[data-qid='${questionId}']`);
+        if (questionCard) {
+            const allOptions = questionCard.querySelectorAll('.answer-option');
+            allOptions.forEach(opt => {
+                const letter = opt.dataset.letter;
+                if (letter === selectedLetter) {
+                    opt.classList.add('selected');
+                } else {
+                    opt.classList.remove('selected');
+                }
+            });
+        }
+        updateAllUI();
+    }
+    
+    // Hàm cuộn xuống câu hỏi đầu tiên
+    function scrollToFirstQuestion() {
+        setTimeout(() => {
+            const firstQuestion = document.querySelector('.question-card');
+            if (firstQuestion) {
+                firstQuestion.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }, 100);
+    }
+    
+    function renderFullQuiz() {
+        if (!currentTopic) {
+            scoreContainer.style.display = "none";
+            questionsContainer.innerHTML = `
+                <div class="welcome-message">
+                    👋 Chào bạn!<br>
+                    Hãy chọn một chủ đề bên trên để bắt đầu làm bài trắc nghiệm.
+                </div>
+            `;
+            return;
+        }
+        
+        currentQuestions = getFilteredQuestions();
+        answersMapping.clear();
+        for (let q of currentQuestions) {
+            answersMapping.set(q.id, buildAnswerMapping(q));
+        }
+        userSelections = {};
+        
+        if (currentQuestions.length === 0) {
+            scoreContainer.style.display = "block";
+            questionsContainer.innerHTML = `<div class="card" style="text-align:center">⚠️ Không có câu hỏi cho chủ đề này.</div>`;
+            liveScoreSpan.innerText = `0 / 0`;
+            return;
+        }
+        
+        let html = '';
+        currentQuestions.forEach((q, idx) => {
+            const mapping = answersMapping.get(q.id);
+            if (!mapping) return;
+            const { displayList } = mapping;
+            let answersHtml = '';
+            for (let ans of displayList) {
+                answersHtml += `
+                    <div class="answer-option" data-qid="${q.id}" data-letter="${ans.letter}">
+                        <span class="answer-letter">${ans.letter}</span>
+                        <span class="answer-text">${escapeHtml(ans.text)}</span>
+                        <span class="answer-status"></span>
+                    </div>
+                `;
+            }
+            html += `
+                <div class="question-card" data-qid="${q.id}">
+                    <div class="question-text">
+                        <span><strong>${idx+1}.</strong> ${escapeHtml(q.text)}</span>
+                        <span class="status-icon status-none">⚪ Chưa làm</span>
+                    </div>
+                    <div class="answers">
+                        ${answersHtml}
+                    </div>
+                </div>
+            `;
+        });
+        
+        questionsContainer.innerHTML = html;
+        scoreContainer.style.display = "flex";
+        
+        document.querySelectorAll('.answer-option').forEach(el => {
+            el.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const qid = parseInt(el.dataset.qid);
+                const letter = el.dataset.letter;
+                if (!isNaN(qid) && letter) {
+                    onAnswerClick(qid, letter);
+                }
+            });
+        });
+        
+        updateAllUI();
+        
+        // Tự động cuộn xuống câu hỏi đầu tiên
+        scrollToFirstQuestion();
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return "";
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    function refreshQuiz() {
+        renderFullQuiz();
+    }
+    
+    function initEventListeners() {
+        const topicBtns = document.querySelectorAll('.topic-btn');
+        topicBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const topic = btn.dataset.topic;
+                if (!topic) return;
+                currentTopic = topic;
+                topicBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                refreshQuiz();
+            });
+        });
+        
+        shuffleQuestionsToggle.addEventListener('change', (e) => {
+            shuffleQuestions = e.target.checked;
+            if (currentTopic) refreshQuiz();
+        });
+        
+        shuffleAnswersToggle.addEventListener('change', (e) => {
+            shuffleAnswers = e.target.checked;
+            if (currentTopic) refreshQuiz();
+        });
+    }
+    
+    function init() {
+        shuffleQuestions = shuffleQuestionsToggle.checked;
+        shuffleAnswers = shuffleAnswersToggle.checked;
+        initEventListeners();
+        currentTopic = null;
+        renderFullQuiz();
+    }
+    
+    init();
+</script>
+</body>
+</html>
