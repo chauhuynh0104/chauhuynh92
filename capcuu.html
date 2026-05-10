@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Trắc nghiệm Da liễu - Tự động chấm & cuộn câu hỏi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: #f0f4f8;
+            font-family: system-ui, 'Segoe UI', 'Roboto', 'Noto Sans', sans-serif;
+            padding: 16px 12px 80px;
+            color: #0f172a;
+        }
+
+        .app-container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 28px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            padding: 20px 18px;
+            margin-bottom: 20px;
+        }
+
+        .quiz-header {
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 12px;
+            margin-bottom: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .quiz-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1e3c72, #2b4c7c);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .badge {
+            background: #eef2ff;
+            padding: 6px 12px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #1e3c72;
+        }
+
+        .topic-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .topic-btn {
+            background: #eef2ff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.2s;
+            color: #1e293b;
+            flex: 1 0 auto;
+            text-align: center;
+        }
+
+        .topic-btn.active {
+            background: #1e3c72;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .toggle-row {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            background: #f8fafc;
+            padding: 12px 16px;
+            border-radius: 60px;
+            margin-bottom: 20px;
+        }
+
+        .toggle-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e1;
+            transition: 0.3s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #2d6a4f;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+
+        .question-card {
+            background: white;
+            border-radius: 24px;
+            margin-bottom: 20px;
+            padding: 18px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+            scroll-margin-top: 20px;
+        }
+
+        .question-text {
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 16px;
+            line-height: 1.4;
+            background: #fefce8;
+            padding: 12px;
+            border-radius: 20px;
+            border-left: 5px solid #eab308;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .status-icon {
+            font-size: 0.85rem;
+            font-weight: bold;
+            background: white;
+            border-radius: 40px;
+            padding: 4px 12px;
+            min-width: 95px;
+            text-align: center;
+        }
+
+        .status-correct {
+            color: #15803d;
+            background: #dcfce7;
+            border: 1px solid #86efac;
+        }
+
+        .status-wrong {
+            color: #b91c1c;
+            background: #fee2e2;
+            border: 1px solid #fca5a5;
+        }
+
+        .status-none {
+            color: #64748b;
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+        }
+
+        .answers {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .answer-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            background: #f9f9ff;
+            border-radius: 60px;
+            border: 2px solid #e2edff;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+
+        .answer-option:hover {
+            background: #eef2ff;
+        }
+
+        .answer-option.correct-highlight {
+            border: 3px solid #15803d;
+            background: #e8f5e9;
+        }
+
+        .answer-option.wrong-highlight {
+            border: 3px solid #dc2626;
+            background: #fee2e2;
+        }
+
+        .answer-option.selected {
+            background: #e0f2fe;
+            border-color: #0284c7;
+        }
+
+        .answer-letter {
+            font-weight: 800;
+            background: #e2e8f0;
+            width: 36px;
+            height: 36px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 60px;
+            font-size: 0.9rem;
+        }
+
+        .answer-text {
+            flex: 1;
+            font-size: 0.92rem;
+        }
+
+        .answer-status {
+            font-size: 1.2rem;
+            font-weight: bold;
+            min-width: 44px;
+            text-align: center;
+        }
+
+        .check-mark {
+            color: #15803d;
+        }
+
+        .cross-mark {
+            color: #dc2626;
+        }
+
+        .score-bar {
+            background: #e6f7ed;
+            padding: 14px 18px;
+            border-radius: 60px;
+            text-align: center;
+            font-weight: bold;
+            margin: 8px 0 16px;
+            font-size: 1rem;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .progress-text {
+            background: #1e3c72;
+            color: white;
+            border-radius: 30px;
+            padding: 4px 16px;
+        }
+
+        .welcome-message {
+            text-align: center;
+            padding: 40px 20px;
+            background: #fef9e3;
+            border-radius: 28px;
+            color: #b45309;
+            font-weight: 500;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 32px;
+            padding: 20px 10px;
+            font-size: 0.75rem;
+            color: #475569;
+            border-top: 1px solid #cbd5e1;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="card">
+        <div class="quiz-header">
+            <h2>📚 Trắc nghiệm Cssk người lớn có bệnh ngoại khoa 2</h2>
+      
+        </div>
+
+
+        <div class="topic-buttons" id="topicButtons">
+            <button data-topic="all" class="topic-btn">📖 Ôn cả môn (tất cả bài)</button>
+            <button data-topic="bai1" class="topic-btn">📗 Bài 1: Đánh giá, phân loại và xử trí ban đầu người bệnh cấp cứu</button>
+            <button data-topic="bai2" class="topic-btn">📗 Bài 2: Cấp cứu người bệnh chấn thương</button>
+			 <button data-topic="bai3" class="topic-btn">📗 Bài 3: Cấp cứu người bệnh ngừng tuần hoàn và ngừng hô hấp</button>
+			  <button data-topic="bai4" class="topic-btn">📗 Bài 4: Chăm sóc người bệnh suy hô hấp cấp</button>
+			   <button data-topic="bai5" class="topic-btn">📗 Bài 5: Chăm sóc người bệnh phù phổi cấp</button>
+			    <button data-topic="bai6" class="topic-btn">📗 Bài 6: Chăm sóc người bệnh sốc</button>
+				 <button data-topic="bai7" class="topic-btn">📗 Bài 7: Chăm sóc người bệnh ngộ độc cấp</button>
+				 	 <button data-topic="bai8" class="topic-btn">📗 Bài 8: Chăm sóc người bệnh hôn mê</button>
+			 <button data-topic="bai9" class="topic-btn">📗 Bài 9: Chăm sóc người bệnh thở máy</button>
+				  
+
+        </div>
+
+      <div class="toggle-row">
+            <div class="toggle-item">
+                <span>🔄 Xáo trộn câu hỏi</span>
+                <label class="switch">
+                    <input type="checkbox" id="shuffleQuestionsToggle" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="toggle-item">
+                <span>🎲 Xáo trộn đáp án</span>
+                <label class="switch">
+                    <input type="checkbox" id="shuffleAnswersToggle" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div id="scoreContainer" class="score-bar" style="display: none;">
+        <span>🏆 Kết quả hiện tại</span>
+        <span id="liveScore" class="progress-text">0 / 0</span>
+    </div>
+
+    <div id="questionsContainer">
+        <div class="welcome-message">
+            👋 Chào bạn!<br>
+            Hãy chọn một chủ đề bên trên để bắt đầu làm bài trắc nghiệm.
+        </div>
+    </div>
+    
+    <footer>© 2014-2026 Dr.Châu</footer>
+</div>
+
+<script>
+    // ---------- DỮ LIỆU CÂU HỎI ----------
+    const QUESTION_SET = [
+        // Bài 1: Chăm sóc NB ghẻ
+{ id: 1, text: "Cấp cứu được hiểu là gì?", answers: ['Điều trị bệnh mạn tính', 'Tình trạng cần đánh giá và điều trị ngay', 'Điều trị dự phòng', 'Điều trị phục hồi'], correct: "B", topic: "bai1" },
+{ id: 2, text: "Tình trạng “nguy kịch” là:", answers: ['Có thể chờ điều trị', 'Không ảnh hưởng tính mạng', 'Đe dọa tính mạng, có nguy cơ tử vong nhanh', 'Chỉ cần theo dõi'], correct: "C", topic: "bai1" },
+{ id: 3, text: "Vai trò của điều dưỡng cấp cứu KHÔNG bao gồm:", answers: ['Nhận định người bệnh', 'Phẫu thuật cấp cứu', 'Lập kế hoạch chăm sóc', 'Giao tiếp và ghi chép hồ sơ'], correct: "B", topic: "bai1" },
+{ id: 4, text: "Trong cấp cứu, điều dưỡng phải làm gì đầu tiên?", answers: ['Làm xét nghiệm', 'Chuyển viện', 'Cho ăn', 'Đánh giá nhanh người bệnh'], correct: "D", topic: "bai1" },
+{ id: 5, text: "Đánh giá ban đầu (Primary survey) tập trung vào:", answers: ['ABCD', 'Nội tiết', 'Tiêu hóa', 'Da liễu'], correct: "A", topic: "bai1" },
+{ id: 6, text: "ABCD trong cấp cứu KHÔNG bao gồm:", answers: ['Airway', 'Breathing', 'Circulation', 'Digestion'], correct: "D", topic: "bai1" },
+{ id: 7, text: "Bước 2 trong đánh giá cấp cứu là:", answers: ['Hồi sức tim phổi', 'Nhận định hệ thống toàn thân', 'Cho thuốc', 'Phẫu thuật'], correct: "B", topic: "bai1" },
+{ id: 8, text: "AMPLE là viết tắt của nội dung nào?", answers: ['Dị ứng, thuốc, tiền sử, bữa ăn, sự kiện', 'Huyết áp, mạch, nhiệt độ', 'Hô hấp, tuần hoàn', 'Xét nghiệm máu'], correct: "A", topic: "bai1" },
+{ id: 9, text: "Thời gian “vàng” sốc điện trong ngừng tim là:", answers: ['1 phút', '3–5 phút', '10 phút', '20 phút'], correct: "B", topic: "bai1" },
+{ id: 10, text: "Thuốc tiêu sợi huyết trong STEMI nên dùng trong:", answers: ['10 phút', '30 phút', '2 giờ', '6 giờ'], correct: "B", topic: "bai1" },
+{ id: 11, text: "Cửa sổ điều trị thuốc tiêu sợi huyết trong đột quỵ não là:", answers: ['1 giờ', '2 giờ', '3 giờ', '6 giờ'], correct: "C", topic: "bai1" },
+{ id: 12, text: "Phân loại cấp cứu nhằm mục đích:", answers: ['Sắp xếp ưu tiên xử trí', 'Thu phí', 'Điều trị lâu dài', 'Cho thuốc'], correct: "A", topic: "bai1" },
+{ id: 13, text: "Trong thang 3 bậc, mức “đỏ” là:", answers: ['Không cấp cứu', 'Cấp cứu', 'Theo dõi', 'Khẩn cấp'], correct: "D", topic: "bai1" },
+{ id: 14, text: "Tư thế Fowler áp dụng cho:", answers: ['Gãy xương', 'Suy hô hấp', 'Đau bụng', 'Sốt'], correct: "B", topic: "bai1" },
+{ id: 15, text: "Theo dõi SpO2 nhằm mục đích:", answers: ['Đánh giá tuần hoàn', 'Đánh giá oxy máu', 'Đánh giá tiêu hóa', 'Đánh giá thần kinh'], correct: "B", topic: "bai1" },
+{ id: 16, text: "Theo dõi nước tiểu trong sốc cần:", answers: ['24h/lần', '6h/lần', '3h/lần', '1h/lần'], correct: "D", topic: "bai1" },
+{ id: 17, text: "Dự phòng loét ép cần thay đổi tư thế:", answers: ['1 giờ/lần', '2 giờ/lần', '6 giờ/lần', '12 giờ/lần'], correct: "B", topic: "bai1" },
+{ id: 18, text: "Một NB vào cấp cứu trong tình trạng hôn mê, thở yếu, SpO₂ 82%. Ưu tiên xử trí đầu tiên là:", answers: ['Đặt đường truyền', 'Khai thông đường thở và hỗ trợ hô hấp', 'Làm xét nghiệm máu', 'Chụp X-quang'], correct: "B", topic: "bai1" },
+{ id: 19, text: "Trong đánh giá ban đầu, dấu hiệu nào cho thấy cần can thiệp ngay đường thở?", answers: ['Ho nhẹ', 'Thở đều', 'Có dị vật gây tắc', 'Nhịp tim nhanh'], correct: "C", topic: "bai1" },
+{ id: 20, text: "NB đa chấn thương, thở nhanh, tím tái, nghi tràn khí màng phổi. Xử trí ưu tiên:", answers: ['Truyền dịch', 'Chọc giải áp màng phổi', 'Cho thuốc giảm đau', 'Theo dõi'], correct: "B", topic: "bai1" },
+{ id: 21, text: "Trong AMPLE, chữ “E” có nghĩa là:", answers: ['Eating', 'Examination', 'Events/Environment', 'Emergency'], correct: "C", topic: "bai1" },
+{ id: 22, text: "NB nghi sốc nhiễm khuẩn, thời gian dùng kháng sinh tối ưu là:", answers: ['Trong 6 giờ', 'Trong 3 giờ', 'Trong 1 giờ', 'Trong 12 giờ'], correct: "C", topic: "bai1" },
+{ id: 23, text: "NB tai nạn giao thông, tỉnh nhưng đau cổ, xử trí đúng là:", answers: ['Cố định cột sống cổ', 'Cho ngồi dậy', 'Xoa bóp', 'Cho ăn'], correct: "A", topic: "bai1" },
+{ id: 24, text: "NB chấn thương, huyết áp tụt, da lạnh, ưu tiên:", answers: ['Cho ăn', 'Bù dịch nhanh', 'Chụp CT', 'Cho thuốc ngủ'], correct: "B", topic: "bai1" },
+{ id: 25, text: "NB hôn mê, mất phản xạ nuốt, dinh dưỡng phù hợp:", answers: ['Ăn đường miệng', 'Nhịn ăn', 'Truyền nước', 'Ăn qua sonde dạ dày'], correct: "D", topic: "bai1" },
+{ id: 26, text: "Dấu hiệu nào gợi ý giảm tưới máu mô?", answers: ['Da hồng', 'Nhiệt độ bình thường', 'Da lạnh, ẩm', 'Nhịp thở đều'], correct: "C", topic: "bai1" },
+{ id: 27, text: "NB nghi hạ đường huyết, xử trí nhanh nhất:", answers: ['Cho insulin', 'Truyền glucose', 'Cho ăn mỡ', 'Theo dõi'], correct: "B", topic: "bai1" },
+{ id: 28, text: "NB có nguy cơ loét ép cao, biện pháp quan trọng nhất:", answers: ['Cho ăn nhiều', 'Thay đổi tư thế định kỳ', 'Dùng thuốc', 'Hạn chế vận động'], correct: "B", topic: "bai1" },
+{ id: 29, text: "NB cấp cứu có dấu hiệu xấu đi, điều dưỡng cần:", answers: ['Chờ đợi', 'Ghi chép sau', 'Báo bác sĩ ngay', 'Cho về'], correct: "C", topic: "bai1" },
+{ id: 30, text: "Đánh giá lại NB cấp cứu có ý nghĩa:", answers: ['Không cần thiết', 'Phát hiện tổn thương bỏ sót', 'Tăng thủ tục', 'Giảm công việc'], correct: "B", topic: "bai1" },
+        // Bài 2: Chăm sóc NB chàm
+{ id: 31, text: "NB tai nạn giao thông, bất tỉnh, nghi chấn thương cột sống cổ. Khi khai thông đường thở, thao tác phù hợp nhất:", answers: ['Ngửa cổ tối đa', 'Nâng cằm đơn thuần', 'Đẩy hàm dưới (jaw-thrust)', 'Cho nằm nghiêng'], correct: "C", topic: "bai2" },
+{ id: 32, text: "NB đa chấn thương, thở nhanh, lồng ngực di động lệch, SpO₂ giảm. Ưu tiên xử trí:", answers: ['Cho thuốc giảm đau', 'Đánh giá lại sau', 'Hỗ trợ hô hấp và tìm nguyên nhân', 'Chụp CT'], correct: "C", topic: "bai2" },
+{ id: 33, text: "NB nghi tràn khí màng phổi áp lực, dấu hiệu nào điển hình nhất?", answers: ['Khó thở tăng nhanh, tím tái', 'Lồng ngực di động đối xứng', 'Huyết áp tăng', 'Nhịp tim chậm'], correct: "A", topic: "bai2" },
+{ id: 34, text: "Trong ABCDE, chữ “E” có ý nghĩa quan trọng nhất là:", answers: ['Khám nội tạng', 'Bộc lộ toàn thân và kiểm soát nhiệt độ', 'Xét nghiệm', 'Đánh giá tâm lý'], correct: "B", topic: "bai2" },
+{ id: 35, text: "NB chấn thương, da lạnh, CRT > 3 giây, mạch nhanh. Đây là dấu hiệu của:", answers: ['Sốc giảm thể tích', 'Sốc phản vệ', 'Sốc tim', 'Bình thường'], correct: "A", topic: "bai2" },
+{ id: 36, text: "NB gãy xương sườn, lồng ngực di động ngược chiều. Chẩn đoán:", answers: ['Tràn dịch màng phổi', 'Gãy xương đòn', 'Viêm phổi', 'Mảng sườn di động'], correct: "D", topic: "bai2" },
+{ id: 37, text: "NB có dấu hiệu chèn ép tim cấp, xử trí khẩn cấp:", answers: ['Truyền dịch', 'Chọc hút dịch màng tim', 'Cho thuốc giảm đau', 'Theo dõi'], correct: "B", topic: "bai2" },
+{ id: 38, text: "NB hôn mê, đánh giá nhanh thần kinh theo AVPU, không đáp ứng đau. Kết quả là:", answers: ['A', 'V', 'P', 'U'], correct: "D", topic: "bai2" },
+{ id: 39, text: "NB nghi chấn thương sọ não, giãn đồng tử một bên. Ý nghĩa:", answers: ['Bình thường', 'Tăng áp lực nội sọ', 'Hạ huyết áp', 'Sốc'], correct: "B", topic: "bai2" },
+{ id: 40, text: "NB đa chấn thương, đang không ổn định huyết động. Giai đoạn 2 cần:", answers: ['Trì hoãn để hồi sức', 'Thực hiện đầy đủ ngay', 'Bỏ qua', 'Chuyển viện'], correct: "A", topic: "bai2" },
+{ id: 41, text: "NB chấn thương, nghi vỡ nền sọ. Đặt ống thông dạ dày nên:", answers: ['Qua mũi', 'Qua miệng', 'Không đặt', 'Qua họng'], correct: "B", topic: "bai2" },
+{ id: 42, text: "NB có tràn khí dưới da, dấu hiệu sờ thấy:", answers: ['Lạo xạo dưới da', 'Cứng', 'Nóng', 'Mềm bình thường'], correct: "A", topic: "bai2" },
+{ id: 43, text: "NB chấn thương, nước tiểu ít < 0,5 ml/kg/h. Gợi ý:", answers: ['Bình thường', 'Suy thận/giảm tưới máu', 'Tăng huyết áp', 'Viêm phổi'], correct: "B", topic: "bai2" },
+{ id: 44, text: "NB chấn thương, đau bụng, co cứng thành bụng. Nghĩ đến:", answers: ['Chấn thương nội tạng', 'Đau cơ', 'Bình thường', 'Dị ứng'], correct: "A", topic: "bai2" },
+{ id: 45, text: "NB có CK tăng cao sau chấn thương. Nguy cơ:", answers: ['Suy tim', 'Tổn thương thận cấp', 'Viêm phổi', 'Sốc phản vệ'], correct: "B", topic: "bai2" },
+{ id: 46, text: "NB đa chấn thương, ưu tiên theo dõi nào quan trọng nhất?", answers: ['Cân nặng', 'ECG, huyết áp, SpO₂', 'Chiều cao', 'Thị lực'], correct: "B", topic: "bai2" },
+{ id: 47, text: "NB gãy xương chi, kiểm tra sau khi bó bột cần chú ý:", answers: ['Màu da và mạch', 'Nhiệt độ phòng', 'Ăn uống', 'Giấc ngủ'], correct: "A", topic: "bai2" },
+{ id: 48, text: "Giai đoạn 3 (Tertiary survey) nhằm mục đích:", answers: ['Phẫu thuật', 'Phát hiện tổn thương bỏ sót', 'Cho thuốc', 'Xuất viện'], correct: "B", topic: "bai2" },
+{ id: 49, text: "Thời điểm đánh giá lại giai đoạn 3 phù hợp nhất:", answers: ['Ngay khi vào viện', 'Sau 24 giờ hoặc khi ổn định', 'Sau 1 tuần', 'Khi xuất viện'], correct: "B", topic: "bai2" },
+{ id: 50, text: "Triệu chứng có giá trị nhất để chẩn đoán vết thương động mạch là dễ nhìn thấy:", answers: ['Máu đỏ tươi không đông', 'Máu chảy tràn trên mặt da', 'Máu ngừng chảy khi băng ép', 'Máu chảy thành tia'], correct: "D", topic: "bai2" },
+{ id: 51, text: "NB chấn thương dễ bị bỏ sót tổn thương nhất ở:", answers: ['Tay', 'Đầu, cổ, cột sống, bụng', 'Mắt', 'Tai'], correct: "B", topic: "bai2" },
+
+///////bài 3
+
+{ id: 52, text: "NB đột ngột ngã quỵ, không đáp ứng, không thở, không bắt được mạch cảnh. Hành động đầu tiên:", answers: ['Gọi người nhà', 'Bắt đầu ép tim ngay', 'Cho uống thuốc', 'Chờ bác sĩ'], correct: "B", topic: "bai3" },
+{ id: 53, text: "Theo nguyên tắc mới, trình tự hồi sức tim phổi là:", answers: ['ABC', 'BAC', 'CAB', 'CBA'], correct: "C", topic: "bai3" },
+{ id: 54, text: "Tần số ép tim hiệu quả ở người lớn là:", answers: ['60–80 lần/phút', '80–100 lần/phút', '100–120 lần/phút', '120–140 lần/phút'], correct: "C", topic: "bai3" },
+{ id: 55, text: "Độ sâu ép tim ở người lớn đạt hiệu quả là:", answers: ['2–3 cm', '3–4 cm', '5–6 cm', '6–7 cm'], correct: "C", topic: "bai3" },
+{ id: 56, text: "NB ngừng tim, chỉ có 1 người cấp cứu. Tỷ lệ ép tim/thổi ngạt là:", answers: ['15/2', '30/2', '10/2', '20/2'], correct: "B", topic: "bai3" },
+{ id: 57, text: "Dấu hiệu chắc chắn của ngừng tuần hoàn là:", answers: ['Da tái', 'Mất mạch cảnh', 'Nhịp tim nhanh', 'Vã mồ hôi'], correct: "B", topic: "bai3" },
+{ id: 58, text: "NB đang thở máy, monitor báo SpO₂ giảm đột ngột, mất sóng ECG. Nghĩ đến:", answers: ['Ngừng tuần hoàn', 'Hạ huyết áp', 'Sốt', 'Dị ứng'], correct: "A", topic: "bai3" },
+{ id: 59, text: "Nguyên nhân nào KHÔNG gây ngừng tuần hoàn?", answers: ['Điện giật', 'Đuối nước', 'Gãy xương', 'Rối loạn kali'], correct: "C", topic: "bai3" },
+{ id: 60, text: "Trong ép tim, yếu tố quan trọng nhất là:", answers: ['Ép nhanh', 'Ép sâu và đủ tần số', 'Ép nhẹ', 'Ép chậm'], correct: "B", topic: "bai3" },
+{ id: 61, text: "NB nghi có dị vật đường thở sâu, xử trí đúng là:", answers: ['Không cố lấy nếu khó, đảm bảo thông khí', 'Cố móc dị vật', 'Lấy ngay bằng tay', 'Cho uống nước'], correct: "A", topic: "bai3" },
+{ id: 62, text: "Sốc điện có hiệu quả nhất khi thực hiện:", answers: ['Trong 5 phút đầu', 'Sau 15 phút', 'Sau 10 phút', 'Sau 30 phút'], correct: "A", topic: "bai3" },
+{ id: 63, text: "Liều Epinephrin trong cấp cứu ngừng tim:", answers: ['0.1 mg mỗi 10 phút', '1 mg mỗi 3–5 phút', '5 mg mỗi 1 phút', '10 mg mỗi 10 phút'], correct: "B", topic: "bai3" },
+{ id: 64, text: "NB sau CPR, dấu hiệu hồi phục tuần hoàn là:", answers: ['Đồng tử giãn', 'Không có mạch', 'Có mạch và huyết áp', 'Không thở'], correct: "C", topic: "bai3" },
+{ id: 65, text: "NB sau cấp cứu, SpO₂ < 90%, cần:", answers: ['Ngừng oxy', 'Cho ngủ', 'Cho ăn', 'Kiểm tra thở máy và hút đờm'], correct: "D", topic: "bai3" },
+{ id: 66, text: "NB sau ngừng tim, mục tiêu SpO₂ cần duy trì:", answers: ['> 80%', '> 85%', '> 90%', '> 95%'], correct: "D", topic: "bai3" },
+{ id: 67, text: "NB sau cấp cứu, nguy cơ quan trọng nhất cần theo dõi:", answers: ['Đau đầu', 'Ngừng tim tái phát', 'Ho', 'Mất ngủ'], correct: "B", topic: "bai3" },
+{ id: 68, text: "NB thở máy sau CPR, khi hút đờm thấy nhịp tim chậm, cần:", answers: ['Tiếp tục hút', 'Bỏ qua', 'Cho thuốc ngủ', 'Ngừng hút, tăng FiO₂'], correct: "D", topic: "bai3" },
+{ id: 69, text: "Chế độ dinh dưỡng cho NB sau CPR:", answers: ['Nhịn ăn', 'Ăn tự do', 'Qua sonde dạ dày 25–30 kcal/kg/ngày', 'Chỉ uống nước'], correct: "C", topic: "bai3" },
+{ id: 70, text: "Biện pháp dự phòng loét ép quan trọng nhất:", answers: ['Uống thuốc', 'Thay đổi tư thế 2–3 giờ/lần', 'Cho ăn nhiều', 'Ngủ nhiều'], correct: "B", topic: "bai3" },
+{ id: 71, text: "Thời gian CPR kéo dài > 60 phút, không có đáp ứng, tiên lượng:", answers: ['Tốt', 'Trung bình', 'Rất kém', 'Bình thường'], correct: "C", topic: "bai3" },
+////bài 4
+
+{ id: 72, text: "NB khó thở, PaO2 = 55 mmHg, PaCO2 = 60 mmHg. Đây là loại suy hô hấp:", answers: ['Giảm oxy đơn thuần', 'Tăng $CO_2$ đơn thuần', 'Thể hỗn hợp', 'Bình thường'], correct: "C", topic: "bai4" },
+{ id: 73, text: "NB suy hô hấp, thở nhanh, co kéo cơ hô hấp phụ. Cơ chế chính:", answers: ['Tăng tưới máu', 'Giảm thông khí phế nang', 'Tăng chuyển hóa', 'Giảm $CO_2$'], correct: "B", topic: "bai4" },
+{ id: 74, text: "NB tím môi, đầu chi, vật vã. Dấu hiệu này liên quan đến:", answers: ['Tăng $CO_2$', 'Hạ đường máu', 'Tăng huyết áp', 'Thiếu oxy máu'], correct: "D", topic: "bai4" },
+{ id: 75, text: "NB suy hô hấp, PaCO2 tăng > 50 mmHg, pH < 7,36. Đây là:", answers: ['Toan hô hấp', 'Kiềm hô hấp', 'Bình thường', 'Kiềm chuyển hóa'], correct: "A", topic: "bai4" },
+{ id: 76, text: "NB hen nặng, khó thở dữ dội, xử trí đầu tiên:", answers: ['Cho ăn', 'Oxy và giãn phế quản', 'Chờ theo dõi', 'Cho ngủ'], correct: "B", topic: "bai4" },
+{ id: 77, text: "NB suy hô hấp, $SpO_2$ mục tiêu cần đạt:", answers: ['> 85%', '> 88%', '> 90%', '> 95%'], correct: "C", topic: "bai4" },
+{ id: 78, text: "NB thở yếu, PaCO2 tăng, chỉ định phù hợp:", answers: ['Ngừng oxy', 'Thông khí nhân tạo', 'Cho ăn', 'Theo dõi'], correct: "B", topic: "bai4" },
+{ id: 79, text: "NB tràn khí màng phổi gây suy hô hấp, xử trí:", answers: ['Dẫn lưu màng phổi', 'Cho thuốc', 'Nghỉ ngơi', 'Theo dõi'], correct: "A", topic: "bai4" },
+{ id: 80, text: "NB suy hô hấp, Glasgow 12, nhịp thở 35 lần/phút. Mức độ:", answers: ['Trung bình', 'Nhẹ', 'Nặng', 'Bình thường'], correct: "C", topic: "bai4" },
+{ id: 81, text: "NB suy hô hấp, dấu hiệu nào nguy kịch nhất?", answers: ['Thở nhanh', 'Không nói được', 'Ho', 'Sốt'], correct: "B", topic: "bai4" },
+{ id: 82, text: "NB suy hô hấp, cơ chế mất cân bằng thông khí/tưới máu gặp trong:", answers: ['Hen', 'Viêm phổi', 'Gãy xương', 'Viêm da'], correct: "B", topic: "bai4" },
+{ id: 83, text: "NB suy hô hấp, xử trí ưu tiên đầu tiên:", answers: ['Điều trị nguyên nhân', 'Làm xét nghiệm', 'Cho ăn', 'Đảm bảo đường thở và oxy'], correct: "D", topic: "bai4" },
+{ id: 84, text: "NB có nhiều đờm, tắc đường thở, xử trí:", answers: ['Cho ngủ', 'Hút đờm', 'Cho thuốc giảm đau', 'Theo dõi'], correct: "B", topic: "bai4" },
+{ id: 85, text: "NB phù phổi cấp, thuốc ưu tiên:", answers: ['Kháng sinh', 'Insulin', 'Vitamin', 'Lợi tiểu'], correct: "D", topic: "bai4" },
+{ id: 86, text: "NB suy hô hấp, nằm tư thế phù hợp nhất:", answers: ['Nằm ngửa', 'Nằm đầu thấp', 'Nằm đầu cao', 'Nằm sấp'], correct: "C", topic: "bai4" },
+{ id: 87, text: "NB suy hô hấp, dấu hiệu tăng $CO_2$ máu:", answers: ['Tỉnh táo', 'Kích thích, lơ mơ', 'Da hồng', 'Ăn ngon'], correct: "B", topic: "bai4" },
+{ id: 88, text: "NB suy hô hấp, biến chứng thở máy thường gặp:", answers: ['Sốt', 'Xẹp phổi', 'Gãy xương', 'Viêm da'], correct: "B", topic: "bai4" },
+{ id: 89, text: "NB suy hô hấp, dinh dưỡng phù hợp:", answers: ['Nhịn ăn', 'Ăn qua sonde nếu hôn mê', 'Chỉ uống nước', 'Ăn tự do'], correct: "B", topic: "bai4" },
+{ id: 90, text: "NB suy hô hấp cải thiện khi:", answers: ['PaO2 < 60', 'PaCO2 > 60', 'PaO2 > 60, PaCO2 bình thường', 'pH < 7.2'], correct: "C", topic: "bai4" },
+///bài 5
+
+{ id: 91, text: "Phù phổi cấp là gì?", answers: ['Tăng CO2 trong máu', 'Dịch tràn vào phế nang', 'Tắc nghẽn phế quản', 'Giảm lưu lượng tim'], correct: "B", topic: "bai5" },
+{ id: 92, text: "Triệu chứng điển hình của phù phổi cấp là:", answers: ['Ho ra bọt hồng', 'Ho khan', 'Ho ra máu tươi', 'Không ho'], correct: "A", topic: "bai5" },
+{ id: 93, text: "Nguyên nhân thường gặp nhất của phù phổi cấp là:", answers: ['Bệnh tiêu hóa', 'Bệnh nội tiết', 'Bệnh da', 'Bệnh tim mạch'], correct: "D", topic: "bai5" },
+{ id: 94, text: "Cơ chế chính trong phù phổi cấp do tim là:", answers: ['Giảm áp lực mao mạch', 'Tăng áp lực mao mạch phổi', 'Giảm thông khí', 'Giảm tưới máu'], correct: "B", topic: "bai5" },
+{ id: 95, text: "Tư thế tốt nhất cho bệnh nhân phù phổi cấp là:", answers: ['Nằm đầu thấp', 'Nằm sấp', 'Ngồi hoặc đầu cao', 'Nằm nghiêng trái'], correct: "C", topic: "bai5" },
+{ id: 96, text: "Thuốc lợi tiểu thường dùng trong phù phổi cấp:", answers: ['Paracetamol', 'Furosemid', 'Vitamin C', 'Insulin'], correct: "B", topic: "bai5" },
+{ id: 97, text: "Mục tiêu oxy liệu pháp là:", answers: ['SpO2 > 80%', 'SpO2 > 85%', 'SpO2 > 90%', 'SpO2 > 95%'], correct: "D", topic: "bai5" },
+{ id: 98, text: "Dấu hiệu nào KHÔNG phải của phù phổi cấp:", answers: ['Khó thở', 'Tím tái', 'Ho bọt hồng', 'Tăng tiểu (Tài liệu ghi NB bị vô niệu hoặc thiểu niệu)'], correct: "D", topic: "bai5" },
+{ id: 99, text: "Cơ chế phù phổi cấp do tổn thương phế nang là:", answers: ['Giảm áp lực keo', 'Tăng tính thấm mao mạch', 'Giảm CO2', 'Tăng thông khí'], correct: "B", topic: "bai5" },
+{ id: 100, text: "Bệnh nào sau đây dễ gây phù phổi cấp nhất:", answers: ['Viêm dạ dày', 'Nhồi máu cơ tim', 'Thiếu máu', 'Viêm da'], correct: "B", topic: "bai5" },
+{ id: 101, text: "Dấu hiệu nghe phổi thường gặp:", answers: ['Ran ẩm', 'Ran khô', 'Ran rít', 'Không có ran'], correct: "A", topic: "bai5" },
+{ id: 102, text: "Một bệnh nhân truyền dịch nhanh có nguy cơ:", answers: ['Suy gan', 'Phù phổi cấp', 'Thiếu máu', 'Tăng đường huyết'], correct: "B", topic: "bai5" },
+{ id: 103, text: "Morphin trong phù phổi cấp có tác dụng:", answers: ['Tăng nhịp tim', 'Tăng tiết dịch', 'Tăng huyết áp', 'Giảm lo âu và giảm tiền gánh'], correct: "D", topic: "bai5" },
+{ id: 104, text: "Theo dõi quan trọng nhất trong chăm sóc là:", answers: ['Nhiệt độ', 'SpO2', 'Chiều cao', 'Cân nặng'], correct: "B", topic: "bai5" },
+{ id: 105, text: "Mục đích băng ép gốc chi là:", answers: ['Giảm máu về tim', 'Tăng tuần hoàn', 'Tăng huyết áp', 'Giảm đau'], correct: "A", topic: "bai5" },
+{ id: 106, text: "Chẩn đoán điều dưỡng phù hợp nhất trong bệnh phù phổi cấp:", answers: ['Táo bón', 'Trao đổi khí kém', 'Suy dinh dưỡng', 'Đau bụng'], correct: "B", topic: "bai5" },
+{ id: 107, text: "Biểu hiện nguy hiểm nhất của phù phổi cấp:", answers: ['Ho', 'Sốt', 'Khó thở dữ dội', 'Buồn nôn'], correct: "C", topic: "bai5" },
+{ id: 108, text: "Bệnh nhân khó thở, ho bọt hồng, HA cao → nguyên nhân phù hợp nhất:", answers: ['Viêm phổi', 'Phù phổi cấp do tim', 'Hen phế quản', 'Tràn khí màng phổi'], correct: "B", topic: "bai5" },
+{ id: 109, text: "Một bệnh nhân phù phổi cấp, điều dưỡng cần ưu tiên:", answers: ['Đảm bảo đường thở và oxy', 'Cho ăn', 'Vệ sinh', 'Giáo dục sức khỏe'], correct: "A", topic: "bai5" },
+{ id: 110, text: "Bệnh nhân thiểu niệu trong phù phổi cấp do:", answers: ['Tăng lọc cầu thận', 'Giảm tưới máu thận', 'Tăng uống nước', 'Nhiễm trùng'], correct: "B", topic: "bai5" },
+{ id: 111, text: "Dấu hiệu cho thấy tình trạng cải thiện:", answers: ['Nhịp thở tăng', 'Mạch >120', 'Tím tăng', 'Nước tiểu >1L/ngày'], correct: "D", topic: "bai5" },
+{ id: 112, text: "Nếu không xử trí kịp thời, phù phổi cấp gây tử vong do:", answers: ['Sốc nhiễm trùng', 'Thiếu oxy nặng', 'Tăng đường huyết', 'Mất nước'], correct: "B", topic: "bai5" },
+{ id: 113, text: "Khi bệnh nhân kích thích, lo lắng → hậu quả là:", answers: ['Giảm nhu cầu oxy', 'Tăng nhu cầu oxy', 'Giảm nhịp tim', 'Giảm thở'], correct: "B", topic: "bai5" },
+{ id: 114, text: "Trong chăm sóc NB phù phổi cấp, việc không nên làm:", answers: ['Cho bệnh nhân nghỉ ngơi', 'Theo dõi SpO2', 'Cho vận động nhiều', 'Hút đờm'], correct: "C", topic: "bai5" },
+{ id: 115, text: "Một bệnh nhân sau điều trị có: thở 22 lần/phút, mạch 90, tỉnh táo → đánh giá:", answers: ['Xấu', 'Không thay đổi', 'Nguy kịch', 'Cải thiện tốt'], correct: "D", topic: "bai5" },
+
+///bài 6
+{ id: 116, text: "Sốc là tình trạng:", answers: ['Tăng cung lượng tim', 'Giảm tưới máu mô', 'Tăng oxy mô', 'Tăng huyết áp'], correct: "B", topic: "bai6" },
+{ id: 117, text: "Dấu hiệu điển hình của sốc:", answers: ['HA cao', 'Mạch chậm', 'HA thấp, mạch nhanh', 'Thở chậm'], correct: "C", topic: "bai6" },
+{ id: 118, text: "Chỉ số sốc (SI) được tính bằng:", answers: ['HA/tim', 'SpO2 / tim', 'Nhịp thở / HA', 'Nhịp tim / HA tâm thu'], correct: "D", topic: "bai6" },
+{ id: 119, text: "Giá trị bình thường của chỉ số sốc:", answers: ['0,1–0,3', '0,5–0,8', '1–1,5', '>2'], correct: "B", topic: "bai6" },
+{ id: 120, text: "Sốc được chia làm mấy loại chính:", answers: ['2', '3', '4', '5'], correct: "C", topic: "bai6" },
+{ id: 121, text: "Sốc giảm thể tích thường do:", answers: ['Nhiễm trùng', 'Dị ứng', 'Suy tim', 'Mất máu/mất dịch'], correct: "D", topic: "bai6" },
+{ id: 122, text: "Triệu chứng thường gặp của sốc:", answers: ['Da nóng đỏ', 'Da lạnh, ẩm', 'Tăng tiểu', 'Tăng HA'], correct: "B", topic: "bai6" },
+{ id: 123, text: "Dấu hiệu suy thận trong sốc:", answers: ['Thiểu niệu', 'Tiểu nhiều', 'Tiểu máu', 'Tiểu buốt'], correct: "A", topic: "bai6" },
+{ id: 124, text: "Giai đoạn bù trừ của sốc có đặc điểm:", answers: ['HA giảm rõ', 'HA còn bình thường', 'Hôn mê', 'Ngừng tim'], correct: "B", topic: "bai6" },
+{ id: 125, text: "Giai đoạn mất bù có biểu hiện:", answers: ['Bình thường', 'Tăng HA', 'Giảm ý thức, thiểu niệu', 'Không triệu chứng'], correct: "C", topic: "bai6" },
+{ id: 126, text: "Sốc tim là do:", answers: ['Giảm thể tích', 'Tim bơm không hiệu quả', 'Dị ứng', 'Tắc mạch'], correct: "B", topic: "bai6" },
+{ id: 127, text: "Sốc phản vệ thuộc loại:", answers: ['Sốc tim', 'Sốc giảm thể tích', 'Sốc phân bố', 'Sốc tắc nghẽn'], correct: "C", topic: "bai6" },
+{ id: 128, text: "Triệu chứng đặc trưng sốc phản vệ:", answers: ['Đau ngực', 'Mề đay, khó thở', 'Ho khan', 'Sốt'], correct: "B", topic: "bai6" },
+{ id: 129, text: "Sốc thần kinh có đặc điểm:", answers: ['Mạch chậm', 'Mạch nhanh', 'HA tăng', 'Sốt cao'], correct: "A", topic: "bai6" },
+{ id: 130, text: "Nguyên tắc xử trí quan trọng nhất cho người bệnh sốc:", answers: ['Cho ăn', 'Uống nước', 'Nghỉ ngơi', 'Đảm bảo hô hấp và tuần hoàn'], correct: "D", topic: "bai6" },
+{ id: 131, text: "Khi mất máu nhiều cần:", answers: ['Cho uống nước', 'Truyền dịch và máu', 'Nghỉ ngơi', 'Kháng sinh'], correct: "B", topic: "bai6" },
+{ id: 132, text: "Thuốc vận mạch dùng khi:", answers: ['HA cao', 'Đau', 'Sốt', 'Sau bù dịch vẫn tụt HA'], correct: "D", topic: "bai6" },
+{ id: 133, text: "Bệnh nhân mạch 120, HA 90 thì chỉ số SI bằng:", answers: ['0,5', '0,8', '1,33', '2'], correct: "C", topic: "bai6" },
+{ id: 134, text: "Bệnh nhân mất máu, da lạnh, tĩnh mạch cổ xẹp thuộc loại sốc:", answers: ['Sốc tim', 'Sốc giảm thể tích', 'Sốc phản vệ', 'Sốc thần kinh'], correct: "B", topic: "bai6" },
+{ id: 135, text: "Bệnh nhân khó thở, đau ngực, tĩnh mạch cổ nổi nghĩ nhiều đến:", answers: ['Sốc giảm thể tích', 'Sốc thần kinh', 'Sốc nhiễm trùng', 'Sốc tắc nghẽn'], correct: "D", topic: "bai6" },
+{ id: 136, text: "Tại sao trong sốc huyết áp vẫn có thể bình thường:", answers: ['Không phải sốc', 'Do đang ở giai đoạn bù trừ', 'Sai số khi đo', 'Bệnh nhân đã khỏi'], correct: "B", topic: "bai6" },
+{ id: 137, text: "Dấu hiệu tiên lượng xấu trong sốc là:", answers: ['Tiểu nhiều', 'Tỉnh táo', 'Vô niệu', 'Da ấm'], correct: "C", topic: "bai6" },
+{ id: 138, text: "Mục tiêu quan trọng nhất trong điều trị sốc là:", answers: ['Tăng cân', 'Tăng oxy mô', 'Giảm ăn', 'Giảm ngủ'], correct: "B", topic: "bai6" },
+{ id: 139, text: "Khi chăm sóc người bệnh sốc, điều dưỡng ưu tiên thực hiện:", answers: ['Vệ sinh', 'Cho ăn', 'Thiết lập đường truyền và oxy', 'Tư vấn sức khỏe'], correct: "C", topic: "bai6" },
+{ id: 140, text: "Sau điều trị, chỉ số nào cho thấy bệnh nhân cải thiện:", answers: ['Xấu đi', 'Không thay đổi', 'HA >= 90 mmHg, nước tiểu > 30ml/giờ', 'Tình trạng nguy kịch'], correct: "C", topic: "bai6" },
+//bài 7
+{ id: 141, text: "Ngộ độc cấp là:", answers: ['Bệnh mạn tính', 'Tình trạng nhiễm độc xảy ra nhanh', 'Bệnh di truyền', 'Bệnh miễn dịch'], correct: "B", topic: "bai7" },
+{ id: 142, text: "Đường vào thường gặp nhất của chất độc:", answers: ['Qua da', 'Hô hấp', 'Ăn uống', 'Tiêm'], correct: "C", topic: "bai7" },
+{ id: 143, text: "Mục tiêu xử trí ngộ độc cấp:", answers: ['Tăng cân', 'Giảm ăn', 'Tăng ngủ', 'Giảm hấp thu độc chất'], correct: "D", topic: "bai7" },
+{ id: 144, text: "Than hoạt có tác dụng:", answers: ['Trung hòa acid', 'Hấp phụ độc chất', 'Tăng tiêu hóa', 'Giảm đau'], correct: "B", topic: "bai7" },
+{ id: 145, text: "Thời gian rửa dạ dày hiệu quả nhất:", answers: ['6 giờ', '3 giờ', '1 giờ đầu', '12 giờ'], correct: "C", topic: "bai7" },
+{ id: 146, text: "Không rửa dạ dày khi:", answers: ['Ngộ độc thuốc', 'Uống rượu', 'Uống thuốc ngủ', 'Uống acid mạnh'], correct: "D", topic: "bai7" },
+{ id: 147, text: "Ngộ độc opioid gây:", answers: ['Giãn đồng tử', 'Co đồng tử', 'Không thay đổi', 'Lồi mắt'], correct: "B", topic: "bai7" },
+{ id: 148, text: "Thuốc giải độc heroin là:", answers: ['Naloxon', 'Atropin', 'Paracetamol', 'Diazepam'], correct: "A", topic: "bai7" },
+{ id: 149, text: "Ngộ độc phospho hữu cơ gây:", answers: ['Tăng tiết dịch', 'Khô da', 'Giảm tiết', 'Táo bón'], correct: "A", topic: "bai7" },
+{ id: 150, text: "Triệu chứng hô hấp trong ngộ độc:", answers: ['Tăng oxy', 'Suy hô hấp', 'Tăng thông khí', 'Bình thường'], correct: "B", topic: "bai7" },
+{ id: 151, text: "Biện pháp loại độc qua da:", answers: ['Cho uống nước', 'Tắm rửa bằng xà phòng', 'Truyền dịch', 'Thở oxy'], correct: "B", topic: "bai7" },
+{ id: 152, text: "Biện pháp tăng thải độc qua thận:", answers: ['Nhịn uống', 'Bài niệu tích cực', 'Giảm dịch', 'Nghỉ ngơi'], correct: "B", topic: "bai7" },
+{ id: 153, text: "Ngộ độc paracetamol dùng:", answers: ['Naloxon', 'Atropin', 'N-acetylcystein', 'Morphin'], correct: "C", topic: "bai7" },
+{ id: 154, text: "Dấu hiệu thần kinh nặng:", answers: ['Tỉnh táo', 'Đau đầu', 'Buồn ngủ nhẹ', 'Hôn mê'], correct: "D", topic: "bai7" },
+{ id: 155, text: "Xử trí co giật:", answers: ['Seduxen', 'Paracetamol', 'Vitamin', 'Kháng sinh'], correct: "A", topic: "bai7" },
+{ id: 156, text: "Mục tiêu chăm sóc:", answers: ['Tăng cân', 'Ổn định chức năng sống', 'Tăng ăn', 'Giảm vận động'], correct: "B", topic: "bai7" },
+{ id: 157, text: "Theo dõi quan trọng:", answers: ['Chiều cao', 'Cân nặng', 'Màu tóc', 'Mạch, HA, $SpO_2$'], correct: "D", topic: "bai7" },
+{ id: 158, text: "BN hôn mê, thở chậm, co đồng tử → nghi:", answers: ['Ngộ độc kích thích', 'Ngộ độc opioid', 'Ngộ độc acid', 'Ngộ độc kim loại'], correct: "B", topic: "bai7" },
+{ id: 159, text: "BN tăng tiết đờm, co đồng tử, khó thở → nghĩ:", answers: ['Ngộ độc rượu', 'Ngộ độc chì', 'Ngộ độc thuốc ngủ', 'Ngộ độc phospho hữu cơ'], correct: "D", topic: "bai7" },
+{ id: 160, text: "Ưu tiên đầu tiên khi cấp cứu ngộ độc:", answers: ['Cho ăn', 'Đảm bảo đường thở', 'Xét nghiệm', 'Hỏi bệnh'], correct: "B", topic: "bai7" },
+{ id: 161, text: "BN uống thuốc 30 phút → xử trí tốt nhất:", answers: ['Rửa dạ dày', 'Theo dõi', 'Cho ăn', 'Cho ngủ'], correct: "A", topic: "bai7" },
+{ id: 162, text: "BN uống acid mạnh → xử trí:", answers: ['Gây nôn', 'Rửa dạ dày', 'Không gây nôn, không rửa', 'Cho than hoạt'], correct: "C", topic: "bai7" },
+{ id: 163, text: "Dấu hiệu nặng cần đặt NKQ:", answers: ['Ho nhẹ', 'Thở chậm, $SpO_2$ giảm', 'Buồn nôn', 'Đau đầu'], correct: "B", topic: "bai7" },
+{ id: 164, text: "BN co giật → nguy cơ:", answers: ['Tăng ăn', 'Chấn thương', 'Tăng ngủ', 'Tăng tiểu'], correct: "B", topic: "bai7" },
+{ id: 165, text: "Sau điều trị: tỉnh táo, sinh tồn ổn định → đánh giá:", answers: ['Xấu', 'Không đổi', 'Tốt', 'Nguy kịch'], correct: "C", topic: "bai7" },
+
+///bài 8
+{ id: 166, text: "Hôn mê là gì?", answers: ['Mất ngủ kéo dài', 'Mất ý thức hoàn toàn, không đáp ứng kích thích', 'Ngủ sâu có thể đánh thức', 'Mất trí nhớ tạm thời'], correct: "B", topic: "bai8" },
+{ id: 167, text: "Hôn mê là tình trạng:", answers: ['Cấp cứu y tế', 'Không cấp cứu', 'Chỉ theo dõi', 'Không nguy hiểm'], correct: "A", topic: "bai8" },
+{ id: 168, text: "Hôn mê độ I còn gọi là:", answers: ['Hôn mê sâu', 'Hôn mê nông', 'Hôn mê chết não', 'Hôn mê trung bình'], correct: "B", topic: "bai8" },
+{ id: 169, text: "Ở hôn mê độ I, phản xạ đồng tử:", answers: ['Mất hoàn toàn', 'Không xác định', 'Giãn cố định', 'Còn'], correct: "D", topic: "bai8" },
+{ id: 170, text: "Hôn mê độ III là:", answers: ['Nhẹ', 'Trung bình', 'Sâu', 'Không hồi phục'], correct: "C", topic: "bai8" },
+{ id: 171, text: "Hôn mê độ IV còn gọi là:", answers: ['Hôn mê nông', 'Hôn mê vừa', 'Hôn mê sâu', 'Hôn mê không hồi phục'], correct: "D", topic: "bai8" },
+{ id: 172, text: "Thang điểm Glasgow dùng để:", answers: ['Đo huyết áp', 'Đánh giá ý thức', 'Đo đường huyết', 'Đánh giá hô hấp'], correct: "B", topic: "bai8" },
+{ id: 173, text: "Glasgow 15 điểm nghĩa là:", answers: ['Bình thường', 'Hôn mê sâu', 'Rối loạn nặng', 'Nguy kịch'], correct: "A", topic: "bai8" },
+{ id: 174, text: "Glasgow 3 điểm là:", answers: ['Bình thường', 'Nhẹ', 'Rất nặng, nguy cơ không hồi phục', 'Trung bình'], correct: "C", topic: "bai8" },
+{ id: 175, text: "Nguyên nhân hôn mê KHÔNG gồm:", answers: ['Chấn thương sọ não', 'Ngộ độc', 'Thiếu oxy', 'Viêm da'], correct: "D", topic: "bai8" },
+{ id: 176, text: "Hôn mê độ II có đặc điểm:", answers: ['Còn phản xạ đồng tử', 'Mất phản xạ đồng tử', 'Không rối loạn hô hấp', 'Tỉnh táo'], correct: "B", topic: "bai8" },
+{ id: 177, text: "Hôn mê độ II có thể gặp:", answers: ['Thở bình thường', 'Ngưng tim', 'Không thở', 'Thở Cheyne-Stokes'], correct: "D", topic: "bai8" },
+{ id: 178, text: "Dấu hiệu hôn mê độ III:", answers: ['Còn đáp ứng đau', 'Không rối loạn tim', 'Tỉnh khi gọi', 'Mất hết phản xạ'], correct: "D", topic: "bai8" },
+{ id: 179, text: "Nguyên nhân chuyển hóa gây hôn mê:", answers: ['U não', 'Xuất huyết nã', 'Hạ đường huyết', 'Chấn thương'], correct: "C", topic: "bai8" },
+{ id: 180, text: "Chăm sóc ưu tiên đầu tiên NB hôn mê:", answers: ['Dinh dưỡng', 'Vệ sinh', 'Đảm bảo đường thở', 'Tâm lý'], correct: "C", topic: "bai8" },
+{ id: 181, text: "Tư thế an toàn cho NB hôn mê:", answers: ['Nằm ngửa', 'Nằm nghiêng', 'Ngồi', 'Đứng'], correct: "B", topic: "bai8" },
+{ id: 182, text: "NB hôn mê cần thay đổi tư thế:", answers: ['2–3 giờ/lần', '1 lần/ngày', '6 giờ/lần', 'Không cần'], correct: "A", topic: "bai8" },
+{ id: 183, text: "Mục đích hút đờm:", answers: ['Giảm đau', 'Làm sạch đường thở', 'Tăng huyết áp', 'Giảm sốt'], correct: "B", topic: "bai8" },
+{ id: 184, text: "NB hôn mê, mất phản xạ, đồng tử giãn → mức độ:", answers: ['I', 'II', 'III', 'IV'], correct: "C", topic: "bai8" },
+{ id: 185, text: "NB Glasgow 7 điểm thuộc:", answers: ['Bình thường', 'Nhẹ', 'Không hôn mê', 'Nặng'], correct: "D", topic: "bai8" },
+{ id: 186, text: "NB hôn mê có nhiều đờm, nguy cơ lớn nhất:", answers: ['Suy tim', 'Sặc phổi', 'Tiêu chảy', 'Gãy xương'], correct: "B", topic: "bai8" },
+{ id: 187, text: "NB hôn mê nằm lâu dễ bị:", answers: ['Loét tỳ đè', 'Tăng huyết áp', 'Sốt cao', 'Đau đầu'], correct: "A", topic: "bai8" },
+{ id: 188, text: "NB hôn mê do hạ đường huyết → xử trí đầu tiên:", answers: ['Truyền dịch', 'Tiêm glucose', 'Cho ăn', 'Nghỉ ngơi'], correct: "B", topic: "bai8" },
+{ id: 189, text: "NB hôn mê có SpO₂ giảm → cần ưu tiên:", answers: ['Cho ăn', 'Xoa bóp', 'Truyền máu', 'Thở oxy'], correct: "D", topic: "bai8" },
+{ id: 190, text: "Vì sao cần nói chuyện với NB hôn mê?", answers: ['Giải trí', 'Kích thích não, hỗ trợ hồi phục', 'Cho vui', 'Không cần thiết'], correct: "B", topic: "bai8" },
+
+///bài 9
+{ id: 191, text: "Thở máy là gì?", answers: ['Hỗ trợ tuần hoàn', 'Hỗ trợ tiêu hóa', 'Hỗ trợ hoặc thay thế hô hấp tự nhiên', 'Điều trị nhiễm trùng'], correct: "C", topic: "bai9" },
+{ id: 192, text: "Thở máy được chỉ định khi:", answers: ['NB tỉnh táo', 'NB tự thở tốt', 'Tăng huyết áp', 'Suy hô hấp không đáp ứng oxy'], correct: "D", topic: "bai9" },
+{ id: 193, text: "Một chống chỉ định của thở máy là:", answers: ['Suy tim', 'Tràn khí màng phổi chưa xử trí', 'Sốt', 'Ho'], correct: "B", topic: "bai9" },
+{ id: 194, text: "Mục tiêu chính của thở máy là:", answers: ['Cải thiện trao đổi khí', 'Giảm đau', 'Giảm sốt', 'Tăng ăn uống'], correct: "A", topic: "bai9" },
+{ id: 195, text: "Biến chứng thường gặp nhất của thở máy là:", answers: ['Viêm dạ dày', 'Viêm phổi bệnh viện', 'Gãy xương', 'Sỏi thận'], correct: "B", topic: "bai9" },
+{ id: 196, text: "Thở máy có thể gây:", answers: ['Tăng thị lực', 'Tăng trí nhớ', 'Tăng chiều cao', 'Tràn khí màng phổi'], correct: "D", topic: "bai9" },
+{ id: 197, text: "Một dấu hiệu giảm oxy máu là:", answers: ['Da hồng', 'Tím tái', 'Ăn ngon', 'Ngủ tốt'], correct: "B", topic: "bai9" },
+{ id: 198, text: "Hút đờm trong thở máy nhằm:", answers: ['Thông thoáng đường thở', 'Giảm đau', 'Tăng cân', 'Giảm sốt'], correct: "A", topic: "bai9" },
+{ id: 199, text: "Khi thở máy, NB cần được:", answers: ['Nằm đầu thấp', 'Nằm đầu cao (nếu không chống chỉ định)', 'Ngồi dậy liên tục', 'Đi lại nhiều'], correct: "B", topic: "bai9" },
+{ id: 200, text: "Một chỉ số theo dõi quan trọng khi NB thở máy là:", answers: ['Màu tóc', 'SpO2', 'Màu móng tay', 'Chiều dài tóc'], correct: "B", topic: "bai9" },
+{ id: 201, text: "Khi hút đờm, cần tăng FiO2 trước và sau hút:", answers: ['21%', '50%', '100%', '10%'], correct: "C", topic: "bai9" },
+{ id: 202, text: "Nguyên nhân gây giảm cung lượng tim khi thở máy là:", answers: ['Tăng ăn', 'Tăng áp lực trong lồng ngực', 'Tăng vận động', 'Giảm nước uống'], correct: "B", topic: "bai9" },
+{ id: 203, text: "Biến chứng thần kinh có thể gặp khi thở máy là:", answers: ['Tăng trí nhớ', 'Run tay do lạnh', 'Tăng chiều cao', 'Co giật do rối loạn khí máu'], correct: "D", topic: "bai9" },
+{ id: 204, text: "Khi báo động áp lực cao (High pressure), nguyên nhân thường là:", answers: ['Đờm tắc', 'Tăng ăn', 'Tăng nước tiểu', 'Giảm nhiệt'], correct: "A", topic: "bai9" },
+{ id: 205, text: "Duy trì bóng chèn nội khí quản giúp:", answers: ['Tránh sặc', 'Tăng ăn', 'Tăng vận động', 'Giảm đau đầu'], correct: "A", topic: "bai9" },
+{ id: 206, text: "Một biến chứng tiêu hóa của thở máy:", answers: ['Viêm ruột', 'Trướng bụng, liệt ruột', 'Viêm gan', 'Sỏi mật'], correct: "B", topic: "bai9" },
+{ id: 207, text: "Thay đổi tư thế NB thở máy nên thực hiện:", answers: ['1 giờ/lần', '2 giờ/lần', '6 giờ/lần', 'Không cần'], correct: "B", topic: "bai9" },
+{ id: 208, text: "Dấu hiệu chống máy là:", answers: ['NB hợp tác tốt', 'Ăn tốt', 'Ngủ sâu', 'Không đồng bộ với máy thở'], correct: "D", topic: "bai9" },
+{ id: 209, text: "NB thở máy SpO2 giảm đột ngột, mạch chậm, lồng ngực lệch → nghĩ nhiều nhất:", answers: ['Suy thận', 'Tràn khí màng phổi', 'Táo bón', 'Viêm dạ dày'], correct: "B", topic: "bai9" },
+{ id: 210, text: "Nếu không xác định được nguyên nhân báo động máy thở, điều dưỡng nên:", answers: ['Tắt máy', 'Bóp bóng Ambu và báo bác sĩ', 'Bỏ qua', 'Cho ăn'], correct: "B", topic: "bai9" },
+{ id: 211, text: "Mục tiêu quan trọng nhất trong chăm sóc NB thở máy là:", answers: ['Tăng cân', 'Giảm vận động', 'Giảm ăn', 'Cải thiện trao đổi khí'], correct: "D", topic: "bai9" },
+{ id: 212, text: "NB thở máy lâu ngày dễ nhiễm khuẩn vì:", answers: ['Ăn nhiều', 'Ngủ nhiều', 'Uống ít nước', 'Can thiệp nhiều thủ thuật xâm lấn'], correct: "D", topic: "bai9" },
+{ id: 213, text: "Khi NB có ống nội khí quản, giao tiếp hiệu quả nhất bằng:", answers: ['Nói chuyện lớn', 'Viết, ký hiệu, tranh ảnh', 'Im lặng', 'Đoán ý'], correct: "B", topic: "bai9" },
+{ id: 214, text: "Tăng CO2 nhanh do thở máy có thể gây:", answers: ['Co giật, rối loạn nhịp tim', 'Tăng trí nhớ', 'Tăng cân', 'Tăng chiều cao'], correct: "A", topic: "bai9" },
+{ id: 215, text: "Nguyên tắc chăm sóc quan trọng nhất để phòng viêm phổi thở máy là:", answers: ['Giảm ăn', 'Vô khuẩn khi hút đờm', 'Không thay tư thế', 'Giảm oxy'], correct: "B", topic: "bai9" },
+
+///bài 10
+
+
+      ];
+
+     let currentTopic = null;
+    let shuffleQuestions = true;
+    let shuffleAnswers = true;
+    let currentQuestions = [];
+    let userSelections = {};
+    let answersMapping = new Map();
+    
+    const questionsContainer = document.getElementById("questionsContainer");
+    const scoreContainer = document.getElementById("scoreContainer");
+    const shuffleQuestionsToggle = document.getElementById("shuffleQuestionsToggle");
+    const shuffleAnswersToggle = document.getElementById("shuffleAnswersToggle");
+    const liveScoreSpan = document.getElementById("liveScore");
+    
+    function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+    
+    function getFilteredQuestions() {
+        if (!currentTopic) return [];
+        let filtered = QUESTION_SET.filter(q => currentTopic === "all" || q.topic === currentTopic);
+        let result = [...filtered];
+        if (shuffleQuestions) result = shuffleArray(result);
+        return result;
+    }
+    
+    function buildAnswerMapping(question) {
+        const originalAnswers = question.answers;
+        const correctIndex = question.correct.charCodeAt(0) - 65;
+        const correctText = originalAnswers[correctIndex];
+        
+        if (!shuffleAnswers) {
+            return {
+                displayList: [
+                    { letter: "A", text: originalAnswers[0] },
+                    { letter: "B", text: originalAnswers[1] },
+                    { letter: "C", text: originalAnswers[2] },
+                    { letter: "D", text: originalAnswers[3] }
+                ],
+                correctLetterDisplay: question.correct
+            };
+        } else {
+            let items = originalAnswers.map((text, idx) => ({ text }));
+            items = shuffleArray([...items]);
+            const displayList = items.map((item, newIdx) => ({ letter: String.fromCharCode(65+newIdx), text: item.text }));
+            const found = displayList.find(item => item.text === correctText);
+            return {
+                displayList,
+                correctLetterDisplay: found ? found.letter : "A"
+            };
+        }
+    }
+    
+    function updateAllUI() {
+        if (!currentQuestions.length) {
+            liveScoreSpan.innerText = `0 / 0`;
+            return;
+        }
+        let correctCount = 0;
+        
+        for (let q of currentQuestions) {
+            const mapping = answersMapping.get(q.id);
+            if (!mapping) continue;
+            const selectedLetter = userSelections[q.id];
+            const isCorrect = (selectedLetter && selectedLetter === mapping.correctLetterDisplay);
+            if (isCorrect) correctCount++;
+            
+            const cardDiv = document.querySelector(`.question-card[data-qid='${q.id}']`);
+            if (!cardDiv) continue;
+            
+            const iconSpan = cardDiv.querySelector('.status-icon');
+            if (iconSpan) {
+                if (!selectedLetter) {
+                    iconSpan.innerHTML = "⚪ Chưa làm";
+                    iconSpan.className = "status-icon status-none";
+                } else if (isCorrect) {
+                    iconSpan.innerHTML = "✓ Đúng";
+                    iconSpan.className = "status-icon status-correct";
+                } else {
+                    iconSpan.innerHTML = "✗ Sai";
+                    iconSpan.className = "status-icon status-wrong";
+                }
+            }
+            
+            const answerDivs = cardDiv.querySelectorAll('.answer-option');
+            for (let ansDiv of answerDivs) {
+                const letter = ansDiv.dataset.letter;
+                const isSelected = (selectedLetter === letter);
+                
+                ansDiv.classList.remove('correct-highlight', 'wrong-highlight');
+                
+                if (isSelected) {
+                    if (isCorrect) {
+                        ansDiv.classList.add('correct-highlight');
+                    } else {
+                        ansDiv.classList.add('wrong-highlight');
+                    }
+                }
+                
+                let statusSpan = ansDiv.querySelector('.answer-status');
+                if (!statusSpan) {
+                    statusSpan = document.createElement('span');
+                    statusSpan.className = 'answer-status';
+                    ansDiv.appendChild(statusSpan);
+                }
+                
+                if (isSelected && isCorrect) {
+                    statusSpan.innerHTML = '✓';
+                    statusSpan.className = 'answer-status check-mark';
+                } else if (isSelected && !isCorrect) {
+                    statusSpan.innerHTML = '✗';
+                    statusSpan.className = 'answer-status cross-mark';
+                } else {
+                    statusSpan.innerHTML = '';
+                }
+            }
+        }
+        liveScoreSpan.innerText = `${correctCount} / ${currentQuestions.length}`;
+    }
+    
+    function onAnswerClick(questionId, selectedLetter) {
+        userSelections[questionId] = selectedLetter;
+        
+        const questionCard = document.querySelector(`.question-card[data-qid='${questionId}']`);
+        if (questionCard) {
+            const allOptions = questionCard.querySelectorAll('.answer-option');
+            allOptions.forEach(opt => {
+                const letter = opt.dataset.letter;
+                if (letter === selectedLetter) {
+                    opt.classList.add('selected');
+                } else {
+                    opt.classList.remove('selected');
+                }
+            });
+        }
+        updateAllUI();
+    }
+    
+    // Hàm cuộn xuống câu hỏi đầu tiên
+    function scrollToFirstQuestion() {
+        setTimeout(() => {
+            const firstQuestion = document.querySelector('.question-card');
+            if (firstQuestion) {
+                firstQuestion.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }, 100);
+    }
+    
+    function renderFullQuiz() {
+        if (!currentTopic) {
+            scoreContainer.style.display = "none";
+            questionsContainer.innerHTML = `
+                <div class="welcome-message">
+                    👋 Chào bạn!<br>
+                    Hãy chọn một chủ đề bên trên để bắt đầu làm bài trắc nghiệm.
+                </div>
+            `;
+            return;
+        }
+        
+        currentQuestions = getFilteredQuestions();
+        answersMapping.clear();
+        for (let q of currentQuestions) {
+            answersMapping.set(q.id, buildAnswerMapping(q));
+        }
+        userSelections = {};
+        
+        if (currentQuestions.length === 0) {
+            scoreContainer.style.display = "block";
+            questionsContainer.innerHTML = `<div class="card" style="text-align:center">⚠️ Không có câu hỏi cho chủ đề này.</div>`;
+            liveScoreSpan.innerText = `0 / 0`;
+            return;
+        }
+        
+        let html = '';
+        currentQuestions.forEach((q, idx) => {
+            const mapping = answersMapping.get(q.id);
+            if (!mapping) return;
+            const { displayList } = mapping;
+            let answersHtml = '';
+            for (let ans of displayList) {
+                answersHtml += `
+                    <div class="answer-option" data-qid="${q.id}" data-letter="${ans.letter}">
+                        <span class="answer-letter">${ans.letter}</span>
+                        <span class="answer-text">${escapeHtml(ans.text)}</span>
+                        <span class="answer-status"></span>
+                    </div>
+                `;
+            }
+            html += `
+                <div class="question-card" data-qid="${q.id}">
+                    <div class="question-text">
+                        <span><strong>${idx+1}.</strong> ${escapeHtml(q.text)}</span>
+                        <span class="status-icon status-none">⚪ Chưa làm</span>
+                    </div>
+                    <div class="answers">
+                        ${answersHtml}
+                    </div>
+                </div>
+            `;
+        });
+        
+        questionsContainer.innerHTML = html;
+        scoreContainer.style.display = "flex";
+        
+        document.querySelectorAll('.answer-option').forEach(el => {
+            el.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const qid = parseInt(el.dataset.qid);
+                const letter = el.dataset.letter;
+                if (!isNaN(qid) && letter) {
+                    onAnswerClick(qid, letter);
+                }
+            });
+        });
+        
+        updateAllUI();
+        
+        // Tự động cuộn xuống câu hỏi đầu tiên
+        scrollToFirstQuestion();
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return "";
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    function refreshQuiz() {
+        renderFullQuiz();
+    }
+    
+    function initEventListeners() {
+        const topicBtns = document.querySelectorAll('.topic-btn');
+        topicBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const topic = btn.dataset.topic;
+                if (!topic) return;
+                currentTopic = topic;
+                topicBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                refreshQuiz();
+            });
+        });
+        
+        shuffleQuestionsToggle.addEventListener('change', (e) => {
+            shuffleQuestions = e.target.checked;
+            if (currentTopic) refreshQuiz();
+        });
+        
+        shuffleAnswersToggle.addEventListener('change', (e) => {
+            shuffleAnswers = e.target.checked;
+            if (currentTopic) refreshQuiz();
+        });
+    }
+    
+    function init() {
+        shuffleQuestions = shuffleQuestionsToggle.checked;
+        shuffleAnswers = shuffleAnswersToggle.checked;
+        initEventListeners();
+        currentTopic = null;
+        renderFullQuiz();
+    }
+    
+    init();
+</script>
+</body>
+</html>
