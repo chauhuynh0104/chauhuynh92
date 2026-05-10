@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chọn Môn Học</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    min-height:100vh;
+    background:#AAAAAA;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+    color:#1e293b;
+}
+
+.container{
+    width:100%;
+    max-width:700px;
+    animation:fade .5s ease;
+}
+
+h1{
+    text-align:center;
+    font-size:26px;
+    margin-bottom:22px;
+    font-weight:700;
+}
+
+.list{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+}
+
+.card{
+    background:white;
+    border-radius:16px;
+    padding:16px 18px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    text-decoration:none;
+    color:#111827;
+    transition:.25s ease;
+    box-shadow:0 3px 10px rgba(0,0,0,.05);
+    border:1px solid #e5e7eb;
+}
+
+.card:hover{
+    transform:translateY(-2px);
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+}
+
+.icon{
+    width:52px;
+    height:52px;
+    border-radius:14px;
+    background:#eef2ff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:24px;
+    flex-shrink:0;
+}
+
+.info{
+    flex:1;
+}
+
+.title{
+    font-size:18px;
+    font-weight:700;
+    margin-bottom:4px;
+}
+
+.desc{
+    font-size:13px;
+    color:#64748b;
+}
+
+.arrow{
+    font-size:18px;
+    color:#94a3b8;
+}
+
+footer{
+    margin-top:28px;
+    font-size:13px;
+    color:#64748b;
+    text-align:center;
+}
+
+@keyframes fade{
+    from{
+        opacity:0;
+        transform:translateY(10px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+@media(max-width:480px){
+
+    body{
+        padding:14px;
+    }
+
+    h1{
+        font-size:22px;
+        margin-bottom:18px;
+    }
+
+    .card{
+        padding:14px;
+        border-radius:14px;
+    }
+
+    .icon{
+        width:46px;
+        height:46px;
+        font-size:21px;
+    }
+
+    .title{
+        font-size:16px;
+    }
+
+    .desc{
+        font-size:12px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Chọn Môn Học</h1>
+
+    <div class="list">
+
+        <a class="card" href="https://chauhuynh0104.github.io/chauhuynh92/dalieu.html">
+            <div class="icon">🩺</div>
+
+            <div class="info">
+                <div class="title">Chăm sóc sức khỏe người lớn có bệnh nội khoa nâng cao</div>
+
+            </div>
+
+            <div class="arrow">›</div>
+        </a>
+
+        <a class="card" href="https://chauhuynh0104.github.io/chauhuynh92/ngoaikhoa2.html">
+            <div class="icon">🏥</div>
+
+            <div class="info">
+                <div class="title">Chăm sóc sức khỏe người lớn có bệnh ngoại khoa 2</div>
+        
+            </div>
+
+            <div class="arrow">›</div>
+        </a>
+
+        <a class="card" href="https://chauhuynh0104.github.io/chauhuynh92/capcuu.html">
+            <div class="icon">🚑</div>
+
+            <div class="info">
+                <div class="title">Chăm sóc người bệnh cấp cứu và chăm sóc tích cực</div>
+         
+            </div>
+
+            <div class="arrow">›</div>
+        </a>
+        <a class="card" href="https://chauhuynh0104.github.io/chauhuynh92/bame.html">
+            <div class="icon">🚑</div>
+
+            <div class="info">
+                <div class="title">Chăm sóc sức khỏe phụ nữ bà mẹ và gia đình</div>
+         
+            </div>
+
+            <div class="arrow">›</div>
+        </a>
+    </div>
+
+    <footer>
+        © 2014-2026 Dr.Châu
+    </footer>
+
+</div>
+
+</body>
+</html>
