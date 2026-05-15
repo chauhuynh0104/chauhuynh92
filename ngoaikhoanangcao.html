@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Chăm sóc người lớn có bệnh ngoại khoa nâng cao</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: #f0f4f8;
+            font-family: system-ui, 'Segoe UI', 'Roboto', 'Noto Sans', sans-serif;
+            padding: 16px 12px 80px;
+            color: #0f172a;
+        }
+
+        .app-container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 28px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            padding: 20px 18px;
+            margin-bottom: 20px;
+        }
+
+        .quiz-header {
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 12px;
+            margin-bottom: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .quiz-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1e3c72, #2b4c7c);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .badge {
+            background: #eef2ff;
+            padding: 6px 12px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #1e3c72;
+        }
+
+        .topic-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .topic-btn {
+            background: #eef2ff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.2s;
+            color: #1e293b;
+            flex: 1 0 auto;
+            text-align: center;
+        }
+
+        .topic-btn.active {
+            background: #1e3c72;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .toggle-row {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            background: #f8fafc;
+            padding: 12px 16px;
+            border-radius: 60px;
+            margin-bottom: 20px;
+        }
+
+        .toggle-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e1;
+            transition: 0.3s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #2d6a4f;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+
+        .question-card {
+            background: white;
+            border-radius: 24px;
+            margin-bottom: 20px;
+            padding: 18px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+            scroll-margin-top: 20px;
+        }
+
+        .question-text {
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 16px;
+            line-height: 1.4;
+            background: #fefce8;
+            padding: 12px;
+            border-radius: 20px;
+            border-left: 5px solid #eab308;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .status-icon {
+            font-size: 0.85rem;
+            font-weight: bold;
+            background: white;
+            border-radius: 40px;
+            padding: 4px 12px;
+            min-width: 95px;
+            text-align: center;
+        }
+
+        .status-correct {
+            color: #15803d;
+            background: #dcfce7;
+            border: 1px solid #86efac;
+        }
+
+        .status-wrong {
+            color: #b91c1c;
+            background: #fee2e2;
+            border: 1px solid #fca5a5;
+        }
+
+        .status-none {
+            color: #64748b;
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+        }
+
+        .answers {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .answer-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            background: #f9f9ff;
+            border-radius: 60px;
+            border: 2px solid #e2edff;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+
+        .answer-option:hover {
+            background: #eef2ff;
+        }
+
+        .answer-option.correct-highlight {
+            border: 3px solid #15803d;
+            background: #e8f5e9;
+        }
+
+        .answer-option.wrong-highlight {
+            border: 3px solid #dc2626;
+            background: #fee2e2;
+        }
+
+        .answer-option.selected {
+            background: #e0f2fe;
+            border-color: #0284c7;
+        }
+
+        .answer-letter {
+            font-weight: 800;
+            background: #e2e8f0;
+            width: 36px;
+            height: 36px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 60px;
+            font-size: 0.9rem;
+        }
+
+        .answer-text {
+            flex: 1;
+            font-size: 0.92rem;
+        }
+
+        .answer-status {
+            font-size: 1.2rem;
+            font-weight: bold;
+            min-width: 44px;
+            text-align: center;
+        }
+
+        .check-mark {
+            color: #15803d;
+        }
+
+        .cross-mark {
+            color: #dc2626;
+        }
+
+        .score-bar {
+            background: #e6f7ed;
+            padding: 14px 18px;
+            border-radius: 60px;
+            text-align: center;
+            font-weight: bold;
+            margin: 8px 0 16px;
+            font-size: 1rem;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .progress-text {
+            background: #1e3c72;
+            color: white;
+            border-radius: 30px;
+            padding: 4px 16px;
+        }
+
+        .welcome-message {
+            text-align: center;
+            padding: 40px 20px;
+            background: #fef9e3;
+            border-radius: 28px;
+            color: #b45309;
+            font-weight: 500;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 32px;
+            padding: 20px 10px;
+            font-size: 0.75rem;
+            color: #475569;
+            border-top: 1px solid #cbd5e1;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="card">
+        <div class="quiz-header">
+            <h2>📚 Chăm sóc người lớn có bệnh ngoại khoa nâng cao</h2>
+      
+        </div>
+
+
+        <div class="topic-buttons" id="topicButtons">
+            <button data-topic="all" class="topic-btn">📖 Ôn cả môn (tất cả bài)</button>
+            <button data-topic="bai1" class="topic-btn">📗 Bài 1: Chăm sóc ngườI bệnh chấn thương ngực</button>
+            <button data-topic="bai2" class="topic-btn">📗 Bài 2: Chăm sóc ngườI bệnh chấn thương sọ não</button>
+			 <button data-topic="bai3" class="topic-btn">📗 Bài 3: Chăm sóc ngườI bệnh chấn thương cột sống</button>
+			  <button data-topic="bai4" class="topic-btn">📗 Bài 4: Chăm sóc ngườI bệnh có mở khí quản</button>
+			   <button data-topic="bai5" class="topic-btn">📗 Bài 5:  Chăm sóc bệnh nhân chấn thương bụng kín – vết thương thấu bụng</button>
+			    <button data-topic="bai6" class="topic-btn">📗 Bài 6: Chăm sóc người bệnh bỏng</button>
+				 <button data-topic="bai7" class="topic-btn">📗 Bài 7: Chăm sóc người bệnh phẫu thuật nội soi ổ bụng</button>
+
+        </div>
+
+      <div class="toggle-row">
+            <div class="toggle-item">
+                <span>🔄 Xáo trộn câu hỏi</span>
+                <label class="switch">
+                    <input type="checkbox" id="shuffleQuestionsToggle" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="toggle-item">
+                <span>🎲 Xáo trộn đáp án</span>
+                <label class="switch">
+                    <input type="checkbox" id="shuffleAnswersToggle" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div id="scoreContainer" class="score-bar" style="display: none;">
+        <span>🏆 Kết quả hiện tại</span>
+        <span id="liveScore" class="progress-text">0 / 0</span>
+    </div>
+
+    <div id="questionsContainer">
+        <div class="welcome-message">
+            👋 Chào bạn!<br>
+            Hãy chọn một chủ đề bên trên để bắt đầu làm bài trắc nghiệm.
+        </div>
+    </div>
+    
+    <footer>© 2014-2026 Dr.Châu</footer>
+</div>
+
+<script>
+    // ---------- DỮ LIỆU CÂU HỎI ----------
+    const QUESTION_SET = [
+        // Bài 1: Chăm sóc NB ghẻ
+{ id: 1, text: "Tử vong do chấn thương ngực chiếm tỷ lệ bao nhiêu trong số trường hợp tử vong do chấn thương gây ra:", answers: ['20 - 25%', '10 - 20%', '10 - 15%', '5 - 10%'], correct: "A", topic: "bai1" },
+{ id: 2, text: "Chấn thương ngực kín là những chấn thương:", answers: ['Gây tổn thương ở thành ngực hoặc các cơ quan trong lồng ngực', 'Gây tổn thương thành ngực, không ảnh hưởng đến các cơ quan bên trong', 'Làm rách da và các tổ chức phần mềm bao quanh lồng ngực', 'Gây tổn thương các cơ quan bên trong lồng ngực'], correct: "A", topic: "bai1" },
+{ id: 3, text: "Hội chứng chèn ép tim cấp trong chấn thương ngực bao gồm một trong các triệu chứng sau:", answers: ['Áp lực tĩnh mạch trung ương tăng cao (>10 cmH20)', 'Mạch chậm hoặc không bắt được', 'Mất mạch ngoại vi khi thở ra', 'Tĩnh mạch cổ nổi, gan to, phản hồi gan - tĩnh mạch cổ dương tính'], correct: "D", topic: "bai1" },
+{ id: 4, text: "Triệu chứng thực thể nào trên người bệnh là dấu hiệu khẳng định chắc chắn ngay trên lâm sàng là vết thương ngực:", answers: ['Thấy phì phò máu - khí qua vết thương.', 'Người bệnh khó thở nặng.', 'Mất mạch ngoại vi khi thở ra.', 'Biến dạng lồng ngực.'], correct: "A", topic: "bai1" },
+{ id: 5, text: "Vùng hô hấp đảo ngược gặp trên bệnh lý nào của NB chấn thương ngực:", answers: ['Gãy xương sườn', 'Mảng sườn di động', 'Tràn khí màng phổi', 'Tràn máu màng phổi'], correct: "B", topic: "bai1" },
+{ id: 6, text: "Dẫn lưu lồng ngực cho người bệnh sau mổ chấn thương ngực là dẫn lưu:", answers: ['Là dẫn lưu có thể súc rửa được', 'Giống như các loại dẫn lưu vết mổ thông thường khác', 'Dẫn lưu kín và một chiều', 'Người bệnh có thể tự thay túi chứa dịch dẫn lưu'], correct: "C", topic: "bai1" },
+{ id: 7, text: "Sau mổ ngực bao lâu thì điều dưỡng viên có thể tập cho NB hít thở sâu:", answers: ['Sau mổ 24 giờ', 'Ngay sau khi NB tình dậy sau mổ', 'Sau mổ 48 giờ', 'Sau mổ 72 giờ'], correct: "A", topic: "bai1" },
+{ id: 8, text: "Biến chứng nguy hiểm cần xử trí cấp cứu sau mổ dẫn lưu lồng ngực là:", answers: ['Tràn khí trung thất', 'Tràn khí dưới da', 'Tắc đường thở', 'Mệt mỏi, chóng mặt'], correct: "A", topic: "bai1" },
+{ id: 9, text: "Chăm sóc chế độ ăn sau mổ ngực cần chú ý điều gì:", answers: ['Ăn đầy đủ dinh dưỡng', 'Vệ sinh răng miệng sạch sẽ trước bữa ăn để tăng cảm giác ngon miệng', 'Hạn chế thức ăn khó tiêu, chia thành nhiều bữa nhỏ', 'Tăng cường vitamin và chất xơ hạn chế táo bón'], correct: "C", topic: "bai1" },
+{ id: 10, text: "Nhận định người bệnh chấn thương ngực có tràn khí màn phổi khi khám gõ phổi so sánh hai bên sẽ thấy bên phổi tổn thương:", answers: ['Vang hơn ở vùng cao', 'Vang toàn phổi', 'Đục hơn ở vùng thấp', 'Đục toàn phổi'], correct: "A", topic: "bai1" },
+        // Bài 2: Chăm sóc NB chàm
+{ id: 11, text: "Chấn thương sọ não là:", answers: ['Tổn thương chỉ ở da đầu', 'Tác động vào sọ gây tổn thương não và các cấu trúc liên quan', 'Chỉ tổn thương xương sọ', 'Chỉ tổn thương màng não'], correct: "B", topic: "bai2" },
+{ id: 12, text: "Nguyên nhân phổ biến nhất của chấn thương sọ não là:", answers: ['Tai nạn lao động', 'Ngã', 'Bạo lực', 'Thể thao'], correct: "B", topic: "bai2" },
+{ id: 13, text: "Đối tượng dễ bị chấn thương sọ não do ngã là:", answers: ['Người trưởng thành', 'Người cao tuổi và trẻ nhỏ', 'Phụ nữ mang thai', 'Nhân viên văn phòng'], correct: "B", topic: "bai2" },
+{ id: 14, text: "Thang điểm Glasgow đánh giá:", answers: ['Hô hấp', 'Tuần hoàn', 'Ý thức', 'Tiêu hóa'], correct: "C", topic: "bai2" },
+{ id: 15, text: "Glasgow gồm 3 thành phần:", answers: ['Mắt – tim – phổi', 'Mở mắt – lời nói – vận động', 'Nhịp tim – HA – nhịp thở', 'Cảm giác – vận động – phản xạ'], correct: "B", topic: "bai2" },
+{ id: 16, text: "Điểm Glasgow tối đa là:", answers: ['10', '12', '15', '20'], correct: "C", topic: "bai2" },
+{ id: 17, text: "Chấn thương sọ não nặng khi Glasgow:", answers: ['≥ 13', '9–12', '≤ 8', '≥ 10'], correct: "C", topic: "bai2" },
+{ id: 18, text: "Phương tiện chẩn đoán nhanh và quan trọng nhất trong CTSN là:", answers: ['X-quang', 'CT scan', 'MRI', 'Siêu âm'], correct: "B", topic: "bai2" },
+{ id: 19, text: "Thuốc lợi tiểu trong CTSN có tác dụng:", answers: ['Giảm đau', 'Giảm áp lực nội sọ', 'Tăng huyết áp', 'Tăng đường huyết'], correct: "B", topic: "bai2" },
+{ id: 20, text: "Thuốc chống động kinh dùng để:", answers: ['Giảm đau', 'Phòng co giật', 'Tăng trí nhớ', 'Giảm sốt'], correct: "B", topic: "bai2" },
+{ id: 21, text: "Theo dõi tri giác người bệnh bằng:", answers: ['Mạch', 'Huyết áp', 'Glasgow', 'Nhiệt độ'], correct: "C", topic: "bai2" },
+{ id: 22, text: "Biện pháp đảm bảo đường thở cho NB CTSN là:", answers: ['Cho ăn sớm', 'Hút đờm, khai thông đường thở', 'Cho uống nước', 'Cho vận động'], correct: "B", topic: "bai2" },
+{ id: 23, text: "Tư thế phù hợp cho NB CTSN sau mổ là:", answers: ['Nằm đầu thấp', 'Nằm sấp', 'Kê cao đầu', 'Nằm nghiêng phải cố định'], correct: "C", topic: "bai2" },
+///////bài 3
+
+{ id: 24, text: "Phát biểu nào sau đây đúng nhất về định nghĩa chấn thương cột sống?", answers: ['Là tổn thương chỉ xảy ra ở thân đốt sống', 'Là chấn thương gây tổn thương một hoặc nhiều thành phần của cột sống, làm thay đổi chức năng tạm thời hoặc vĩnh viễn', 'Là tình trạng gãy xương cột sống kèm tổn thương tủy sống', 'Là tổn thương cột sống do nguyên nhân bệnh lý mạn tính'], correct: "B", topic: "bai3" },
+{ id: 25, text: "Nguyên nhân nào sau đây được xếp vào nguyên nhân gián tiếp gây chấn thương cột sống?", answers: ['Gỗ đè trực tiếp vào lưng', 'Tường nhà sập đè lên cột sống', 'Ngã ngồi gây lún và gãy cột sống', 'Lao cột sống'], correct: "C", topic: "bai3" },
+{ id: 26, text: "Dấu hiệu nào sau đây đặc trưng cho gãy cột sống không liệt tủy?", answers: ['Bí tiểu và mất cảm giác vùng tầng sinh môn', 'Liệt hai chi dưới hoàn toàn', 'Đau khu trú rõ tại 1–2 đốt sống, tăng khi gõ nắn', 'Rối loạn hô hấp do tổn thương hành tủy'], correct: "C", topic: "bai3" },
+{ id: 27, text: "Người bệnh chấn thương cột sống cổ từ C1–C5 có nguy cơ tử vong cao chủ yếu do rối loạn hệ nào?", answers: ['Hệ tim mạch', 'Hệ tiêu hóa', 'Hệ tiết niệu', 'Hệ hô hấp'], correct: "D", topic: "bai3" },
+{ id: 28, text: "Phương tiện cận lâm sàng tốt nhất để đánh giá tổn thương nhu mô tủy sống, dây chằng và máu tụ trong ống sống là:", answers: ['X-quang cột sống thẳng – nghiêng', 'CT Scanner cột sống', 'MRI cột sống', 'Siêu âm cột sống'], correct: "C", topic: "bai3" },
+{ id: 29, text: "Để phòng và chống loét ở người bệnh chấn thương cột sống có biến chứng liệt, Điều dưỡng cần thay đổi tư thế người bệnh tối thiểu:", answers: ['1 giờ/lần', '3 giờ/ lần', '2 giờ/lần', '4 giờ/lần'], correct: "C", topic: "bai3" },
+{ id: 30, text: "Biểu hiện hội chứng đuôi ngựa hoàn toàn là:", answers: ['Mất cảm giác đau từ ngang nếp bẹn. Giai đoạn sau sốc tủy liệt ngoại vi hai chân, hai chân teo nhanh', 'Liệt ngoại vi hai chân, hai chân teo nhanh, mất cảm giác nếp bẹn và vùng đáy chậu.', 'Liệt ngoại vi không hoàn toàn hai chân NB có thể gập đùi vào bụng mất cảm giác vùng đáy chậu, hậu môn và bộ phận sinh dục.', 'Mất cảm giác đau không hoàn toàn từ ngang nếp bẹn. Giai đoạn sau sốc tủy liệt ngoại vi hai chân, hai chân teo nhanh'], correct: "B", topic: "bai3" },
+{ id: 31, text: "CTCS cổ đoạn nào có thể thấy triệu chứng nhiệt độ cơ thể giảm thấp từ 35 - 36°C:", answers: ['Từ C5-D1', 'Từ D2-D10', 'Từ Dll-Ll', 'Từ C1-C5'], correct: "D", topic: "bai3" },
+{ id: 32, text: "Người bệnh bị tổn thương tủy sống ở vùng cổ và ngực dễ bị viêm phổi hơn do:", answers: ['Một phần cơ hô hấp bị liệt, NB giảm hoặc mất khả năng ho', 'Vệ sinh họng miệng không sạch sẽ', 'Nhiễm trùng hô hấp do nằm lâu, ít xoay trở.', 'Nhiễm trùng thứ phát'], correct: "A", topic: "bai3" },
+{ id: 33, text: "Trong những tuần đầu sau tổn thương tuỷ sống, các biện pháp tập luyện để phòng co rút tại các khớp cho người bệnh, NGOẠI TRỪ:", answers: ['Dùng gối và đệm lót để giữ bàn chân ở tư thế vuông góc với cẳng chân, khớp khuỷu được duỗi thẳng', 'Bắt đầu tập theo tầm vận động các khớp ở chân, tay', 'Tập càng sớm càng tốt.', 'Trăn trở NB 1 giờ 1 lần'], correct: "D", topic: "bai3" },
+////bài 4
+
+{ id: 34, text: "Ống canule thường dùng để mở khí quản hiện nay là:", answers: ['Nelaton.', 'Krisaberg.', 'Pezzer.', 'Foley.'], correct: "B", topic: "bai4" },
+{ id: 35, text: "Mở khí quản cấp cứu được chỉ định trong trường hợp nào sau đây, NGOẠI TRỪ:", answers: ['Tắc nghẽn đường hô hấp trên do dị vật', 'Chấn thương gây dập nát, phù nề ở cổ và thanh quản', 'Khó thở do viêm phổi', 'Bỏng đường thở'], correct: "C", topic: "bai4" },
+{ id: 36, text: "Biến chứng sớm ngay sau khi mở khí quản thường gặp là:", answers: ['Chảy máu chân mở khí quản', 'Viêm phổi', 'Nhiễm trùng da xung quanh ống', 'Dò khí quản – thực quản.'], correct: "A", topic: "bai4" },
+{ id: 37, text: "Những biến chứng muộn ngay sau khi mở khí quản thường gặp, NGOẠI TRỪ:", answers: ['Hẹp khí quản', 'Tắc nghẽn ống do cục máu đông', 'Nhiễm trùng da xung quanh ống', 'Dò khí quản – thực quản.'], correct: "B", topic: "bai4" },
+{ id: 38, text: "Áp lực trong bóng chèn mở khí quản không vượt quá:", answers: ['10 cmH2O.', '20 cmH2O.', '30 cmH2O.', '40 cmH2O.'], correct: "B", topic: "bai4" },
+{ id: 39, text: "Thời gian hút đờm nhớt qua canule mở khí quản không vượt quá:", answers: ['03 giây/lần hút.', '05 giây/lần hút.', '07 giây/lần hút.', '10 giây/lần hút.'], correct: "D", topic: "bai4" },
+{ id: 40, text: "Xử trí khi có tai biến sút ống mở khí quản, điều dưỡng nên làm:", answers: ['Theo dõi sát tình trạng hô hấp người bệnh', 'Rửa sach vết thương, đặt lại canule mở khí quản', 'Dùng kìm banh rộng vết thương nơi mở khí quản, cho thở oxy và kêu người đến trợ giúp', 'Báo Bác sĩ tình trạng của người bệnh'], correct: "C", topic: "bai4" },
+{ id: 41, text: "Khi hút đờm cho người bệnh mở khi quản, cần lưu ý:", answers: ['Hút đến khi nào sạch hết đờm nhớt', 'Áp lực hút đúng theo quy trình kỹ thuật', 'Cho thở oxy để đảm bảo dưỡng khi cho người bệnh', 'Hút đờm nơi mở khí quản và mũi miệng bằng 2 ống hút riêng.'], correct: "D", topic: "bai4" },
+{ id: 42, text: "Kỹ thuật thay dây cố định canule mở khí quản, NGOẠI TRỪ:", answers: ['Luôn luôn thay dây mới trước khi cắt dây cũ', 'Thay dây bên gần trước dây xa sau đối với tư thế người bệnh.', 'Thay dây bên xa trước dây gần sau đối với tư thế người bệnh.', 'Tránh cột gút cố định trên đường đi của động mạch cảnh'], correct: "B", topic: "bai4" },
+{ id: 43, text: "Tai biến sút ống mở khí quản rất nguy hiểm trong thời gian nào:", answers: ['2 – 3 ngày đầu sau đặt.', '1 – 2 tuần sau khi đặt.', 'Khi người nhà thay nòng trong canule tại nhà', 'Khi rút ống mở khí quản.'], correct: "A", topic: "bai4" },
+///bài 5
+
+{ id: 44, text: "Chọn câu sai: triệu chứng đau trong chấn thương bụng:", answers: ['Đau thượng vị hoặc quanh rốn, sau vài giờ khu trú ở một vùng nhất định, ngày càng tăng.', 'Đau ở một vùng cố định, liên tục, ngày càng tăng.', 'Đau lan lên vai, lên ngực.', 'Đau lan dần ra khắp bụng.'], correct: "A", topic: "bai5" },
+{ id: 45, text: "Gõ bụng bệnh nhân vỡ tạng đặc:", answers: ['Gõ đục hố chậu phải.', 'Gõ đục từng khoang nơi máu đọng.', 'Gõ mất vùng đục trước gan.', 'Gõ đục vùng thấp'], correct: "D", topic: "bai5" },
+{ id: 46, text: "Nghe bụng bệnh nhân vỡ tạng đặc:", answers: ['Nhu động ruột tăng.', 'Nhu động ruột giảm.', 'Mất nhu động ruột.', 'Nhu động ruột bình thường.'], correct: "B", topic: "bai5" },
+{ id: 47, text: "Thăm Douglas bệnh nhân vỡ tạng đặc:", answers: ['Đau bên phải túi cùng.', 'Căng phồng, đau.', 'Tiếng kêu Douglas.', 'Máu dính vào ngón tay thăm khám.'], correct: "B", topic: "bai5" },
+{ id: 48, text: "Chọn câu sai: X-Quang bụng bệnh nhân vỡ tạng đặc:", answers: ['Liềm hơi dưới cơ hoành bên phải.', 'Liềm hơi dưới cơ hoành bên trái.', 'Bóng gan hoặc lách to.', 'Bụng mờ, các quai ruột cách xa nhau, ít giá trị chẩn đoán.'], correct: "A", topic: "bai5" },
+{ id: 49, text: "Siêu âm bụng bệnh nhân vỡ tạng đặc, phát hiện chính xác tình trạng tổn thương tạng đặc và dịch, hơi trong ổ bụng:", answers: ['Đúng.', 'Sai'], correct: "A", topic: "bai5" },
+{ id: 50, text: "Bệnh nhân thủng tạng rỗng, nôn:", answers: ['Nôn khan hoặc nôn không nhiều.', 'Nôn vọt, nôn khi bị kích thích.', 'Nôn nhiều, ra cả thức ăn lên men mùi thối như phân.', 'Móc họng để nôn, nôn xong thấy dễ chịu.'], correct: "A", topic: "bai5" },
+{ id: 51, text: "Trung, đại tiện ở bệnh nhân thủng tạng rỗng:", answers: ['Lúc đầu vẫn đi cầu được, chỉ đến khi viêm phúc mạc toàn thể mới bí trung đại tiện.', 'Đi cầu một lần nốt phân ở dưới nơi tổn thương.', 'Bí trung đại tiện rõ.', 'Người bệnh trung đại tiện, bình thường'], correct: "C", topic: "bai5" },
+
+///bài 6
+{ id: 52, text: "Tính theo phương pháp con số 9 của Wallace, một chi trên:", answers: ['9%', '18%', '21%', '15%'], correct: "A", topic: "bai6" },
+{ id: 53, text: "Người bệnh bị bỏng thường chết vì sốc trong:", answers: ['24 giờ đầu.', '36 giờ đầu.', '48 giờ đầu', '12 giờ đầu.'], correct: "C", topic: "bai6" },
+{ id: 54, text: "Ghép da được chỉ định sớm, từ tuần thứ mấy:", answers: ['Từ tuần thứ 3 trở đi.', 'Từ tuần thứ 2 trở đi', 'Từ tuần thứ l trở đi.', 'Từ tuần thứ 4 trở đi.'], correct: "A", topic: "bai6" },
+{ id: 55, text: "Sau ghép da bao nhiêu giờ mới được thay băng:", answers: ['Sau 96 giờ.', 'Sau 24 giờ.', 'Sau 48 giờ.', 'Sau 72 giờ.'], correct: "D", topic: "bai6" },
+{ id: 56, text: "Bỏng ở vị trí nào thì không nên băng:", answers: ['Mặt, bộ phận sinh dục.', 'Đùi.', 'Lưng.', 'Ngực'], correct: "A", topic: "bai6" },
+{ id: 57, text: "Áp dụng quy tắc 9s của Wallace trong việc tính diện tích bỏng ở người bệnh lớn tuổi, diện tích bỏng của bà B là:", answers: ['9%', '18%', '27%', '32%'], correct: "B", topic: "bai6" },
+{ id: 58, text: "Trong những nhận định dưới đây, đâu là nhận định cần ưu tiên chăm sóc cho người bệnh:", answers: ['Người bệnh không đi lại được', 'Người bệnh đau rát nhiều vùng bỏng', 'Người bệnh sốt cao 39 độ c', 'vết bỏng ri dịch vàng đục, rìa vết thương có nhiều giả mạc'], correct: "C", topic: "bai6" },
+{ id: 59, text: "Trong những chẩn đoán điều dưỡng dưới đây, chẩn đoán nào KHÔNG phù hợp với tình trạng người bệnh hiện tại:", answers: ['Người bệnh ngủ ít do đau rát vết bỏng', 'Tăng thân nhiệt do nhiễm trùng vết bỏng', 'Người bệnh đau rát nhiều do tổn thương da vùng bỏng', 'Người bệnh suy kiệt do bỏng'], correct: "D", topic: "bai6" },
+{ id: 60, text: "Trong kế hoạch chăm sóc tình trạng vết bỏng rỉ dịch vàng đục, rìa vết thương có nhiều giả mạc của người bệnh, nội dung nào dưới đây KHÔNG ĐÚNG:", answers: ['Theo dõi dấu hiệu sinh tồn', 'Thay băng vết bỏng hàng ngày bằng nước muối sinh lí', 'Cắt lọc những vừng có giả mạc', 'Thực hiện y lệnh thuốc giảm đau trước lúc thay băng'], correct: "A", topic: "bai6" },
+{ id: 61, text: "Phát biểu về chế độ dinh dưỡng nào sau đây KHÔNG đúng với tình trạng của người bệnh:", answers: ['Chất béo trong khẩu phần ăn của người bệnh phải được tăng lên để đủ tiêu chuẩn >30% của khẩu phần ăn.', 'Người bệnh cần tăng cường uống nước và ăn các loại thức ăn bổ sung vitamin và chất khoáng.', 'Khẩu phần ăn của người bệnh cần tăng cường protein, đảm bảo tỉ lệ tối thiểu protein là 20% trong khẩu phần ăn.', 'Người bệnh cần tăng cường uống nhiều.'], correct: "A", topic: "bai6" }
+
+
+    ];
+
+     let currentTopic = null;
+    let shuffleQuestions = true;
+    let shuffleAnswers = true;
+    let currentQuestions = [];
+    let userSelections = {};
+    let answersMapping = new Map();
+    
+    const questionsContainer = document.getElementById("questionsContainer");
+    const scoreContainer = document.getElementById("scoreContainer");
+    const shuffleQuestionsToggle = document.getElementById("shuffleQuestionsToggle");
+    const shuffleAnswersToggle = document.getElementById("shuffleAnswersToggle");
+    const liveScoreSpan = document.getElementById("liveScore");
+    
+    function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+    
+function getFilteredQuestions() {
+    let questions = (currentTopic === 'all') ? [...QUESTION_SET] : QUESTION_SET.filter(q => q.topic === currentTopic);
+    
+    if (shuffleQuestions) {
+        let group1620 = questions.filter(q => q.topic === 'bai6' && q.id >= 57 && q.id <= 61);
+        let others = questions.filter(q => !(q.topic === 'bai6' && q.id >= 57 && q.id <= 61));
+
+        for (let i = others.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [others[i], others[j]] = [others[j], others[i]];
+        }
+
+        if (group1620.length > 0) {
+            const insertIdx = Math.floor(Math.random() * (others.length + 1));
+            others.splice(insertIdx, 0, ...group1620);
+        }
+        return others;
+    }
+    return questions;
+}
+    
+    function buildAnswerMapping(question) {
+        const originalAnswers = question.answers;
+        const correctIndex = question.correct.charCodeAt(0) - 65;
+        const correctText = originalAnswers[correctIndex];
+        
+        if (!shuffleAnswers) {
+            return {
+                displayList: [
+                    { letter: "A", text: originalAnswers[0] },
+                    { letter: "B", text: originalAnswers[1] },
+                    { letter: "C", text: originalAnswers[2] },
+                    { letter: "D", text: originalAnswers[3] }
+                ],
+                correctLetterDisplay: question.correct
+            };
+        } else {
+            let items = originalAnswers.map((text, idx) => ({ text }));
+            items = shuffleArray([...items]);
+            const displayList = items.map((item, newIdx) => ({ letter: String.fromCharCode(65+newIdx), text: item.text }));
+            const found = displayList.find(item => item.text === correctText);
+            return {
+                displayList,
+                correctLetterDisplay: found ? found.letter : "A"
+            };
+        }
+    }
+    
+    function updateAllUI() {
+        if (!currentQuestions.length) {
+            liveScoreSpan.innerText = `0 / 0`;
+            return;
+        }
+        let correctCount = 0;
+        
+        for (let q of currentQuestions) {
+            const mapping = answersMapping.get(q.id);
+            if (!mapping) continue;
+            const selectedLetter = userSelections[q.id];
+            const isCorrect = (selectedLetter && selectedLetter === mapping.correctLetterDisplay);
+            if (isCorrect) correctCount++;
+            
+            const cardDiv = document.querySelector(`.question-card[data-qid='${q.id}']`);
+            if (!cardDiv) continue;
+            
+            const iconSpan = cardDiv.querySelector('.status-icon');
+            if (iconSpan) {
+                if (!selectedLetter) {
+                    iconSpan.innerHTML = "⚪ Chưa làm";
+                    iconSpan.className = "status-icon status-none";
+                } else if (isCorrect) {
+                    iconSpan.innerHTML = "✓ Đúng";
+                    iconSpan.className = "status-icon status-correct";
+                } else {
+                    iconSpan.innerHTML = "✗ Sai";
+                    iconSpan.className = "status-icon status-wrong";
+                }
+            }
+            
+            const answerDivs = cardDiv.querySelectorAll('.answer-option');
+            for (let ansDiv of answerDivs) {
+                const letter = ansDiv.dataset.letter;
+                const isSelected = (selectedLetter === letter);
+                
+                ansDiv.classList.remove('correct-highlight', 'wrong-highlight');
+                
+                if (isSelected) {
+                    if (isCorrect) {
+                        ansDiv.classList.add('correct-highlight');
+                    } else {
+                        ansDiv.classList.add('wrong-highlight');
+                    }
+                }
+                
+                let statusSpan = ansDiv.querySelector('.answer-status');
+                if (!statusSpan) {
+                    statusSpan = document.createElement('span');
+                    statusSpan.className = 'answer-status';
+                    ansDiv.appendChild(statusSpan);
+                }
+                
+                if (isSelected && isCorrect) {
+                    statusSpan.innerHTML = '✓';
+                    statusSpan.className = 'answer-status check-mark';
+                } else if (isSelected && !isCorrect) {
+                    statusSpan.innerHTML = '✗';
+                    statusSpan.className = 'answer-status cross-mark';
+                } else {
+                    statusSpan.innerHTML = '';
+                }
+            }
+        }
+        liveScoreSpan.innerText = `${correctCount} / ${currentQuestions.length}`;
+    }
+    
+    function onAnswerClick(questionId, selectedLetter) {
+        userSelections[questionId] = selectedLetter;
+        
+        const questionCard = document.querySelector(`.question-card[data-qid='${questionId}']`);
+        if (questionCard) {
+            const allOptions = questionCard.querySelectorAll('.answer-option');
+            allOptions.forEach(opt => {
+                const letter = opt.dataset.letter;
+                if (letter === selectedLetter) {
+                    opt.classList.add('selected');
+                } else {
+                    opt.classList.remove('selected');
+                }
+            });
+        }
+        updateAllUI();
+    }
+    
+    // Hàm cuộn xuống câu hỏi đầu tiên
+    function scrollToFirstQuestion() {
+        setTimeout(() => {
+            const firstQuestion = document.querySelector('.question-card');
+            if (firstQuestion) {
+                firstQuestion.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }, 100);
+    }
+    
+   function renderFullQuiz() {
+    if (!currentTopic) {
+        scoreContainer.style.display = "none";
+        questionsContainer.innerHTML = `
+            <div class="welcome-message">
+                👋 Chào bạn!<br>
+                Hãy chọn một chủ đề bên trên để bắt đầu làm bài trắc nghiệm.
+            </div>
+        `;
+        return;
+    }
+    
+    currentQuestions = getFilteredQuestions();
+    answersMapping.clear();
+    for (let q of currentQuestions) {
+        answersMapping.set(q.id, buildAnswerMapping(q));
+    }
+    userSelections = {};
+    
+    if (currentQuestions.length === 0) {
+        scoreContainer.style.display = "block";
+        questionsContainer.innerHTML = `<div class="card" style="text-align:center">⚠️ Không có câu hỏi cho chủ đề này.</div>`;
+        liveScoreSpan.innerText = `0 / 0`;
+        return;
+    }
+    
+let html = '';
+    // Sử dụng Set để ghi nhớ các tình huống đã hiển thị, tránh lặp lại khi render
+    let renderedGroups = new Set(); 
+
+    currentQuestions.forEach((q, idx) => {
+        // --- TÌNH HUỐNG 1: BÀI 2 (Câu 16-20) ---
+        if (q.topic === 'bai6' && q.id >= 57 && q.id <= 61) {
+            if (!renderedGroups.has('context1')) {
+                // Tính số thứ tự hiển thị thực tế của cụm này
+                const groupIndices = currentQuestions
+                    .map((item, i) => (item.topic === 'bai6' && item.id >= 57 && item.id <= 61) ? i + 1 : null)
+                    .filter(x => x !== null);
+                const f = groupIndices[0], l = groupIndices[groupIndices.length - 1];
+
+                html += `
+                    <div class="card" style="background: #fff8e1; border-left: 5px solid #ffa000; font-style: italic; margin-bottom: 15px; line-height: 1.6;">
+                        <strong>*** Tình huống:</strong> <br/>
+Người bệnh nữ B, 49 tuổi vào viện vì lỷ do bỏng nước sôi mặt trước từ gối xuống
+hai bàn chân. <br>Bà B khai ở nhà đã rửa nước lạnh và dùng kem đánh răng đe bôi vào vết
+bỏng. <br>Người bệnh được khám và điểu trị tại Khoa Ngoại bỏng 5 ngày, tình trạng người
+bệnh hiện tại: Dấu sinh tồn: Mạch 72 lần/phút, Nhiệt độ: 39°c, Huyết áp: 130/70mmHg,
+Nhịp thở: 18 lần/phút vết bỏng rỉ dịch thẩm băng màu vàng đục, bong da vùng cẳng
+chân để lộ nền da đỏ thẫm, rìa vết thương có nhiều giả mạc màu đen. Người bệnh đau
+rát nhiều vùng bỏng, không đi lại được, người bệnh mệt nhiều, ăn uống không ngon
+miệng, ngũ ít (3-4h/ ngày). <br>
+Người bệnh mắc bệnh đái tháo đường tuýp 2 đã 4 năm.
+
+								<br> <strong>Trả lời các câu hỏi từ câu ${f} đến câu ${l}:</strong>
+                    </div>`;
+                renderedGroups.add('context1');
+            }
+        }
+
+
+        // Render câu hỏi như cũ
+        const mapping = answersMapping.get(q.id);
+        if (!mapping) return;
+        const { displayList } = mapping;
+        let answersHtml = '';
+        for (let ans of displayList) {
+            answersHtml += `
+                <div class="answer-option" data-qid="${q.id}" data-letter="${ans.letter}">
+                    <span class="answer-letter">${ans.letter}</span>
+                    <span class="answer-text">${escapeHtml(ans.text)}</span>
+                    <span class="answer-status"></span>
+                </div>
+            `;
+        }
+        html += `
+            <div class="question-card" data-qid="${q.id}">
+                <div class="question-text">
+                    <span><strong>${idx+1}.</strong> ${escapeHtml(q.text)}</span>
+                    <span class="status-icon status-none">⚪ Chưa làm</span>
+                </div>
+                <div class="answers">
+                    ${answersHtml}
+                </div>
+            </div>
+        `;
+    });
+    
+    questionsContainer.innerHTML = html;
+    scoreContainer.style.display = "flex";
+    
+    document.querySelectorAll('.answer-option').forEach(el => {
+        el.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const qid = parseInt(el.dataset.qid);
+            const letter = el.dataset.letter;
+            if (!isNaN(qid) && letter) {
+                onAnswerClick(qid, letter);
+            }
+        });
+    });
+    
+    updateAllUI();
+    scrollToFirstQuestion();
+}
+    
+    function escapeHtml(str) {
+        if (!str) return "";
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    function refreshQuiz() {
+        renderFullQuiz();
+    }
+    
+    function initEventListeners() {
+        const topicBtns = document.querySelectorAll('.topic-btn');
+        topicBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const topic = btn.dataset.topic;
+                if (!topic) return;
+                currentTopic = topic;
+                topicBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                refreshQuiz();
+            });
+        });
+        
+        shuffleQuestionsToggle.addEventListener('change', (e) => {
+            shuffleQuestions = e.target.checked;
+            if (currentTopic) refreshQuiz();
+        });
+        
+        shuffleAnswersToggle.addEventListener('change', (e) => {
+            shuffleAnswers = e.target.checked;
+            if (currentTopic) refreshQuiz();
+        });
+    }
+    
+    function init() {
+        shuffleQuestions = shuffleQuestionsToggle.checked;
+        shuffleAnswers = shuffleAnswersToggle.checked;
+        initEventListeners();
+        currentTopic = null;
+        renderFullQuiz();
+    }
+    
+    init();
+</script>
+</body>
+</html>
