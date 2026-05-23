@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Trắc nghiệm Chăm sóc sức khỏe pHụ nữ bà mẹ và gia đình - Chauhuynh0104</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: #f0f4f8;
+            font-family: system-ui, 'Segoe UI', 'Roboto', 'Noto Sans', sans-serif;
+            padding: 16px 12px 80px;
+            color: #0f172a;
+        }
+
+        .app-container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 28px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            padding: 20px 18px;
+            margin-bottom: 20px;
+        }
+
+        .quiz-header {
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 12px;
+            margin-bottom: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .quiz-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1e3c72, #2b4c7c);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .badge {
+            background: #eef2ff;
+            padding: 6px 12px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #1e3c72;
+        }
+
+        .topic-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .topic-btn {
+            background: #eef2ff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.2s;
+            color: #1e293b;
+            flex: 1 0 auto;
+            text-align: center;
+        }
+
+        .topic-btn.active {
+            background: #1e3c72;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .toggle-row {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            background: #f8fafc;
+            padding: 12px 16px;
+            border-radius: 60px;
+            margin-bottom: 20px;
+        }
+
+        .toggle-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e1;
+            transition: 0.3s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #2d6a4f;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+
+        .question-card {
+            background: white;
+            border-radius: 24px;
+            margin-bottom: 20px;
+            padding: 18px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+            scroll-margin-top: 20px;
+        }
+
+        .question-text {
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 16px;
+            line-height: 1.4;
+            background: #fefce8;
+            padding: 12px;
+            border-radius: 20px;
+            border-left: 5px solid #eab308;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .status-icon {
+            font-size: 0.85rem;
+            font-weight: bold;
+            background: white;
+            border-radius: 40px;
+            padding: 4px 12px;
+            min-width: 95px;
+            text-align: center;
+        }
+
+        .status-correct {
+            color: #15803d;
+            background: #dcfce7;
+            border: 1px solid #86efac;
+        }
+
+        .status-wrong {
+            color: #b91c1c;
+            background: #fee2e2;
+            border: 1px solid #fca5a5;
+        }
+
+        .status-none {
+            color: #64748b;
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+        }
+
+        .answers {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .answer-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            background: #f9f9ff;
+            border-radius: 60px;
+            border: 2px solid #e2edff;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+
+        .answer-option:hover {
+            background: #eef2ff;
+        }
+
+        .answer-option.correct-highlight {
+            border: 3px solid #15803d;
+            background: #e8f5e9;
+        }
+
+        .answer-option.wrong-highlight {
+            border: 3px solid #dc2626;
+            background: #fee2e2;
+        }
+
+        .answer-option.selected {
+            background: #e0f2fe;
+            border-color: #0284c7;
+        }
+
+        .answer-letter {
+            font-weight: 800;
+            background: #e2e8f0;
+            width: 36px;
+            height: 36px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 60px;
+            font-size: 0.9rem;
+        }
+
+        .answer-text {
+            flex: 1;
+            font-size: 0.92rem;
+        }
+
+        .answer-status {
+            font-size: 1.2rem;
+            font-weight: bold;
+            min-width: 44px;
+            text-align: center;
+        }
+
+        .check-mark {
+            color: #15803d;
+        }
+
+        .cross-mark {
+            color: #dc2626;
+        }
+
+        .score-bar {
+            background: #e6f7ed;
+            padding: 14px 18px;
+            border-radius: 60px;
+            text-align: center;
+            font-weight: bold;
+            margin: 8px 0 16px;
+            font-size: 1rem;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .progress-text {
+            background: #1e3c72;
+            color: white;
+            border-radius: 30px;
+            padding: 4px 16px;
+        }
+
+        .welcome-message {
+            text-align: center;
+            padding: 40px 20px;
+            background: #fef9e3;
+            border-radius: 28px;
+            color: #b45309;
+            font-weight: 500;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 32px;
+            padding: 20px 10px;
+            font-size: 0.75rem;
+            color: #475569;
+            border-top: 1px solid #cbd5e1;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="card">
+        <div class="quiz-header">
+            <h2>📚 Trắc nghiệm Chăm sóc sức khỏe phụ nữ bà mẹ và gia đình</h2>
+      
+        </div>
+
+
+        <div class="topic-buttons" id="topicButtons">
+            <button data-topic="all" class="topic-btn">📖 Bắt đầu</button>
+				  
+
+        </div>
+
+      <div class="toggle-row">
+            <div class="toggle-item">
+                <span>🔄 Xáo trộn câu hỏi</span>
+                <label class="switch">
+                    <input type="checkbox" id="shuffleQuestionsToggle" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="toggle-item">
+                <span>🎲 Xáo trộn đáp án</span>
+                <label class="switch">
+                    <input type="checkbox" id="shuffleAnswersToggle" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div id="scoreContainer" class="score-bar" style="display: none;">
+        <span>🏆 Kết quả hiện tại</span>
+        <span id="liveScore" class="progress-text">0 / 0</span>
+    </div>
+
+    <div id="questionsContainer">
+        <div class="welcome-message">
+            👋 Chào bạn!<br>
+            Hãy chọn một chủ đề bên trên để bắt đầu làm bài trắc nghiệm.
+        </div>
+    </div>
+    
+    <footer>© 2014-2026 Dr.Châu</footer>
+</div>
+
+<script>
+    // ---------- DỮ LIỆU CÂU HỎI ----------
+    const QUESTION_SET = [
+{ id: 1, text: `Chu kỳ kinh nguyệt bình thường có khoảng cách giữa hai lần hành kinh là bao nhiêu ngày?`, answers: ['15-20 ngày', '21-35 ngày', '40-45 ngày', '60 ngày'], correct: "B", topic: "bai1" },
+{ id: 2, text: `Hormone nào chịu trách nhiệm chính cho việc làm dày niêm mạc tử cung ở nửa đầu chu kỳ?`, answers: ['Estrogen', 'Progesterone', 'LH', 'FSH'], correct: "A", topic: "bai1" },
+{ id: 3, text: `"Rong kinh" là hiện tượng hành kinh kéo dài quá mấy ngày?`, answers: ['3 ngày', '5 ngày', '7 ngày', '10 ngày'], correct: "C", topic: "bai1" },
+{ id: 4, text: `Tác nhân thường gặp nhất gây khí hư trắng đặc như bã đậu là gì?`, answers: ['Nấm Candida', 'Trùng roi', 'Lậu cầu', 'Giang mai'], correct: "A", topic: "bai1" },
+{ id: 5, text: `Triệu chứng điển hình nhất của viêm âm đạo do Trùng roi (Trichomonas) là gì?`, answers: ['Khí hư đặc', 'Khí hư xanh, có bọt và hôi', 'Ra máu âm đạo', 'Đau lưng'], correct: "B", topic: "bai1" },
+{ id: 6, text: `Biện pháp tránh thai nào ngăn ngừa được cả thai nghén và bệnh lây truyền qua đường tình dục?`, answers: ['Vòng tránh thai', 'Bao cao su', 'Thuốc tránh thai', 'Triệt sản'], correct: "B", topic: "bai1" },
+{ id: 7, text: `Độ tuổi bắt đầu tầm soát ung thư cổ tử cung phổ biến theo khuyến cáo là từ bao nhiêu?`, answers: ['15 tuổi', '21 tuổi', '45 tuổi', '60 tuổi'], correct: "B", topic: "bai1" },
+{ id: 8, text: `U xơ tử cung là loại khối u có tính chất nào?`, answers: ['U lành tính', 'U ác tính', 'U nang', 'U ác tính di căn sớm'], correct: "A", topic: "bai1" },
+{ id: 9, text: `Vị trí thường gặp nhất của ung thư vú là ở đâu?`, answers: ['1/4 trên ngoài', '1/4 dưới trong', 'Quầng vú', 'Hố nách'], correct: "A", topic: "bai1" },
+{ id: 10, text: `Xét nghiệm nào dùng để phát hiện sớm các tế bào bất thường tại cổ tử cung?`, answers: ['Siêu âm', 'Pap smear', 'Chụp X-quang', 'Xét nghiệm máu'], correct: "B", topic: "bai1" },
+{ id: 11, text: `Thời điểm rụng trứng ở phụ nữ có chu kỳ 28 ngày thường là ngày thứ mấy?`, answers: ['Ngày 7', 'Ngày 14', 'Ngày 21', 'Ngày 28'], correct: "B", topic: "bai1" },
+{ id: 12, text: `Loại thuốc tránh thai khẩn cấp phổ biến hiện nay thường có thời hạn sử dụng tối đa sau quan hệ là bao lâu?`, answers: ['12h', '24h', '72h', '1 tháng'], correct: "C", topic: "bai1" },
+{ id: 13, text: `Phụ nữ tự khám vú tại nhà nên thực hiện vào thời điểm nào mỗi tháng?`, answers: ['Khi đang hành kinh', '3-5 ngày sau khi sạch kinh', 'Trước khi hành kinh', 'Ngày rụng trứng'], correct: "B", topic: "bai1" },
+{ id: 14, text: `Triệu chứng thường gặp nhất của ung thư nội mạc tử cung ở phụ nữ mãn kinh là gì?`, answers: ['Ra máu âm đạo bất thường', 'Sụt cân nhanh', 'Đau bụng dưới', 'Sốt'], correct: "A", topic: "bai1" },
+{ id: 15, text: `Thuốc tránh thai hàng ngày loại phối hợp thường chứa hai loại hormone nào?`, answers: ['Estrogen và Progestin', 'LH và FSH', 'Estrogen và Testosterone', 'Oxytocin và Prolactin'], correct: "A", topic: "bai1" },
+{ id: 16, text: `"Thống kinh" là thuật ngữ dùng để chỉ tình trạng gì?`, answers: ['Kinh ra nhiều', 'Đau bụng khi hành kinh', 'Mất kinh', 'Kinh thưa'], correct: "B", topic: "bai1" },
+{ id: 17, text: `Biện pháp tránh thai "Vô kinh cho bú" (LAM) có hiệu quả tối đa trong bao lâu sau sinh?`, answers: ['3 tháng', '6 tháng', '1 năm', '2 năm'], correct: "B", topic: "bai1" },
+{ id: 18, text: `Tác nhân chính gây ra ung thư cổ tử cung là gì?`, answers: ['Vi khuẩn', 'Virus HPV', 'Virus HIV', 'Nấm'], correct: "B", topic: "bai1" },
+{ id: 19, text: `Khối u vú ác tính thường có đặc điểm nào khi sờ nắn?`, answers: ['Mềm, di động', 'Cứng, ít di động, không đau', 'Đau nhiều, có mủ', 'Tròn đều, nhẵn'], correct: "B", topic: "bai1" },
+{ id: 20, text: `Độ pH sinh lý bình thường của âm đạo phụ nữ ở tuổi sinh đẻ là bao nhiêu?`, answers: ['Kiềm', 'Acid nhẹ (3.8 - 4.5)', 'Trung tính', 'Rất kiềm'], correct: "B", topic: "bai1" },
+{ id: 21, text: `Triệu chứng chính của viêm lộ tuyến cổ tử cung là gì?`, answers: ['Khí hư ra nhiều', 'Vô kinh', 'Đau ngực', 'Rụng tóc'], correct: "A", topic: "bai1" },
+{ id: 22, text: `"Kinh thưa" là khi chu kỳ kinh kéo dài trên bao nhiêu ngày?`, answers: ['28 ngày', '35 ngày', '45 ngày', '60 ngày'], correct: "B", topic: "bai1" },
+{ id: 23, text: `Thủ thuật nội khoa nào dùng để đình chỉ thai sớm bằng thuốc?`, answers: ['Hút thai', 'Nong gắp thai', 'Phá thai nội khoa', 'Đặt vòng'], correct: "C", topic: "bai1" },
+{ id: 24, text: `Vị trí lấy bệnh phẩm trong xét nghiệm Pap smear là ở đâu?`, answers: ['Đáy tử cung', 'Cổ tử cung', 'Vòi trứng', 'Âm hộ'], correct: "B", topic: "bai1" },
+{ id: 25, text: `Biện pháp tránh thai nào là biện pháp vĩnh viễn?`, answers: ['Thuốc tiêm', 'Cấy que', 'Triệt sản', 'Tính ngày rụng trứng'], correct: "C", topic: "bai1" },
+{ id: 26, text: `Trong chăm sóc bệnh nhân thai chết lưu, biến chứng nguy hiểm nhất cần theo dõi sát là:`, answers: ['Nhiễm trùng tử cung.', 'Rối loạn đông máu.', 'Sụt cân và suy nhược.', 'Trầm cảm sau sảy thai.'], correct: "B", topic: "bai1" },
+{ id: 27, text: `Triệu chứng đặc trưng của thai ngoài tử cung vỡ gây lụt máu ổ bụng là:`, answers: ['Đau bụng âm ỉ kéo dài nhiều ngày.', 'Ra máu âm đạo đỏ tươi số lượng nhiều.', 'Sốt cao và run rẩy.', 'Đau nhói đột ngột kèm theo dấu hiệu choáng (mạch nhanh, huyết áp tụt).'], correct: "D", topic: "bai1" },
+{ id: 28, text: `Đặc tính của ra máu âm đạo trong rau tiền đạo là:`, answers: ['Ra máu tươi kèm với đau bụng.', 'Ra máu đột ngột, không nguyên nhân báo trước, không kèm đau bụng.', 'Ra máu tươi đột ngột kèm đau bụng.', 'Ra máu tươi, có triệu chứng báo trước, kèm đau bụng.'], correct: "B", topic: "bai1" },
+{ id: 29, text: `Chỉ số tim thai bình thường ở thai nhi khỏe mạnh nằm trong khoảng:`, answers: ['80 - 100 lần/phút', '120 - 160 lần/phút', '160 - 200 lần/phút', '60 - 80 lần/phút'], correct: "B", topic: "bai1" },
+{ id: 30, text: `Triệu chứng điển hình nhất của Rau tiền đạo là:`, answers: ['Ra máu âm đạo đỏ tươi, không đau bụng, thường xảy ra ở 3 tháng cuối', 'Đau bụng dữ dội như dao đâm', 'Nước ối ra màu xanh bẩn', 'Sốt cao kèm rét run'], correct: "A", topic: "bai1" },
+{ id: 31, text: `Dấu hiệu nào cho thấy sản phụ đã bước vào giai đoạn chuyển dạ thực sự?`, answers: ['Xuất hiện cơn co tử cung thưa, không tăng dần', 'Cơn co tử cung đều đặn, tăng dần về cường độ và gây xóa mở cổ tử cung', 'Cảm thấy thai nhi đạp mạnh hơn', 'Đau lưng âm ỉ nhưng không thấy bụng gò'], correct: "B", topic: "bai1" },
+{ id: 32, text: `Xét nghiệm Protein niệu ở phụ nữ mang thai nhằm mục đích tầm soát bệnh lý gì?`, answers: ['Viêm bàng quang', 'Tiền sản giật', 'Thai lưu', 'Rau tiền đạo'], correct: "B", topic: "bai1" },
+{ id: 33, text: `Hiện tượng "sa tử cung" sau sinh thường do nguyên nhân nào sau đây?`, answers: ['Do ăn quá nhiều', 'Do lao động nặng sớm hoặc cơ tầng sinh môn bị rách, suy yếu', 'Do nằm bất động quá lâu', 'Do cho con bú quá nhiều'], correct: "B", topic: "bai1" },
+{ id: 34, text: `Thuốc nào thường được dùng nhất để dự phòng và điều trị băng huyết sau sinh do đờ tử cung?`, answers: ['Paracetamol', 'Oxytocin', 'Aspirin', 'Penicillin'], correct: "B", topic: "bai1" },
+{ id: 35, text: `Xử trí trong trường hợp thai phụ dọa sẩy thai gồm các bước sau, chọn câu sai:`, answers: ['Nằm nghỉ ngơi. Tránh quan hệ vợ chồng.', 'Cho vitamin E và progesteron tự nhiên.', 'Có thể sử dụng Oxytoxin tăng co bóp tử cung để tống thai ra nhanh.', 'Cho thuốc giảm co bóp tử cung.'], correct: "C", topic: "bai1" },
+{ id: 36, text: `Trường hợp thai phụ dọa sẩy thai cần xử trí theo các bước sau:`, answers: ['Cho nằm nghỉ ngơi, uống progesteron tự nhiên, vitamin E, thuốc giảm go tử cung.', 'Cho thuốc tăng go tử cung giúp thai ra nhanh.', 'Nạo hút thai đang dọa sẩy.', 'Khám âm đạo'], correct: "A", topic: "bai1" },
+{ id: 37, text: `Sẩy thai là:`, answers: ['Thai < 22 tuần (hoặc < 6 tháng tùy giáo trình cũ) bị tống xuất ra khỏi buồng tử cung, trọng lượng < 500 gram.', 'Thai < 3 tháng bị tống xuất ra khỏi buồng tử cung.', 'Thai < 4 tháng bị tống xuất ra khỏi buồng tử cung.', 'Thai > 6 tháng bị tống xuất ra khỏi buồng tử cung.'], correct: "A", topic: "bai1" },
+{ id: 38, text: `Trong chăm sóc thai phụ bị tiền sản giật, nội dung nào cần được theo dõi thường xuyên nhất?`, answers: ['Huyết áp, phù và protein niệu.', 'Màu tóc của thai phụ.', 'Chiều cao của người chồng.', 'Số lần thai phụ thay quần áo.'], correct: "A", topic: "bai1" },
+{ id: 39, text: `Khi thai phụ báo thai máy giảm rõ rệt so với ngày thường, điều dưỡng cần tư vấn thai phụ làm gì?`, answers: ['Nằm nghỉ ở nhà thêm vài ngày.', 'Đến cơ sở y tế để được đánh giá tình trạng thai ngay.', 'Uống nước đường rồi bỏ qua triệu chứng.', 'Tự mua thuốc dưỡng thai để uống.'], correct: "B", topic: "bai1" },
+{ id: 40, text: `Trong chăm sóc thai phụ vỡ ối sớm, dấu hiệu nào cần theo dõi để phát hiện nhiễm khuẩn?`, answers: ['Sốt, nước ối đổi màu hoặc có mùi hôi.', 'Tóc rụng nhiều.', 'Ăn ngon miệng hơn.', 'Da mặt sạm nhẹ.'], correct: "A", topic: "bai1" },
+{ id: 41, text: `Thai phụ ra máu âm đạo ở 3 tháng cuối thai kỳ cần được hướng dẫn điều gì?`, answers: ['Đến cơ sở y tế ngay và không tự thăm khám âm đạo.', 'Tự đặt thuốc âm đạo trước khi đi khám.', 'Đi lại nhiều để máu ra hết.', 'Chờ đến lần khám thai định kỳ.'], correct: "A", topic: "bai1" },
+{ id: 42, text: `Thai phụ đái tháo đường thai kỳ cần được hướng dẫn theo dõi chỉ số nào tại nhà nếu có chỉ định?`, answers: ['Đường huyết mao mạch.', 'Độ dài móng tay.', 'Vòng cổ.', 'Màu sắc tóc.'], correct: "A", topic: "bai1" },
+{ id: 43, text: `Thời kỳ hậu sản bình thường được tính trong khoảng thời gian nào kể từ khi sổ rau?`, answers: ['2 tuần sau sinh.', '4 tuần sau sinh.', '6 tuần sau sinh.', '8 tuần sau sinh.'], correct: "C", topic: "bai1" },
+{ id: 44, text: `Trẻ sơ sinh thường rụng rốn tự nhiên vào khoảng thời gian nào?`, answers: ['1 - 3 ngày sau sinh.', '7 - 10 ngày sau sinh.', '15 - 20 ngày sau sinh.', '30 ngày sau sinh.'], correct: "B", topic: "bai1" },
+{ id: 45, text: `Sữa non là loại sữa có đặc điểm sinh học quan trọng nào sau đây?`, answers: ['Màu vàng nhạt, sánh, chứa rất nhiều kháng thể tự nhiên.', 'Màu trắng trong, loãng, nhiều nước.', 'Chỉ xuất hiện sau khi sinh được 10 ngày.', 'Chứa nhiều đường nhưng rất ít đạm.'], correct: "A", topic: "bai1" },
+{ id: 46, text: `Trong kỹ thuật cho bú, tư thế bú đúng yêu cầu bụng của trẻ phải:`, answers: ['Áp sát vào bụng mẹ.', 'Cách xa bụng mẹ để trẻ dễ thở.', 'Nằm ngửa hoàn toàn.', 'Quay về phía chân mẹ.'], correct: "A", topic: "bai1" },
+{ id: 47, text: `Chỉ số Apgar được các nhân viên y tế sử dụng để đánh giá tình trạng của:`, answers: ['Sản phụ ngay sau khi sổ rau.', 'Trẻ sơ sinh ngay sau khi đẻ.', 'Thai nhi đang trong buồng tử cung.', 'Bánh nhau sau khi được sổ ra ngoài.'], correct: "B", topic: "bai1" },
+{ id: 48, text: `Khi thực hiện tắm bé, nhiệt độ nước tắm thích hợp nhất để tránh làm trẻ bị bỏng hoặc nhiễm lạnh là:`, answers: ['25 - 27°C.', '30 - 32°C.', '37 - 38°C.', '40 - 42°C.'], correct: "C", topic: "bai1" },
+{ id: 49, text: `Dấu hiệu lâm sàng khách quan nhất chứng tỏ trẻ sơ sinh đã bú đủ sữa mẹ là:`, answers: ['Trẻ ngủ liên tục 10 tiếng đồng hồ không dậy.', 'Trẻ đi tiểu ít nhất 6 lần/ngày và cân nặng tăng đều đặn.', 'Trẻ khóc thật to mỗi khi thức dậy.', 'Trẻ đi ngoài ra phân su màu xanh đen.'], correct: "B", topic: "bai1" },
+{ id: 50, text: `Mục đích chính của việc cho trẻ bú mẹ sớm ngay trong vòng 1 giờ đầu sau sinh là:`, answers: ['Giúp trẻ làm quen với vú mẹ nhanh hơn.', 'Đảm bảo trẻ không bị hạ đường huyết.', 'Giúp tử cung mẹ co hồi tốt và trẻ nhận được sữa non quý giá.', 'Giúp người mẹ sớm hồi phục sức khỏe tinh thần.'], correct: "C", topic: "bai1" },
+{ id: 51, text: `Trong chăm sóc rốn trẻ sơ sinh hàng ngày, hành động nào sau đây là ĐÚNG?`, answers: ['Băng rốn thật kín bằng gạc vô khuẩn nhiều lớp.', 'Để rốn hở, thoáng và vệ sinh bằng nước muối sinh lý.', 'Đắp các loại lá thuốc dân gian để rốn nhanh khô.', 'Bôi mỡ kháng sinh vào chân rốn hằng ngày để phòng viêm.'], correct: "B", topic: "bai1" },
+{ id: 52, text: `Khi trẻ sơ sinh bị ọc sữa sinh lý, điều dưỡng cần hướng dẫn người mẹ xử trí:`, answers: ['Đặt trẻ nằm nghiêng, làm sạch miệng và vỗ về trẻ.', 'Xốc ngược trẻ lên ngay lập tức để sữa thoát ra.', 'Cho trẻ bú thêm ngay để bù lại lượng sữa đã mất.', 'Quấn tã thật chặt vùng bụng để ngăn sữa trào ra.'], correct: "A", topic: "bai1" },
+{ id: 53, text: `Chăm sóc sản phụ có vết khâu tầng sinh môn, nên hướng dẫn vệ sinh như thế nào?`, answers: ['Rửa bằng xà phòng sát khuẩn mạnh 5 lần/ngày.', 'Rửa sạch bằng nước sạch hoặc dung dịch sát khuẩn nhẹ sau mỗi lần đi vệ sinh.', 'Luôn băng kín vết khâu bằng băng dính y tế.', 'Đắp lá chè xanh tươi trực tiếp lên vết khâu để nhanh lành.'], correct: "B", topic: "bai1" },
+{ id: 54, text: `Sữa mẹ giúp trẻ sơ sinh chống lại các bệnh nhiễm trùng chủ yếu nhờ vào:`, answers: ['Chứa các kháng thể (IgA) và các yếu tố miễn dịch tự nhiên.', 'Nhiệt độ sữa mẹ luôn nóng ổn định.', 'Sữa mẹ có nồng độ đường cao hơn sữa công thức.', 'Sữa mẹ giúp trẻ tăng cân nhanh chóng.'], correct: "A", topic: "bai1" },
+{ id: 55, text: `Khi chăm sóc rốn, nếu thấy rốn có mùi hôi và rỉ mủ, điều dưỡng nhận định đây là:`, answers: ['Hiện tượng bình thường khi rốn sắp rụng.', 'Dấu hiệu của tình trạng nhiễm trùng rốn.', 'Hậu quả của việc quấn tã quá chặt.', 'Dấu hiệu cho thấy trẻ bú chưa đủ sữa.'], correct: "B", topic: "bai1" },
+{ id: 56, text: `Với trẻ sơ sinh non tháng, phương pháp Kangaroo (da kề da) có lợi ích:`, answers: ['Ổn định thân nhiệt, nhịp thở và tăng cường tình cảm mẹ con.', 'Giúp trẻ tránh được việc phải tiêm các loại vắc xin.', 'Giúp trẻ nhanh chóng hết vàng da sinh lý.', 'Giúp trẻ phát triển mà không cần phải bú mẹ.'], correct: "A", topic: "bai1" },
+{ id: 57, text: `Vitamin K1 được tiêm cho trẻ sơ sinh ngay sau khi chào đời nhằm mục đích:`, answers: ['Phòng tránh nhiễm trùng vùng rốn.', 'Phòng ngừa xuất huyết não, màng não do thiếu hụt vitamin K.', 'Giúp trẻ nhanh chóng tăng cân nặng.', 'Giúp hệ xương của trẻ chắc khỏe hơn.'], correct: "B", topic: "bai1" },
+{ id: 58, text: `Một trong những tiêu chuẩn quan trọng nhất của "Đẻ sạch" theo quy định là:`, answers: ['Sản phụ phải được đẻ tại các bệnh viện tuyến Trung ương.', 'Bàn tay người đỡ đẻ sạch và dụng cụ cắt rốn phải vô khuẩn.', 'Sản phụ bắt buộc phải được tắm rửa ngay trước khi đẻ.', 'Phải dùng thuốc kháng sinh dự phòng cho mẹ ngay sau đẻ.'], correct: "B", topic: "bai1" },
+{ id: 59, text: `Việc thăm khám trẻ sơ sinh ngay tại phòng đẻ nhằm mục đích chính là:`, answers: ['Phát hiện sớm các dị tật bẩm sinh và các dấu hiệu đe dọa tính mạng.', 'Để xác định trẻ có ngoại hình giống bố hay giống mẹ.', 'Để giúp gia đình chọn tên phù hợp cho trẻ.', 'Để lấy số đo cân nặng chính xác cho giấy chứng sinh.'], correct: "A", topic: "bai1" },
+{ id: 60, text: `Nhỏ mắt bằng NaCl 0.9% hoặc thuốc mỡ kháng sinh cho trẻ mới sinh nhằm:`, answers: ['Phòng ngừa viêm kết mạc do vi khuẩn từ đường sinh dục mẹ.', 'Giúp đôi mắt của trẻ to và tròn hơn.', 'Để trẻ sớm nhìn rõ mọi vật xung quanh.', 'Sử dụng thay thế hoàn toàn cho việc tắm bé.'], correct: "A", topic: "bai1" },
+{ id: 61, text: `Việc tiếp xúc "Da kề da" giữa mẹ và bé nên được thực hiện vào thời điểm:`, answers: ['Ngay sau khi sinh, khi tình trạng của bé đã ổn định.', 'Chỉ thực hiện sau khi trẻ đã được tắm rửa sạch sẽ.', 'Đợi cho đến khi trẻ đã rụng rốn hoàn toàn.', 'Khi trẻ tròn 1 tháng tuổi và sức khỏe đã cứng cáp.'], correct: "A", topic: "bai1" },
+{ id: 62, text: `Tại sao nhân viên y tế bắt buộc phải kiểm tra bánh nhau ngay sau khi sổ?`, answers: ['Để đảm bảo không bị sót rau trong tử cung gây băng huyết sau sinh.', 'Để xác định chính xác cân nặng của bánh nhau.', 'Để quan sát màu sắc của bánh nhau có đẹp không.', 'Để cho sản phụ và người nhà quan sát bánh nhau.'], correct: "A", topic: "bai1" },
+{ id: 63, text: `Chăm sóc sản phụ sau sinh bị táo bón, điều dưỡng nên tư vấn:`, answers: ['Nhịn ăn một vài bữa để hạn chế đi ngoài.', 'Ăn nhiều chất xơ, uống đủ nước và vận động nhẹ nhàng sớm.', 'Tự uống các loại thuốc nhuận tràng mạnh hàng ngày.', 'Nằm bất động trên giường để vết thương không bị đau.'], correct: "B", topic: "bai1" },
+{ id: 64, text: `Vị trí tiêm vắc xin viêm gan B chuẩn cho trẻ sơ sinh là:`, answers: ['Tiêm dưới da vùng bụng.', 'Tiêm bắp tại mặt trước ngoài của đùi.', 'Tiêm vào tĩnh mạch cánh tay.', 'Tiêm trong da ở vùng mông.'], correct: "B", topic: "bai1" },
+{ id: 65, text: `Biểu hiện lâm sàng của một thời kỳ "hậu sản thông thường" bao gồm:`, answers: ['Cơn đau tử cung (đau nhiều hơn ở người con rạ), sản dịch giảm dần.', 'Sản phụ bị sốt cao lên đến 40 độ', 'Sản dịch có mùi hôi thối khó chịu.', 'Bụng sản phụ trướng căng và đau dữ dội.'], correct: "A", topic: "bai1" },
+{ id: 66, text: `Thời gian cần theo dõi sản phụ sát sao nhất tại phòng đẻ sau khi sổ rau là:`, answers: ['2 giờ đầu.', '12 giờ đầu.', '24 giờ đầu.', '1 tuần đầu.'], correct: "A", topic: "bai1" },
+{ id: 67, text: `Vàng da sinh lý ở trẻ sơ sinh thường bắt đầu xuất hiện vào thời điểm nào?`, answers: ['Ngay sau khi sinh 1 giờ.', 'Ngày thứ 2 đến ngày thứ 3 sau khi sinh.', 'Sau khi trẻ đã được 2 tuần tuổi.', 'Sau khi trẻ được 1 tháng tuổi.'], correct: "B", topic: "bai1" },
+{ id: 68, text: `Thời gian để các cơ quan sinh dục của sản phụ trở lại bình thường về mặt giải phẫu và sinh lý được gọi là thời kỳ hậu sản, kéo dài:`, answers: ['4 tuần sau khi sinh.', '6 tuần sau khi sinh.', '8 tuần sau khi sinh.', '10 tuần sau khi sinh.'], correct: "B", topic: "bai1" },
+{ id: 69, text: `Ngay sau khi sinh và sổ rau, tử cung của sản phụ có trọng lượng khoảng:`, answers: ['750 gr.', '850 gr.', '1000 gr.', '1100 gr.'], correct: "C", topic: "bai1" },
+{ id: 70, text: `Nhận định nào sau đây là đúng nhất về sự co cứng của tử cung ngay sau khi đẻ?`, answers: ['Tử cung co cứng tạo thành một khối chắc, đáy tử cung ở dưới rốn.', 'Tử cung co cứng tạo thành cầu an toàn, vị trí đáy tử cung ở ngang rốn; kèm đau bụng và đẩy sản dịch ra ngoài.', 'Tử cung co cứng tạo thành khối cầu an toàn nằm cao phía trên rốn.', 'Tử cung mềm ra để chứa máu dư thừa sau sinh.'], correct: "B", topic: "bai1" },
+{ id: 71, text: `Tại sao phụ nữ mãn kinh lại có nguy cơ cao bị loãng xương và teo âm đạo?`, answers: ['Do sụt giảm nồng độ Estrogen', 'Do thiếu Vitamin C', 'Do nhiễm khuẩn mạn tính', 'Do dùng thuốc tránh thai'], correct: "A", topic: "bai1" },
+{ id: 72, text: `Cơ chế tránh thai chính của dụng cụ tử cung (Vòng tránh thai) chứa đồng là gì?`, answers: ['Ngăn rụng trứng', 'Gây phản ứng viêm tại chỗ ngăn trứng làm tổ', 'Diệt tinh trùng bằng hóa chất', 'Làm tắc vòi trứng'], correct: "B", topic: "bai1" },
+{ id: 73, text: `Sự khác biệt cơ bản giữa rong kinh và rong huyết là gì?`, answers: ['Rong kinh liên quan đến kỳ kinh, rong huyết không liên quan', 'Rong kinh ra ít máu hơn', 'Rong huyết chỉ gặp ở người già', 'Cả hai là một'], correct: "A", topic: "bai1" },
+{ id: 74, text: `Tại sao khi điều trị viêm âm đạo do Trùng roi, cần điều trị cho cả bạn tình?`, answers: ['Vì bạn tình bị ngứa', 'Để tránh hiện tượng lây nhiễm chéo trở lại', 'Vì thuốc rẻ', 'Vì trùng roi sống trong ống dẫn tinh/niệu đạo'], correct: "B", topic: "bai1" },
+{ id: 75, text: `Ưu điểm lớn nhất của que cấy tránh thai (Implanon) so với thuốc uống hàng ngày là gì?`, answers: ['Hiệu quả kéo dài (3 năm) và không lo quên thuốc', 'Rẻ tiền hơn', 'Giúp phòng bệnh STIs', 'Không gây tác dụng phụ'], correct: "A", topic: "bai1" },
+{ id: 76, text: `Phụ nữ đang cho con bú nên dùng loại thuốc tránh thai nào để không ảnh hưởng đến sữa?`, answers: ['Thuốc phối hợp (Estrogen + Progestin)', 'Thuốc chỉ có Progestin', 'Thuốc khẩn cấp liều cao', 'Không nên dùng bất kỳ loại thuốc nào'], correct: "B", topic: "bai1" },
+{ id: 77, text: `Cơ chế gây đau trong thống kinh nguyên phát chủ yếu do yếu tố nào?`, answers: ['Nhiễm trùng tử cung', 'Tăng tiết Prostaglandin làm tử cung co bóp mạnh', 'U xơ tử cung chèn ép', 'Tâm lý lo lắng quá mức'], correct: "B", topic: "bai1" },
+{ id: 78, text: `Tại sao ung thư cổ tử cung giai đoạn sớm thường khó phát hiện lâm sàng?`, answers: ['Vì bệnh thường không có triệu chứng rõ rệt', 'Vì khối u nằm quá sâu trong ổ bụng', 'Vì xét nghiệm máu không thấy dấu hiệu gì', 'Vì các tế bào ung thư ẩn nấp dưới lớp mỡ'], correct: "A", topic: "bai1" },
+{ id: 79, text: `Sự sụt giảm hormone nào vào cuối chu kỳ dẫn đến hiện tượng bong niêm mạc tử cung?`, answers: ['FSH', 'LH', 'Cả Estrogen và Progesterone', 'Prolactin'], correct: "C", topic: "bai1" },
+{ id: 80, text: `Phụ nữ có u xơ tử cung thường bị thiếu máu do nguyên nhân nào?`, answers: ['Khối u tiêu thụ quá nhiều máu của cơ thể', 'Cường kinh và rong kinh kéo dài gây mất máu mạn tính', 'U xơ chèn ép vào tủy xương làm giảm tạo máu', 'Do bệnh nhân thường chán ăn khi có u'], correct: "B", topic: "bai1" },
+{ id: 81, text: `Đặc điểm của dịch tiết âm đạo trong thời kỳ rụng trứng là gì?`, answers: ['Đặc, đục và mùi hôi', 'Trong, dai như lòng trắng trứng', 'Màu vàng nhạt, có bọt', 'Khô hoàn toàn, không tiết dịch'], correct: "B", topic: "bai1" },
+{ id: 82, text: `Biến chứng nguy hiểm nhất của viêm vùng chậu (PID) nếu không điều trị kịp thời là gì?`, answers: ['Đau lưng mạn tính', 'Vô sinh và tăng nguy cơ thai ngoài tử cung', 'Tăng cân đột ngột', 'Rụng tóc từng mảng'], correct: "B", topic: "bai1" },
+{ id: 83, text: `Đối tượng nào có nguy cơ cao mắc ung thư vú nhất trong các nhóm sau?`, answers: ['Phụ nữ sinh nhiều con (trên 3 con)', 'Phụ nữ có đột biến gen di truyền BRCA1/BRCA2', 'Phụ nữ mãn kinh trước 45 tuổi', 'Phụ nữ duy trì tập thể dục cường độ cao'], correct: "B", topic: "bai1" },
+{ id: 84, text: `Cơ chế của thuốc tránh thai phối hợp trong việc điều trị thống kinh là gì?`, answers: ['Giảm co thắt các cơ vân ở bụng', 'Ức chế rụng trứng và làm mỏng lớp nội mạc tử cung', 'Diệt vi khuẩn gây viêm nhiễm', 'Làm ổn định tâm lý bệnh nhân'], correct: "B", topic: "bai1" },
+{ id: 85, text: `Tại sao không nên dùng thuốc tránh thai phối hợp cho phụ nữ trên 35 tuổi có hút thuốc lá?`, answers: ['Làm tăng đáng kể nguy cơ huyết khối và đột quỵ', 'Gây buồn nôn dữ dội', 'Làm giảm hiệu quả tránh thai của thuốc', 'Gây nám da không thể hồi phục'], correct: "A", topic: "bai1" },
+{ id: 86, text: `Sự hiện diện của nang chức năng buồng trứng thường liên quan đến yếu tố nào?`, answers: ['Sự rối loạn hoạt động rụng trứng tạm thời', 'Nhiễm trùng đường tiết niệu', 'Chế độ ăn quá nhiều chất béo', 'Yếu tố di truyền từ người cha'], correct: "A", topic: "bai1" },
+{ id: 87, text: `Khi sử dụng vòng tránh thai, nếu thấy trễ kinh, việc đầu tiên cần làm là gì?`, answers: ['Tháo vòng ngay lập tức', 'Thử thai để loại trừ trường hợp thai ngoài tử cung', 'Uống thuốc cầm máu và giảm đau', 'Chờ thêm ít nhất 2 tuần nữa'], correct: "B", topic: "bai1" },
+{ id: 88, text: `Vaccine HPV có hiệu quả bảo vệ cao nhất khi tiêm ở đối tượng nào?`, answers: ['Phụ nữ đã có gia đình và sinh con', 'Trẻ em/Vị thành niên chưa có quan hệ tình dục', 'Phụ nữ trên 40 tuổi đang bị viêm cổ tử cung', 'Nam giới đã từng mắc bệnh sùi mào gà'], correct: "B", topic: "bai1" },
+{ id: 89, text: `Sự khác biệt về dịch âm đạo giữa viêm do nấm và viêm do tạp khuẩn là gì?`, answers: ['Nấm gây dịch đặc bã đậu, tạp khuẩn gây dịch hôi mùi cá ươn', 'Viêm do nấm thường không gây ngứa âm hộ', 'Viêm do tạp khuẩn gây đau thắt lưng dữ dội', 'Viêm do nấm chỉ gặp ở phụ nữ sau mãn kinh'], correct: "A", topic: "bai1" },
+{ id: 90, text: `Tại sao béo phì lại là yếu tố nguy cơ của ung thư nội mạc tử cung?`, answers: ['Do người béo phì thường ăn quá nhiều đường', 'Do mô mỡ chuyển hóa tiền chất thành Estrogen ngoại biên', 'Do trọng lượng cơ thể chèn ép lên tử cung', 'Do người béo phì ít vận động nên máu kém lưu thông'], correct: "B", topic: "bai1" },
+{ id: 91, text: `Chỉ số BI-RADS trên kết quả siêu âm vú dùng để đánh giá điều gì?`, answers: ['Kích thước chính xác của khối u vú', 'Mức độ nghi ngờ ác tính của tổn thương vú', 'Khả năng tiết sữa của tuyến vú', 'Vị trí chính xác của khối u trên bản đồ vú'], correct: "B", topic: "bai1" },
+{ id: 92, text: `Tác dụng phụ thường gặp nhất của thuốc tiêm tránh thai (DMPA) là gì?`, answers: ['Đau bụng vùng thượng vị', 'Rối loạn kinh nguyệt (rong huyết hoặc vô kinh)', 'Hạ huyết áp tư thế đứng', 'Loét dạ dày tá tràng'], correct: "B", topic: "bai1" },
+{ id: 93, text: `Nội soi buồng tử cung thường được chỉ định ưu tiên trong trường hợp nào?`, answers: ['Nghi ngờ polyp hoặc u xơ dưới niêm mạc gây xuất huyết', 'Đau bụng kinh mức độ nhẹ', 'Viêm âm đạo tái phát nhiều lần', 'Khám thai định kỳ 3 tháng đầu'], correct: "A", topic: "bai1" },
+{ id: 94, text: `Vi khuẩn nào là nguyên nhân hàng đầu gây viêm cổ tử cung dẫn đến biến chứng tắc vòi trứng?`, answers: ['E.coli', 'Chlamydia trachomatis', 'Tụ cầu vàng', 'Phế cầu khuẩn'], correct: "B", topic: "bai1" },
+{ id: 95, text: `Phân loại FIGO trong u xơ tử cung dùng để xác định điều gì?`, answers: ['Độ ác tính của khối u theo giải phẫu bệnh', 'Vị trí khối u so với các lớp của thành tử cung', 'Kích thước tuyệt đối của khối u vú', 'Tuổi thọ dự kiến của khối u'], correct: "B", topic: "bai1" },
+{ id: 96, text: `Biện pháp tránh thai nào dựa trên việc tự theo dõi nhiệt độ cơ thể và chất nhầy cổ tử cung?`, answers: ['Sử dụng bao cao su', 'Xuất tinh ngoài âm đạo', 'Phương pháp dựa trên nhận thức thời kỳ sinh sản', 'Đặt vòng tránh thai chứa hormone'], correct: "C", topic: "bai1" },
+{ id: 97, text: `Hình ảnh "soi tươi thấy tế bào chỉ thị (Clue cells)" là đặc trưng của bệnh gì?`, answers: ['Giang mai thời kỳ 1', 'Viêm âm đạo do vi khuẩn (BV)', 'Nhiễm nấm Candida âm đạo', 'Bệnh Lậu cấp tính'], correct: "B", topic: "bai1" },
+{ id: 98, text: `Mục đích chính của việc xét nghiệm chỉ số CA-125 trong phụ khoa là gì?`, answers: ['Chẩn đoán xác định ung thư vú sớm', 'Hỗ trợ theo dõi và tiên lượng ung thư buồng trứng', 'Thử thai thay thế cho xét nghiệm hCG', 'Kiểm tra tình trạng viêm nhiễm đường tiết niệu'], correct: "B", topic: "bai1" },
+{ id: 99, text: `Khám sản khoa trong 3 tháng đầu của thai nghén thường tránh thăm âm đạo vì:`, answers: ['Có thể tác động gây động thai.', 'Cần bắt buộc phải khám theo quy trình.', 'Điều trị sớm viêm nhiễm đường sinh dục.', 'Dễ gây đẻ non.'], correct: "A", topic: "bai1" },
+{ id: 100, text: `Bình thường từ tháng thứ 2 trở đi của thời kỳ thai nghén, cứ mỗi tháng tử cung cao thêm lên trên khớp vệ:`, answers: ['2cm.', '4cm', '6cm.', '8cm'], correct: "B", topic: "bai1" },
+{ id: 101, text: `Kinh cuối cùng là 09/07/2024 (dương lịch), ngày tháng sinh dự đoán sẽ là:`, answers: ['Ngày 16 tháng 04 năm 2025', 'Ngày 12 tháng 06 năm 2025', 'Ngày 18 tháng 10 năm 2025', 'Ngày 28 tháng 10 năm 2025'], correct: "B", topic: "bai1" },
+{ id: 102, text: `Chẩn đoán thai nghén cần dựa vào những triệu chứng nào?`, answers: ['Triệu chứng thực thể', 'Triệu chứng cơ năng, thực thể và cận lâm sàng', 'Triệu chứng cận lâm sàng', 'Dấu hiệu của siêu âm'], correct: "B", topic: "bai1" },
+{ id: 103, text: `Trước khi có thai 3 tháng bà mẹ cần tiêm phòng tối thiểu các loại vac xin nào:`, answers: ['Rubella, Cảm cúm, Viêm gan B.', 'Ung thư cổ tử cung.', 'Não mô cầu.', 'Viêm gan'], correct: "A", topic: "bai1" },
+{ id: 104, text: `Trong khi mang thai cần tiêm phòng các loại vac xin sau:`, answers: ['Rubella', 'Cảm cúm', 'Viêm gan B', 'Uốn ván (VAT)'], correct: "D", topic: "bai1" },
+{ id: 105, text: `Thai phụ vào viện trong tình trạng cấp cứu đang sẩy thai, điều dưỡng không nên làm bước nào sau đây:`, answers: ['Động viên thai phụ và gia đình; Theo dõi dấu hiệu sinh tồn, sự ra máu âm đạo;', 'Chuẩn bị thuốc, máu cùng loại và chuẩn bị dụng cụ nạo sẩy thai.', 'Chế độ ăn uống và kế hoạch theo dõi sau nạo sẩy.', 'Nói với gia đình thai phụ về Nguy cơ chảy máu sau nạo sẩy.'], correct: "D", topic: "bai1" },
+{ id: 106, text: `Xử trí trong trường hợp thai phụ dọa sẩy thai gồm các bước sau, chọn câu sai:`, answers: ['Nằm nghỉ ngơi. Tránh quan hệ vợ chồng.', 'Cho vitamin E và progesteron tự nhiên.', 'Có thể sử dụng Oxytoxin tăng co bóp tử cung để tống thai ra nhanh.', 'Cho thuốc giảm co bóp tử cung.'], correct: "C", topic: "bai1" },
+{ id: 107, text: `Trường hợp thai phụ dọa sẩy thai cần xử trí theo các bước sau:`, answers: ['Cho nằm nghỉ ngơi, uống progesteron tự nhiên, vitamin E, thuốc giảm go tử cung.', 'Cho thuốc tăng go tử cung giúp thai ra nhanh.', 'Nạo hút thai đang dọa sẩy.', 'Khám âm đạo'], correct: "A", topic: "bai1" },
+{ id: 108, text: `Nguyên nhân sẩy thai về phía thai và phần phụ của thai là, câu nào sai:`, answers: ['Thai di dạng do rối lọan thể nhiễm sắc.', 'Thai bất thường do dùng thuốc.', 'Mẹ bị té ngã đột ngột.', 'Do bánh rau kém phát triển.'], correct: "C", topic: "bai1" },
+{ id: 109, text: `Trong trường hợp sảy thai liên tiếp (từ 3 lần trở lên), điều dưỡng cần tư vấn cho người bệnh và gia đình tập trung vào hướng giải quyết nào là chuẩn xác nhất?`, answers: ['Chỉ cần nghỉ ngơi nhiều hơn ở lần mang thai kế tiếp.', 'Khuyên cặp vợ chồng đi khám chuyên sâu để tìm nguyên nhân (di truyền, nội tiết, tử cung...).', 'Khuyên bệnh nhân đổi sang chế độ ăn thuần chay để thanh lọc cơ thể.', 'An ủi bệnh nhân rằng đây chỉ là sự không may mắn và cứ tiếp tục thử lại.'], correct: "B", topic: "bai1" },
+{ id: 110, text: `Trong bệnh lý nhau tiền đạo, tiên lượng khi nào phải đình chỉ thai nghén để cứu mẹ:`, answers: ['Huyết áp, protein trong nước tiểu thai phụ tăng; Lượng nước tiểu giảm.', 'Phù trắng, mềm, ấn lõm.', 'Thai non tháng.', 'Thiếu máu mẹ.'], correct: "D", topic: "bai1" },
+{ id: 111, text: `Gọi là rau tiền đạo khi rau bám ở:`, answers: ['Vùng đọan dưới tử cung.', 'Vùng đáy tử cung', 'Vùng thân tử cung', 'Vùng mặt trước tử cung'], correct: "A", topic: "bai1" },
+{ id: 112, text: `Hướng xử trí trước một sản phụ bị rau tiền đạo sẽ tuỳ thuộc vào:`, answers: ['Tuổi thai; Mức độ chảy máu; Đã chuyển dạ chưa.', 'Nguy cơ đẻ non.', 'Rau tiền đạo trung tâm.', 'Lo sợ mất máu.'], correct: "A", topic: "bai1" },
+{ id: 113, text: `Phương pháp hữu hiệu và chính xác nhất giúp xác định vị trí nhau bám là:`, answers: ['Siêu âm', 'Chụp X quang', 'Chụp đồng vị phóng xạ', 'Soi ối Cơn đau bụng có tính chất liên tục, kéo dài.'], correct: "A", topic: "bai1" },
+{ id: 114, text: `Thai phụ bị nhau bong non có thể gây nên các biến chứng như:`, answers: ['Choáng mất máu; Rối lọan đông máu; Vô niệu.', 'Xảy ra đột ngột', 'Thường gây tử vong cho thai nhi và đe dọa tính mạng người mẹ', 'Huyết áp cao'], correct: "A", topic: "bai1" },
+{ id: 115, text: `Sản phụ thai 32 tuần, nhập viện vì đau bụng dữ dội đột ngột, tử cung co cứng như gỗ và có ít máu đen âm đạo. Nhận định điều dưỡng ưu tiên hàng đầu là gì?`, answers: ['Theo dõi cơn co tử cung qua Monitor.', 'Kiểm tra dấu hiệu sinh tồn, tình trạng choáng và tiếng tim thai.', 'Hướng dẫn sản phụ đi siêu âm ngay lập tức.', 'Lấy máu xét nghiệm nhóm máu và đông cầm máu.'], correct: "B", topic: "bai1" },
+{ id: 116, text: `Khi chăm sóc sản phụ bị nhau bong non, điều dưỡng phát hiện máu âm đạo không đông. Dấu hiệu này cảnh báo biến chứng nguy hiểm nào?`, answers: ['Nhiễm trùng hậu sản.', 'Rối loạn đông máu.', 'Vỡ tử cung.', 'Suy thận cấp.'], correct: "B", topic: "bai1" },
+{ id: 117, text: `Sản phụ thai 30 tuần bị ngã xe. Điều dưỡng nên dặn sản phụ theo dõi dấu hiệu nào tại nhà để phát hiện sớm nhau bong non?`, answers: ['Cảm giác thèm ăn tăng lên.', 'Ra dịch âm đạo trong suốt.', 'Đau bụng liên tục, tử cung căng cứng hoặc ra máu âm đạo màu sẫm.', 'Thai máy nhiều hơn bình thường.'], correct: "C", topic: "bai1" },
+{ id: 118, text: `Thai phụ bị nhau bong non Thể nặng (còn gọi là thể phong huyết tử cung - rau hay hội chứng Couvelaire), nếu thai đã chết, cần xử trí thế nào:`, answers: ['Mổ lấy thai sớm để tránh những biến chứng nguy hiểm cho mẹ.', 'Theo dõi và quan sát các tổn thương tại tử cung và các cơ quan lân cận.', 'Chờ sinh thường qua ngả âm đạo', 'Can thiệp đẻ đường âm đạo bằng giác hút'], correct: "A", topic: "bai1" },
+{ id: 119, text: `Nhau bong non là nhau bám đúng vị trí nhưng bị bong trước khi thai nhi được sổ ra ngoài; Xảy ra trong thời kỳ:`, answers: ['3 tháng cuối của thai kỳ', '3 tháng đầu của thai kỳ', '3 tháng giữa của thai kỳ', 'Bất cứ thời gian nào của thai kỳ'], correct: "A", topic: "bai1" },
+{ id: 120, text: `Tại sao trong Tiền sản giật, sản phụ thường có triệu chứng phù?`, answers: ['Do uống quá nhiều nước', 'Do tổn thương mạch máu gây thoát dịch ra kẽ và giảm áp lực keo (mất protein qua nước tiểu)', 'Do thai nhi chèn ép vào bàng quang', 'Do mẹ ít vận động'], correct: "B", topic: "bai1" },
+{ id: 121, text: `Phân biệt Rau tiền đạo và Rau bong non dựa trên đặc điểm của cơn co tử cung:`, answers: ['Rau tiền đạo có tử cung co cứng như gỗ, Rau bong non thì không', 'Rau bong non tử cung co cứng liên tục (tăng trương lực), Rau tiền đạo tử cung thường mềm', 'Cả hai đều có tử cung mềm', 'Cả hai đều có tử cung co cứng như gỗ'], correct: "B", topic: "bai1" },
+{ id: 122, text: `Cơ chế gây ra "choáng" (shock) trong băng huyết sau sinh là choáng gì?`, answers: ['Choáng do đau', 'Choáng do giảm thể tích tuần hoàn', 'Choáng do nhiễm khuẩn', 'Choáng phản vệ'], correct: "B", topic: "bai1" },
+{ id: 123, text: `Một sản phụ có sẹo mổ cũ (mổ lấy thai lần trước) sẽ có nguy cơ cao gặp tai biến nào trong lần chuyển dạ này?`, answers: ['Rau tiền đạo', 'Vỡ tử cung', 'Thai to', 'Sốt hậu sản'], correct: "B", topic: "bai1" },
+{ id: 124, text: `Tại sao khi nghi ngờ Thai ngoài tử cung vỡ, điều dưỡng phải thực hiện lập đường truyền tĩnh mạch lớn ngay lập tức?`, answers: ['Để sẵn sàng hồi sức chống sốc do mất máu cấp vào ổ bụng', 'Để tiêm thuốc giảm đau cho nhanh', 'Để lấy máu xét nghiệm đường huyết', 'Theo quy định của bệnh viện với mọi bệnh nhân'], correct: "A", topic: "bai1" },
+{ id: 125, text: `Sự khác biệt giữa Tiền sản giật và Sản giật là gì?`, answers: ['Sản giật có protein niệu cao hơn', 'Sản giật xuất hiện cơn co giật hoặc hôn mê trên nền tiền sản giật', 'Tiền sản giật đau bụng nhiều hơn', 'Cả hai chỉ khác nhau về mức độ huyết áp'], correct: "B", topic: "bai1" },
+{ id: 126, text: `Tại sao sản phụ sau sinh lại dễ bị bí tiểu?`, answers: ['Do uống ít nước', 'Do bàng quang bị chèn ép lâu trong chuyển dạ gây phù nề, mất cảm giác buồn tiểu', 'Do mẹ sợ đau khi đi tiểu', 'Do thuốc tê làm liệt bàng quang vĩnh viễn'], correct: "B", topic: "bai1" },
+{ id: 127, text: `Biến chứng đáng sợ nhất của đa ối đối với sản phụ khi chuyển dạ là:`, answers: ['Thai nhi bị dị tật', 'Vỡ ối đột ngột gây sa dây rốn hoặc rau bong non', 'Mẹ bị khó thở', 'Chuyển dạ kéo dài'], correct: "B", topic: "bai1" },
+{ id: 128, text: `Phát hiện một thai phụ thai 9 tuần bị ra máu âm đạo kèm đau bụng hạ vị. Khám thấy cổ tử cung còn đóng kín. Bạn tư vấn bệnh nhân điều gì?`, answers: ['Đi lại nhiều cho máu ra hết', 'Nằm nghỉ ngơi tuyệt đối, kiêng quan hệ tình dục và dùng thuốc dưỡng thai theo y lệnh', 'Chuẩn bị tâm lý để nạo thai ngay', 'Không cần lo lắng vì đây là máu báo thai bình thường'], correct: "B", topic: "bai1" },
+{ id: 129, text: `Theo dõi một thai phụ bị đa ối, bạn cần cảnh báo sản phụ về dấu hiệu nào cần vào viện ngay?`, answers: ['Đau bụng dữ dội, ra nước âm đạo đột ngột (vỡ ối) hoặc ra máu', 'Cảm thấy thai nhi đạp nhiều vào ban đêm', 'Bị tê các đầu ngón tay', 'Bị táo bón nhẹ'], correct: "A", topic: "bai1" },
+{ id: 130, text: `Chăm sóc một thai phụ mang song thai, điều dưỡng cần tư vấn gì để phòng ngừa đẻ non?`, answers: ['Hạn chế làm việc nặng, đi khám thai thường xuyên hơn và nhận biết dấu hiệu cơn co tử cung sớm', 'Ăn gấp đôi lượng thức ăn của người bình thường', 'Chỉ nên nằm nghiêng bên phải khi ngủ', 'Không nên vận động dù là nhẹ nhàng'], correct: "A", topic: "bai1" },
+{ id: 131, text: `Một phụ nữ thai 8 tuần bị nghén nặng, nôn tất cả mọi thứ sau khi ăn, sụt 3kg trong 1 tuần. Kế hoạch chăm sóc là:`, answers: ['Nhập viện truyền dịch bồi phụ điện giải, chia nhỏ bữa ăn và ăn các thức ăn khô, dễ tiêu', 'Khuyên bệnh nhân cố gắng ăn thật nhiều trong một bữa', 'Cho uống thuốc cầm nôn liều cao và về nhà theo dõi', 'Khuyên bệnh nhân nên đình chỉ thai nghén vì cơ thể không chịu đựng được'], correct: "A", topic: "bai1" },
+{ id: 132, text: `Tại sao trong nhiều tình huống cấp cứu sản khoa, điều dưỡng thường cho thai phụ nằm nghiêng trái?`, answers: ['Để làm thai phụ ngủ sâu hơn.', 'Để giảm chèn ép tĩnh mạch chủ dưới, cải thiện tuần hoàn mẹ và tưới máu thai.', 'Để làm giảm hoàn toàn cơn co tử cung.', 'Để thai phụ không cần theo dõi tim thai.'], correct: "B", topic: "bai1" },
+{ id: 133, text: `Khi thai phụ đang được điều trị bằng Magnesium sulfate, vì sao điều dưỡng phải theo dõi nhịp thở, phản xạ gân xương và lượng nước tiểu?`, answers: ['Để đánh giá tình trạng ăn uống của thai phụ.', 'Để phát hiện sớm dấu hiệu ngộ độc Magnesium sulfate.', 'Để xác định giới tính thai nhi.', 'Để làm giảm nhu cầu dùng thuốc hạ áp.'], correct: "B", topic: "bai1" },
+{ id: 134, text: `Tại sao cần hạn chế thăm âm đạo nhiều lần ở thai phụ vỡ ối sớm?`, answers: ['Vì có thể làm tăng nguy cơ nhiễm khuẩn ngược dòng.', 'Vì sẽ làm thai phụ tăng cân nhanh.', 'Vì làm giảm hoàn toàn cơn co tử cung.', 'Vì khiến thai nhi ngủ nhiều hơn.'], correct: "A", topic: "bai1" },
+{ id: 135, text: `Thai phụ thiếu máu thiếu sắt được kê viên sắt. Nội dung tư vấn nào phù hợp nhất?`, answers: ['Uống thuốc theo y lệnh, có thể dùng cùng nước giàu vitamin C và tránh uống cùng trà/cà phê.', 'Tự ngừng sắt khi phân sẫm màu.', 'Uống sắt cùng trà đặc để dễ hấp thu.', 'Chỉ ăn cháo trắng để giảm buồn nôn.'], correct: "A", topic: "bai1" },
+{ id: 136, text: `Vì sao không được tự ý thăm âm đạo khi nghi ngờ rau tiền đạo có ra máu?`, answers: ['Vì có thể làm rau bong thêm và gây chảy máu nặng.', 'Vì sẽ làm thai phụ tăng huyết áp tức thì.', 'Vì làm mất tác dụng của thuốc giảm đau.', 'Vì không ảnh hưởng gì đến kết quả khám.'], correct: "A", topic: "bai1" },
+{ id: 137, text: `Mục tiêu chính của tư vấn chia nhỏ bữa ăn và hạn chế đường đơn cho thai phụ đái tháo đường thai kỳ là gì?`, answers: ['Giữ đường huyết ổn định và giảm nguy cơ thai to.', 'Làm thai phụ không tăng cân trong suốt thai kỳ.', 'Thay thế hoàn toàn việc theo dõi đường huyết.', 'Làm nước ối tăng nhanh.'], correct: "A", topic: "bai1" },
+{ id: 138, text: `Thai phụ có nguy cơ sinh non cần được hướng dẫn nhận biết dấu hiệu nào để đi khám ngay?`, answers: ['Cơn co tử cung đều, đau bụng từng cơn, ra dịch âm đạo hoặc ra máu.', 'Thèm ăn nhiều hơn vào buổi tối.', 'Móng tay dài nhanh.', 'Da bụng căng nhẹ nhưng không đau.'], correct: "A", topic: "bai1" },
+{ id: 139, text: `Ý nghĩa của theo dõi protein niệu ở thai phụ tiền sản giật là gì?`, answers: ['Đánh giá mức độ tổn thương thận và diễn biến nặng của bệnh.', 'Đánh giá khả năng tiết sữa sau sinh.', 'Xác định nhóm máu của thai phụ.', 'Chẩn đoán chắc chắn ngôi thai.'], correct: "A", topic: "bai1" },
+{ id: 140, text: `Ở thai phụ nghén nặng, dấu hiệu nào gợi ý mất nước cần được báo bác sĩ?`, answers: ['Tiểu ít, khô môi, mệt lả hoặc sụt cân nhanh.', 'Ăn ngon miệng hơn.', 'Ngủ đủ giấc.', 'Tăng cân đều mỗi tuần.'], correct: "A", topic: "bai1" },
+{ id: 141, text: `Hiện tượng "lên sữa" thường xảy ra vào ngày thứ mấy sau khi sản phụ sinh con?`, answers: ['Ngay lập tức sau khi sinh.', 'Ngày thứ 2 đến ngày thứ 4 sau sinh.', 'Sau khi sinh được 1 tuần.', 'Sau khi sinh được 1 tháng.'], correct: "B", topic: "bai1" },
+{ id: 142, text: `Xử trí tích cực giai đoạn 3 (giai đoạn sổ nhau) có mục đích quan trọng nhất là giảm nguy cơ:`, answers: ['Nhiễm trùng hậu sản.', 'Băng huyết sau sinh.', 'Tắc tia sữa ở mẹ.', 'Trầm cảm sau sinh.'], correct: "B", topic: "bai1" },
+{ id: 143, text: `Trong quy trình chăm sóc hậu sản, việc đánh giá độ co hồi tử cung được đo bằng:`, answers: ['Tổng chiều cao bụng của sản phụ.', 'Khoảng cách từ bờ trên xương vệ đến đáy tử cung.', 'Số đo vòng bụng của sản phụ tại vị trí rốn.', 'Tổng cân nặng của sản phụ sau khi sinh.'], correct: "B", topic: "bai1" },
+{ id: 144, text: `Sau khi sinh, trung bình mỗi ngày tử cung của sản phụ co hồi nhỏ đi khoảng:`, answers: ['0.5 cm.', '1 cm.', '2 cm.', '3 cm.'], correct: "B", topic: "bai1" },
+{ id: 145, text: `Sản dịch có đặc điểm màu đỏ thẫm (máu ròng) thường chỉ kéo dài trong bao lâu?`, answers: ['2 - 3 ngày đầu sau sinh.', 'Kéo dài suốt 1 tuần đầu.', 'Kéo dài suốt 2 tuần đầu.', 'Kéo dài suốt 6 tuần hậu sản.'], correct: "A", topic: "bai1" },
+{ id: 146, text: `Hiện tượng "rét run sinh lý" xuất hiện ngay sau đẻ thường có nguyên nhân do:`, answers: ['Sản phụ bị nhiễm trùng huyết cấp tính.', 'Mất nhiệt đột ngột từ buồng tử cung và sự thay đổi nội tiết tố.', 'Sản phụ bị mất quá nhiều máu trong quá trình đẻ.', 'Do sản phụ bị sợ hãi tâm lý quá mức.'], correct: "B", topic: "bai1" },
+{ id: 147, text: `Đối với sản phụ mổ lấy thai, thời điểm bắt đầu cho trẻ bú mẹ sớm nhất là khi nào?`, answers: ['Sau 24 giờ kể từ khi mẹ tỉnh hẳn sau gây mê.', 'Càng sớm càng tốt ngay khi người mẹ có thể bế được con.', 'Đợi cho đến khi vết mổ thành bụng đã được cắt chỉ.', 'Sau 3 ngày khi tuyến vú đã bắt đầu tiết sữa già.'], correct: "B", topic: "bai1" },
+{ id: 148, text: `Trong chăm sóc sản phụ sau mổ ngày đầu, việc vận động sớm mang lại lợi ích gì?`, answers: ['Có thể gây liệt ruột cơ năng.', 'Chỉ nhằm mục đích làm vết mổ nhanh lành.', 'Kích thích nhu động ruột hoạt động sớm, tránh dính ruột.', 'Giúp giảm đau hoàn toàn sau phẫu thuật.'], correct: "C", topic: "bai1" },
+{ id: 149, text: `Nhận định tình trạng sản dịch bình thường vào ngày thứ 3 sau đẻ là:`, answers: ['Sản dịch màu đỏ thẫm, lượng giảm dần, không có mùi hôi.', 'Sản dịch có mủ màu xanh và mùi hôi thối.', 'Sản dịch đỏ tươi như máu ròng với số lượng rất nhiều.', 'Hoàn toàn không còn sản dịch tiết ra ngoài âm đạo.'], correct: "A", topic: "bai1" },
+{ id: 150, text: `Trong kỹ thuật cho bú, dấu hiệu nào chứng tỏ trẻ đã ngậm bắt vú đúng cách?`, answers: ['Miệng mở rộng, môi dưới hướng ra ngoài, miệng ngậm phần lớn quầng vú.', 'Trẻ chỉ ngậm chặt phần núm vú của mẹ.', 'Nghe thấy tiếng mút "chùn chụt" rất rõ rệt khi trẻ bú.', 'Má của trẻ bị lõm sâu vào trong khi đang mút sữa.'], correct: "A", topic: "bai1" },
+{ id: 151, text: `Một sản phụ có HIV (+) muốn nuôi con, tư vấn tốt nhất theo khuyến cáo hiện nay là:`, answers: ['Nuôi con bằng sữa thay thế hoàn toàn nếu điều kiện kinh tế và vệ sinh cho phép.', 'Cho bú mẹ kết hợp xen kẽ với sữa ngoài.', 'Cho bú mẹ hoàn toàn trong 6 tháng đầu rồi cai sữa thật nhanh.', 'Chỉ cho bú sữa mẹ sau khi đã đun sôi sữa để diệt virus.'], correct: "A", topic: "bai1" },
+{ id: 152, text: `Nguyên nhân phổ biến nhất dẫn đến viêm vú sau sinh là:`, answers: ['Tắc tia sữa kéo dài không được xử trí dẫn đến nhiễm khuẩn.', 'Do cơ địa người mẹ tiết ra quá ít sữa.', 'Do chế độ ăn uống của người mẹ chứa quá nhiều chất béo.', 'Do trẻ lười bú làm sữa bị ứ đọng nhẹ.'], correct: "A", topic: "bai1" },
+{ id: 153, text: `Theo dõi sản phụ sau đẻ trong giờ đầu tiên, nội dung quan trọng nhất cần kiểm tra là:`, answers: ['Tình trạng ăn uống và cảm giác ngon miệng.', 'Khả năng bài tiết sữa của hai bầu vú.', 'Sự co hồi của tử cung và tình trạng chảy máu âm đạo.', 'Tình trạng đại tiện và tiểu tiện của sản phụ.'], correct: "C", topic: "bai1" },
+{ id: 154, text: `Thời điểm "vàng" để thực hiện xét nghiệm sàng lọc sơ sinh (lấy máu gót chân) là:`, answers: ['Ngay sau khi sinh được 1 giờ.', 'Từ 48 đến 72 giờ sau khi sinh.', 'Sau khi trẻ đã tròn 1 tháng tuổi.', 'Khi trẻ bắt đầu giai đoạn ăn dặm.'], correct: "B", topic: "bai1" },
+{ id: 155, text: `Một trẻ sơ sinh bị hạ đường huyết thường có các biểu hiện lâm sàng nào?`, answers: ['Run rẩy, quấy khóc, li bì hoặc biểu hiện bú kém.', 'Da dẻ đỏ hồng, căng bóng.', 'Ngủ rất sâu và không hề quấy khóc.', 'Đi tiểu rất nhiều lần trong ngày.'], correct: "A", topic: "bai1" },
+{ id: 156, text: `Cách xử trí đúng khi sản phụ bị tắc tia sữa mức độ nhẹ tại nhà là:`, answers: ['Ngừng ngay việc cho con bú bên bầu vú bị tắc.', 'Chườm ấm, massage vú và tiếp tục cho con bú hoặc tích cực hút sữa.', 'Chườm đá thật lạnh lên vùng vú bị đau.', 'Tự mua và uống thuốc kháng sinh ngay lập tức.'], correct: "B", topic: "bai1" },
+{ id: 157, text: `Chăm sóc sản phụ sau sinh bị bí tiểu, bước đầu tiên điều dưỡng nên thực hiện là:`, answers: ['Khuyến khích sản phụ ngồi dậy vận động và thử đi tiểu tự nhiên.', 'Tiến hành đặt ống thông tiểu ngay lập tức.', 'Hạn chế cho sản phụ uống nước để giảm áp lực bàng quang.', 'Tiêm các loại thuốc lợi tiểu mạnh.'], correct: "A", topic: "bai1" },
+{ id: 158, text: `Thời gian bảo quản sữa mẹ tối đa ở nhiệt độ phòng (khoảng 25°C) là:`, answers: ['1 giờ.', '4 - 6 giờ.', '24 giờ.', '2 ngày.'], correct: "B", topic: "bai1" },
+{ id: 159, text: `Kỹ thuật lấy máu gót chân ở trẻ sơ sinh nhằm mục đích tầm soát các bệnh lý:`, answers: ['Suy giáp bẩm sinh, thiếu men G6PD, tăng sản tuyến thượng thận bẩm sinh.', 'Viêm phổi cấp tính.', 'Cận thị bẩm sinh.', 'Tình trạng suy dinh dưỡng bào thai.'], correct: "A", topic: "bai1" },
+{ id: 160, text: `Tại sao không nên cho trẻ sơ sinh dưới 6 tháng tuổi uống thêm nước lọc?`, answers: ['Sữa mẹ đã đủ nước và uống nước lọc làm tăng nguy cơ nhiễm khuẩn.', 'Nước lọc làm cho trẻ sớm bị đau răng.', 'Nước lọc là dung dịch quá đắt tiền đối với trẻ sơ sinh.', 'Trẻ sẽ dễ bị nghiện nước lọc và bỏ bú mẹ.'], correct: "A", topic: "bai1" },
+{ id: 161, text: `Bệnh nhân nữ 22 tuổi, đến tư vấn vì quên uống 2 viên thuốc tránh thai phối hợp liên tiếp ở tuần thứ 2. Hành động chăm sóc/tư vấn nào là ưu tiên?`, answers: ['Hướng dẫn uống bù ngay 2 viên khi nhớ ra, uống viên tiếp theo đúng giờ và dùng bao cao su hỗ trợ trong 7 ngày', 'Khuyên bệnh nhân dừng vỉ thuốc cũ và chờ đến khi có kinh mới bắt đầu lại', 'Yêu cầu bệnh nhân đi thử thai ngay lập tức bằng xét nghiệm máu', 'Tư vấn bệnh nhân chuyển sang phương pháp triệt sản vì hay quên'], correct: "A", topic: "bai1" },
+{ id: 162, text: `Sau khi đặt dụng cụ tử cung (vòng tránh thai), bệnh nhân phàn nàn về việc đau bụng dưới nhẹ và ra máu thấm giọt. Điều dưỡng nên xử trí thế nào?`, answers: ['Yêu cầu bệnh nhân đi tháo vòng ngay vì có dấu hiệu đẩy vỉ', 'Giải thích đây là phản ứng bình thường của tử cung, hướng dẫn bệnh nhân nghỉ ngơi và theo dõi thêm', 'Cho bệnh nhân uống kháng sinh liều cao để phòng nhiễm trùng vùng chậu', 'Khuyên bệnh nhân vận động mạnh để vòng sớm ổn định vị trí'], correct: "B", topic: "bai1" },
+{ id: 163, text: `Chăm sóc một nữ sinh 19 tuổi bị thống kinh nguyên phát mức độ nặng, lời khuyên về lối sống nào là phù hợp nhất để giảm triệu chứng lâu dài?`, answers: ['Chỉ nằm nghỉ tuyệt đối trên giường trong suốt những ngày hành kinh', 'Chườm ấm vùng bụng dưới, tập thể dục nhẹ nhàng và hạn chế thức ăn quá mặn/cay', 'Uống thuốc giảm đau liều cao ngay khi bắt đầu chu kỳ mà không cần ăn lót dạ', 'Nhịn ăn để tránh tình trạng buồn nôn khi tử cung co bóp'], correct: "B", topic: "bai1" },
+{ id: 164, text: `Một phụ nữ 45 tuổi có khối u xơ tử cung lớn gây rong kinh kéo dài. Trong kế hoạch chăm sóc trước mổ, nội dung nào là quan trọng nhất để đảm bảo an toàn cho cuộc phẫu thuật?`, answers: ['Hướng dẫn bệnh nhân cách tự thụt tháo âm đạo tại nhà', 'Theo dõi sát chỉ số huyết sắc tố (Hb) và tình trạng thiếu máu để phối hợp truyền máu nếu cần', 'Yêu cầu bệnh nhân nhịn ăn hoàn toàn trước 2 ngày phẫu thuật', 'Tư vấn về việc nuôi con bằng sữa mẹ sau khi cắt tử cung'], correct: "B", topic: "bai1" },
+{ id: 165, text: `Tiếp nhận bệnh nhân viêm âm đạo do nấm Candida có triệu chứng ngứa rát dữ dội. Khi hướng dẫn sử dụng thuốc đặt âm đạo, điều dưỡng cần lưu ý điều gì?`, answers: ['Nên đặt thuốc vào buổi sáng trước khi đi làm để thuốc ngấm tốt hơn', 'Vệ sinh tay sạch sẽ, đặt thuốc vào buổi tối trước khi ngủ và tránh quan hệ tình dục trong thời gian điều trị', 'Nếu thấy đỡ ngứa thì có thể ngừng thuốc ngay sau 2 ngày để tránh nhờn thuốc', 'Đặt thuốc càng sâu càng tốt, kể cả khi đang có kinh nguyệt nhiều'], correct: "B", topic: "bai1" },
+{ id: 166, text: `Một phụ nữ 52 tuổi ra máu âm đạo bất thường sau mãn kinh. Trong khi chờ kết quả sinh thiết nội mạc tử cung, thái độ chăm sóc tâm lý nào là phù hợp?`, answers: ['Khẳng định chắc chắn với bệnh nhân rằng đây chỉ là rối loạn nội tiết thông thường', 'Lắng nghe lo lắng của bệnh nhân, giải thích mục đích của xét nghiệm và tránh đưa ra kết luận sớm', 'Khuyên bệnh nhân chuẩn bị sẵn tâm lý vì 100% các ca này là ung thư ác tính', 'Hạn chế tiếp xúc để bệnh nhân tự suy ngẫm về tình trạng sức khỏe'], correct: "B", topic: "bai1" },
+{ id: 167, text: `Bệnh nhân sau phẫu thuật đoạn nhũ do ung thư vú. Để phòng ngừa phù tay bên phẫu thuật, điều dưỡng cần hướng dẫn bệnh nhân:`, answers: ['Luôn để xuôi tay bên phẫu thuật theo dọc thân mình khi ngủ', 'Tránh đo huyết áp, tiêm truyền hoặc xách vật nặng bằng tay bên phía phẫu thuật', 'Băng ép thật chặt toàn bộ cánh tay từ vai xuống cổ tay', 'Tuyệt đối không được cử động các ngón tay bên phía phẫu thuật'], correct: "B", topic: "bai1" },
+{ id: 168, text: `Tư vấn cho một phụ nữ muốn sử dụng phương pháp "Vô kinh cho bú" (LAM) để tránh thai. Điều kiện nào dưới đây là bắt buộc để phương pháp có hiệu quả?`, answers: ['Chỉ cần cho bú mẹ là đủ, không quan trọng tần suất', 'Con dưới 6 tháng tuổi, chưa có kinh trở lại và cho trẻ bú mẹ hoàn toàn', 'Trẻ đã bắt đầu ăn dặm nhưng vẫn bú mẹ vào ban đêm', 'Phải dùng kèm thêm thuốc tránh thai phối hợp để tăng hiệu quả'], correct: "B", topic: "bai1" },
+{ id: 169, text: `Một bệnh nhân bị viêm vùng chậu (PID) đang điều trị nội trú. Dấu hiệu nào sau đây cần báo bác sĩ ngay lập tức vì nghi ngờ biến chứng áp xe phần phụ bị vỡ?`, answers: ['Bệnh nhân thấy ra ít khí hư màu trắng trong', 'Đau bụng đột ngột, dữ dội khắp bụng, dấu hiệu cảm ứng phúc mạc dương tính và sốt cao', 'Bệnh nhân cảm thấy hơi mệt mỏi sau khi tiêm kháng sinh', 'Kinh nguyệt xuất hiện sớm hơn dự kiến 2 ngày'], correct: "B", topic: "bai1" },
+{ id: 170, text: `Chăm sóc bệnh nhân có u xơ tử cung dưới niêm mạc đang bị xuất huyết âm đạo cấp tính. Tư thế nằm nào là ưu tiên để cải thiện tưới máu não?`, answers: ['Nằm đầu thấp, gác chân cao (tư thế Trendelenburg nếu có cho phép)', 'Nằm ngửa, đầu cao 45 độ (tư thế Fowler)', 'Nằm sấp để ép vào tử cung hạn chế chảy máu', 'Nằm nghiêng sang bên phải hoàn toàn'], correct: "A", topic: "bai1" },
+{ id: 171, text: `Khi thực hiện tư vấn cho cộng đồng về tầm soát ung thư cổ tử cung, điều dưỡng cần nhấn mạnh đối tượng nào cần thực hiện xét nghiệm Pap smear thường xuyên nhất?`, answers: ['Chỉ những phụ nữ trên 50 tuổi mới cần làm', 'Phụ nữ trong độ tuổi sinh đẻ đã có quan hệ tình dục', 'Những người có tiền sử gia đình bị ung thư phổi', 'Tất cả trẻ em gái ngay sau khi tiêm đủ vaccine HPV'], correct: "B", topic: "bai1" },
+{ id: 172, text: `Bệnh nhân nữ 28 tuổi, sau khi cấy que tránh thai (Implanon) phàn nàn về tình trạng rong huyết nhẹ kéo dài. Cách xử trí điều dưỡng nào là đúng?`, answers: ['Khuyên bệnh nhân đi tháo que ngay vì cơ thể không dung nạp', 'Giải thích đây là tác dụng phụ thường gặp trong vài tháng đầu, tư vấn bệnh nhân theo dõi và dùng thuốc theo chỉ định', 'Yêu cầu bệnh nhân nằm bất động tại giường trong 1 tuần', 'Tư vấn bệnh nhân uống thật nhiều nước rau má để cầm máu'], correct: "B", topic: "bai1" },
+{ id: 173, text: `Hướng dẫn bệnh nhân tự khám vú tại nhà, điều dưỡng nên dạy bệnh nhân quan sát các dấu hiệu bất thường nào trước gương?`, answers: ['Chỉ cần xem kích thước hai vú có bằng nhau tuyệt đối hay không', 'Sự thay đổi màu sắc da vú, tình trạng co kéo núm vú hoặc da cam, và dịch tiết từ núm vú', 'Xem vú có bị căng đau nhẹ trước kỳ kinh hay không', 'Tìm kiếm các nốt mụn trứng cá nhỏ trên quầng vú'], correct: "B", topic: "bai1" },
+{ id: 174, text: `Một phụ nữ sau phá thai bằng thuốc thành công quay lại tái khám. Nội dung giáo dục sức khỏe nào là quan trọng nhất lúc này để tránh hệ lụy tương lai?`, answers: ['Tư vấn và lựa chọn ngay một biện pháp tránh thai phù hợp để tránh mang thai ngoài ý muốn tái diễn', 'Hướng dẫn bệnh nhân nhịn ăn chất béo trong vòng 1 tháng', 'Khuyên bệnh nhân không nên đi làm hay vận động trong vòng 3 tháng tới', 'Yêu cầu bệnh nhân uống kháng sinh dự phòng liên tục trong nửa năm'], correct: "A", topic: "bai1" },
+{ id: 175, text: `Trong quy trình lấy bệnh phẩm làm xét nghiệm Pap smear, điều dưỡng cần hướng dẫn bệnh nhân điều gì để kết quả chính xác nhất?`, answers: ['Nên thụt rửa âm đạo thật sạch bằng dung dịch sát khuẩn trước khi khám', 'Không quan hệ tình dục, không thụt rửa âm đạo và không dùng thuốc đặt trong vòng 24-48 giờ trước đó', 'Đi khám vào đúng những ngày đang có kinh nguyệt nhiều nhất', 'Phải nhịn ăn sáng trước khi thực hiện lấy mẫu'], correct: "B", topic: "bai1" },
+{ id: 176, text: `Chăm sóc bệnh nhân sau phẫu thuật cắt tử cung toàn phần. Để phòng ngừa biến chứng huyết khối tĩnh mạch sâu, điều dưỡng nên:`, answers: ['Cho bệnh nhân nằm yên một chỗ trong 3 ngày đầu', 'Khuyến khích bệnh nhân vận động sớm tại giường và tập đi lại nhẹ nhàng khi ổn định', 'Massage mạnh vùng bắp chân hàng giờ', 'Hạn chế cho bệnh nhân uống nước để giảm đi tiểu'], correct: "B", topic: "bai1" },
+{ id: 177, text: `Bệnh nhân nam đưa vợ đi khám vì sùi mào gà. Khi tư vấn về chăm sóc và phòng bệnh, điều dưỡng cần lưu ý gì về phía người chồng?`, answers: ['Chỉ cần điều trị cho người vợ vì người chồng không có biểu hiện gì', 'Cần kiểm tra và điều trị cho cả người chồng vì đây là bệnh lây truyền qua đường tình dục', 'Khuyên người chồng uống vitamin C để tự khỏi bệnh', 'Cách ly hoàn toàn đồ dùng cá nhân và không được chung sống cùng nhà'], correct: "B", topic: "bai1" },
+{ id: 178, text: `Một phụ nữ bị buồng trứng đa nang (PCOS) đang được điều trị để hỗ trợ sinh sản. Vai trò của điều dưỡng trong việc tư vấn thay đổi lối sống là:`, answers: ['Hướng dẫn chế độ ăn giảm tinh bột đường và tăng cường vận động để kiểm soát cân nặng, giúp cải thiện sự rụng trứng', 'Khuyên bệnh nhân ăn thật nhiều thực phẩm chứa mỡ động vật để tăng hormone', 'Tư vấn bệnh nhân nên nghỉ làm để tránh căng thẳng tuyệt đối', 'Hướng dẫn bệnh nhân sử dụng các loại lá cây dân gian để làm sạch nang'], correct: "A", topic: "bai1" },
+{ id: 179, text: `Khi thực hiện kỹ thuật thụt tháo cho bệnh nhân chuẩn bị phẫu thuật phụ khoa, nếu bệnh nhân kêu đau bụng dữ dội và có dấu hiệu vã mồ hôi, điều dưỡng nên:`, answers: ['Tiếp tục thực hiện nhanh hơn để kết thúc sớm', 'Ngừng ngay thủ thuật, kiểm tra mạch, huyết áp và báo cáo bác sĩ kịp thời', 'Yêu cầu bệnh nhân cố gắng chịu đựng vì đây là phản ứng bình thường', 'Đổ thêm nước nóng vào bình thụt để làm dịu cơn đau'], correct: "B", topic: "bai1" },
+{ id: 180, text: `Sau khi hướng dẫn bệnh nhân cách theo dõi chu kỳ kinh nguyệt bằng biểu đồ nhiệt độ, tiêu chuẩn nào cho thấy bệnh nhân có khả năng đã rụng trứng?`, answers: ['Nhiệt độ cơ thể giảm liên tục trong suốt chu kỳ', 'Nhiệt độ cơ thể tăng nhẹ (khoảng 0.3 - 0.5 độ C) và duy trì ở mức cao trong nửa sau chu kỳ', 'Nhiệt độ đột ngột giảm mạnh vào ngày cuối cùng của kỳ kinh', 'Nhiệt độ biến thiên thất thường, không có quy luật nào'], correct: "B", topic: "bai1" },
+{ id: 181, text: `Tiếp nhận sản phụ thai 32 tuần vào viện vì đau bụng từng cơn, ra chút dịch hồng âm đạo. Hành động chăm sóc nào là ưu tiên số 1?`, answers: ['Hướng dẫn sản phụ đi lại để mau đẻ', 'Cho sản phụ nằm nghỉ tuyệt đối tại giường, theo dõi tim thai và cơn co tử cung', 'Chuẩn bị dụng cụ để đỡ đẻ ngay', 'Cho sản phụ ăn một bữa thật no để lấy sức'], correct: "B", topic: "bai1" },
+{ id: 182, text: `Đang theo dõi chuyển dạ cho sản phụ thai 39 tuần, đột ngột nước ối vỡ xanh bẩn, tim thai giảm xuống còn 90 lần/phút. Điều dưỡng cần làm gì ngay lập tức?`, answers: ['Tiếp tục theo dõi thêm 30 phút nữa', 'Cho sản phụ nằm nghiêng trái, thở oxy qua mask và báo gấp bác sĩ mổ lấy thai cấp cứu', 'Khuyên sản phụ bình tĩnh hít thở sâu', 'Đi lấy phiếu xét nghiệm máu bổ sung'], correct: "B", topic: "bai1" },
+{ id: 183, text: `Sản phụ sau sổ rau 15 phút, đột ngột máu âm đạo chảy ra ồ ạt đỏ tươi, khám thấy tử cung mềm nhão, không có khối cầu an toàn. Hành động xử trí tích cực nào đúng nhất?`, answers: ['Xoa hồi sức tử cung qua thành bụng và dùng thuốc tăng co (Oxytocin) theo y lệnh', 'Đi tìm dụng cụ khâu tầng sinh môn', 'Cho sản phụ uống nước muối ấm', 'Nhấc chân sản phụ lên cao và đợi máu tự cầm'], correct: "A", topic: "bai1" },
+{ id: 184, text: `Đang chăm sóc sản phụ tiền sản giật nặng đang truyền MgSO4, bạn phát hiện nhịp thở sản phụ còn 12 lần/phút, phản xạ đầu gối mất. Bạn nên xử trí như thế nào?`, answers: ['Tăng tốc độ truyền MgSO4 lên', 'Ngừng truyền MgSO4 ngay lập tức và chuẩn bị thuốc đối kháng là Canxi Gluconat', 'Kê gối cao cho sản phụ dễ thở', 'Cho sản phụ uống thêm nước'], correct: "B", topic: "bai1" },
+{ id: 185, text: `Sản phụ thai 38 tuần vào viện vì đau bụng dữ dội, tử cung co cứng như gỗ, tim thai không nghe thấy, huyết áp hạ. Bạn nghi ngờ bệnh lý gì và cần chuẩn bị gì?`, answers: ['Rau bong non thể nặng; cần lập 2 đường truyền tĩnh mạch lớn và chuẩn bị mổ cấp cứu', 'Chuyển dạ đẻ thường; chuẩn bị bộ đồ đỡ đẻ', 'Thai lưu; hướng dẫn sản phụ về nhà theo dõi', 'Viêm ruột thừa; chuyển sang khoa ngoại'], correct: "A", topic: "bai1" },
+{ id: 186, text: `Hướng dẫn một sản phụ sau sinh cách vệ sinh vùng kín để phòng nhiễm khuẩn hậu sản, nội dung nào là đúng nhất?`, answers: ['Thụt rửa sâu trong âm đạo bằng thuốc sát khuẩn hàng ngày', 'Rửa vùng kín bằng nước sạch/dung dịch vệ sinh từ trước ra sau sau mỗi lần đi tiêu tiểu, giữ khô', 'Ngâm mình trong bồn nước ấm để vết khâu mau lành', 'Dùng bông gòn nút kín âm đạo để sản dịch không chảy ra ngoài'], correct: "B", topic: "bai1" },
+{ id: 187, text: `Phát hiện một sản phụ sau sinh ngày thứ 3 bị sốt 38.5 độ, sản dịch hôi, tử cung co hồi chậm và đau khi ấn vào. Bạn cần thực hiện chăm sóc gì?`, answers: ['Cách ly sản phụ, lấy bệnh phẩm dịch âm đạo làm kháng sinh đồ và thực hiện y lệnh kháng sinh', 'Chỉ cần chườm mát và cho sản phụ uống nhiều nước', 'Hướng dẫn sản phụ vận động mạnh để đẩy sản dịch ra', 'Cho con ngừng bú hoàn toàn vì sữa có thể bị nhiễm khuẩn'], correct: "A", topic: "bai1" },
+{ id: 188, text: `Theo dõi một thai phụ bị Đái tháo đường thai kỳ, nội dung giáo dục sức khỏe nào quan trọng nhất để tránh thai to và hạ đường huyết cho con?`, answers: ['Kiểm soát chế độ ăn (giảm đường, tinh bột) và theo dõi đường huyết mao mạch thường xuyên', 'Khuyên thai phụ nằm nghỉ tuyệt đối tại giường', 'Uống thật nhiều nước ngọt khi cảm thấy mệt', 'Chỉ ăn rau xanh và bỏ hoàn toàn cơm'], correct: "A", topic: "bai1" },
+{ id: 189, text: `TÌNH HUỐNG: Thai phụ 36 tuần có huyết áp 170/110 mmHg, đau đầu nhiều, hoa mắt và phù mặt. Hành động chăm sóc ưu tiên của điều dưỡng là gì?`, answers: ['Cho thai phụ nằm nghỉ, hạn chế kích thích, theo dõi huyết áp - tim thai và báo bác sĩ ngay.', 'Cho thai phụ đi bộ để hạ huyết áp.', 'Khuyên thai phụ về nhà theo dõi thêm.', 'Cho uống nước đường để giảm đau đầu.'], correct: "A", topic: "bai1" },
+{ id: 190, text: `TÌNH HUỐNG: Thai phụ 34 tuần vỡ ối đã 18 giờ, sốt 38.5°C, nước ối có mùi hôi. Nhận định và xử trí điều dưỡng phù hợp nhất là gì?`, answers: ['Nghi nhiễm khuẩn ối, báo bác sĩ, theo dõi dấu hiệu sinh tồn và tình trạng thai.', 'Đây là hiện tượng bình thường, tiếp tục cho về nhà.', 'Khuyên thai phụ tự thụt rửa âm đạo.', 'Cho thai phụ ăn no và vận động mạnh.'], correct: "A", topic: "bai1" },
+{ id: 191, text: `TÌNH HUỐNG: Thai phụ đã được chẩn đoán rau tiền đạo, vào viện vì ra máu đỏ tươi không đau bụng. Điều dưỡng cần ưu tiên làm gì?`, answers: ['Không thăm âm đạo, theo dõi mạch - huyết áp - lượng máu mất, lập đường truyền và báo bác sĩ.', 'Thăm âm đạo nhiều lần để xác định cổ tử cung mở.', 'Cho thai phụ tự đi vệ sinh một mình.', 'Khuyên thai phụ chờ máu tự cầm tại nhà.'], correct: "A", topic: "bai1" },
+{ id: 192, text: `TÌNH HUỐNG: Thai phụ 32 tuần sau té ngã, đau bụng liên tục, tử cung căng cứng và ra ít máu sẫm. Điều dưỡng cần nghĩ đến bệnh lý nào và xử trí ra sao?`, answers: ['Nghi rau bong non, theo dõi dấu hiệu choáng - tim thai và chuẩn bị cấp cứu theo y lệnh.', 'Nghi nghén sinh lý, cho uống nước ấm.', 'Nghi viêm âm đạo, hướng dẫn đặt thuốc tại nhà.', 'Nghi táo bón, khuyên ăn nhiều rau.'], correct: "A", topic: "bai1" },
+{ id: 193, text: `TÌNH HUỐNG: Thai phụ đái tháo đường thai kỳ chuẩn bị sinh. Nội dung phối hợp chăm sóc nào quan trọng để giảm nguy cơ hạ đường huyết sơ sinh?`, answers: ['Kiểm soát đường huyết mẹ, chuẩn bị theo dõi đường huyết trẻ sau sinh và phối hợp với bác sĩ/nhi khoa.', 'Cho mẹ ăn thật nhiều bánh kẹo trước sinh.', 'Không cần theo dõi trẻ nếu trẻ khóc to.', 'Ngừng mọi theo dõi đường huyết khi vào viện.'], correct: "A", topic: "bai1" },
+{ id: 194, text: `Lợi ích vượt trội của việc kẹp dây rốn muộn (sau 1 - 3 phút) đối với trẻ sơ sinh là:`, answers: ['Tăng lượng máu dự trữ và cung cấp thêm nguồn sắt cho trẻ trong những tháng đầu.', 'Giúp cho cuống rốn nhanh rụng hơn bình thường.', 'Giảm thiểu nguy cơ vàng da sau sinh.', 'Giúp cho trẻ ngủ ngon và sâu giấc hơn.'], correct: "A", topic: "bai1" },
+{ id: 195, text: `Trong quá trình cho con bú, hormone Oxytocin có tác dụng sinh lý gì tại tuyến vú?`, answers: ['Kích thích các nang sữa sản sinh ra nhiều sữa hơn.', 'Làm co bóp các tế bào cơ quanh nang sữa để tống sữa ra ngoài đầu núm vú.', 'Làm cho vị của sữa mẹ trở nên ngọt hơn.', 'Ngăn chặn hoàn toàn việc thụ thai trở lại.'], correct: "B", topic: "bai1" },
+{ id: 196, text: `TÌNH HUỐNG: Phát hiện sản phụ sau sinh bị băng huyết do đờ tử cung (tử cung mềm nhão), hành động đầu tiên điều dưỡng cần làm là:`, answers: ['Đi chuẩn bị ngay bộ dụng cụ khâu tầng sinh môn.', 'Thực hiện xoa đáy tử cung liên tục qua thành bụng để kích thích tử cung co hồi.', 'Cho sản phụ uống một cốc nước đường thật nóng.', 'Rời khỏi bệnh nhân để đi tìm bác sĩ trưởng khoa.'], correct: "B", topic: "bai1" },
+{ id: 197, text: `TÌNH HUỐNG: Một sản phụ ra máu đỏ tươi sau sinh, kiểm tra thấy tử cung co hồi tốt (khối cầu an toàn rõ), rau sổ đủ, tầng sinh môn không rách. Nguyên nhân cần nghĩ tới đầu tiên là:`, answers: ['Đờ tử cung tiềm tàng.', 'Sót rau hoặc màng rau.', 'Rách cổ tử cung hoặc rách đoạn dưới tử cung.', 'Nhiễm trùng hậu sản sớm.'], correct: "C", topic: "bai1" },
+{ id: 198, text: `TÌNH HUỐNG: Trẻ sơ sinh có mẹ bị HIV (+) cần được thực hiện quy trình tắm bé vào thời điểm nào để đảm bảo an toàn?`, answers: ['Tắm ngay sau khi sinh (sau khi các chỉ số sinh tồn ổn định) để loại bỏ máu và dịch tiết của mẹ.', 'Đợi sau khi sinh đủ 24 giờ mới được tắm.', 'Chỉ tắm sau khi trẻ đã được 72 giờ tuổi.', 'Tắm vào ngày thứ 2 sau khi trẻ chào đời.'], correct: "A", topic: "bai1" },
+{ id: 199, text: `Trong quy trình tắm cho trẻ sơ sinh, điều dưỡng cần lưu ý tránh sai lầm nào sau đây?`, answers: ['Tránh để trẻ bị xây xát da trong khi tắm.', 'Tránh để nước làm ướt vùng rốn của trẻ khi chưa rụng.', 'Kéo dài thời gian tắm trẻ lên đến 15 - 20 phút cho trẻ sạch.', 'Tránh để nước lọt vào trong tai của trẻ.'], correct: "C", topic: "bai1" },
+{ id: 200, text: `Nội dung nào sau đây là SAI khi lập kế hoạch chăm sóc hằng ngày cho một trẻ sơ sinh đủ tháng khỏe mạnh?`, answers: ['Theo dõi toàn trạng, màu sắc da và thân nhiệt của trẻ.', 'Kiểm tra nhịp thở, nhịp tim và tình trạng dinh dưỡng (bú mẹ).', 'Cho trẻ uống thuốc kháng sinh dự phòng hằng ngày để tránh viêm phổi.', 'Vệ sinh thân thể và theo dõi tình trạng đại, tiểu tiện của trẻ.'], correct: "C", topic: "bai1" },
+      { id: 201, text: "Rong huyết là hiện tượng ra máu âm đạo:", answers: ['Ngoài chu kỳ kinh.', 'Ra khí hư nhiều lẫn mủ, mùi hôi.', 'Khí hư màu hồng.', 'Gây nhiễm trùng tử cung.'], correct: "A", topic: "1" },
+{ id: 202, text: "Nói về 3T  “Tư vấn trong dịch vụ chăm sóc SKSS” câu nào sau đây là sai:", answers: ['Là một Tiến trình, Tương tác giữa khách hàng và người cung cấp dịch vụ.', 'Giúp khách hàng Tự giúp chính họ thay đổi thái độ, hành vi.', 'Chọn cho khách hàng một giải pháp chăm sóc SKSS trong một giai đoạn.', 'Cuối cùng là giúp khách hàng tự chọn giải pháp chăm sóc SKSS phù hợp.'], correct: "C", topic: "1" },
+{ id: 203, text: "Thai nhi được hình thành do kết quả của:", answers: ['Di chuyển của trứng', 'Hình thành thai nhi.', 'Quá trình thụ tinh', 'Các quá trình thụ tinh, di chuyển của trứng, phát triển thành phôi.'], correct: "D", topic: "1" },
+{ id: 204, text: "Trong đời sống sinh dục của người phụ nữ, từ lúc dậy thì đến khi mãn kinh, có hai hiện tượng quan trọng nhất, diễn biến theo chu kỳ, đó là:", answers: ['Chu kỳ buồng trứng và chu kỳ nội mạc tử cung.', 'Mỗi chu kỳ kéo dài từ ngày đầu kỳ kinh này đến ngày đầu của kỳ kinh sau.', 'Các hormon được tiết ra có tính chu kỳ.', 'Chu kỳ kinh nguyệt'], correct: "D", topic: "1" },
+{ id: 205, text: "Hormone nào tăng cao đột ngột giữa chu kỳ để kích thích hiện tượng rụng trứng?", answers: ['Estrogen', 'Progesterone', 'LH', 'Prolactin'], correct: "C", topic: "1" },
+{ id: 206, text: "Biện pháp tránh thai nào là hàng rào cơ học cần dùng đúng cách trong mỗi lần quan hệ tình dục?", answers: ['Bao cao su', 'Vòng tránh thai', 'Thuốc tiêm tránh thai', 'Triệt sản'], correct: "A", topic: "1" },
+{ id: 207, text: "Cơ chế tránh thai của triệt sản nữ là:", answers: ['Ngăn cản sản sinh ra trứng', 'Ngăn cản hiện tượng thụ thai', 'Ngăn cản phóng noãn', 'Làm tắc hai vòi trứng, không cho noãn gặp tinh trùng để thụ tinh.'], correct: "D", topic: "1" },
+{ id: 208, text: "Thành phần của viên tránh thai Progestogen đơn thuần liều thấp có chứa:", answers: ['Chỉ có Estrogen', 'Chủ yếu là Estrogen', 'Chỉ có progestin và Estrogen', 'Một lượng nhỏ progestin'], correct: "D", topic: "1" },
+{ id: 209, text: "Để cuộc tư vấn có chất lượng, cán bộ tư vấn  không nên:", answers: ['Cần cung cấp những thông tin chính xác mà khách hàng muốn biết, cần biết.', 'Sử dụng ngôn ngữ dễ hiểu.', 'Trước khi kết thúc tư vấn cần hỏi lại xem khách hàng đã hiểu đúng chưa.', 'Dùng thuật ngữ chuyên môn.'], correct: "D", topic: "1" },
+{ id: 210, text: "Hiệu quả tránh thai của Dụng cụ tử cung là bao nhiêu % ?", answers: ['95-99%', '95-98%', '95-97%', '90-95%'], correct: "B", topic: "1" },
+{ id: 211, text: "Thuốc tiêm tránh thai (Depot Provera – viết tắt là DMPA) có tác dụng tránh thai bao nhiêu tháng?", answers: ['1 tháng', '2 tháng', '3 tháng', '4 tháng'], correct: "C", topic: "1" },
+{ id: 212, text: "Thuốc cấy tránh thai Implanon có thời gian tránh thai bao nhiêu lâu ?", answers: ['2 năm', '3 năm', '4 năm', '5 năm'], correct: "B", topic: "1" },
+{ id: 213, text: "Triệt sản nữ có hiệu quả tránh thai rất cao, khoảng:", answers: ['Trên 99%.', 'Trên 98%', 'Trên 97%', 'Trên 96%'], correct: "A", topic: "1" },
+{ id: 214, text: "Cơ chế tránh thai của triệt sản nam là:", answers: ['Ngăn cản tinh hoàn sản sinh ra tinh trùng', 'Ngăn cản không cho tinh trùng di chuyển và tích lại trong túi tinh', 'Ngăn cản hiện tượng xuất tinh trong khi giao hợp', 'Diệt tinh trùng'], correct: "B", topic: "1" },
+{ id: 215, text: "Vô kinh thứ phát được định nghĩa là tình trạng mất kinh ít nhất bao nhiêu tháng ở người đã từng có kinh đều?", answers: ['3 tháng.', '6 tháng.', '9 tháng.', '12 tháng.'], correct: "A", topic: "1" },
+{ id: 216, text: "Vô kinh thứ phát được định nghĩa là tình trạng mất kinh ít nhất bao nhiêu tháng ở người trước đo có kinh không đều?", answers: ['3 tháng.', '6 tháng.', '9 tháng.', '12 tháng.'], correct: "B", topic: "1" },
+{ id: 217, text: "Vòng kinh mau hay chu kỳ kinh nguyệt ngắn/ đa kinh là vòng kinh:", answers: ['< 21 ngày', '< 28 ngày', '< 14 ngày', '< 25 ngày'], correct: "A", topic: "1" },
+{ id: 218, text: "Kinh nguyệt có tính chu kỳ đều đặn do hiện tượng bong:", answers: ['Niêm mạc tử cung.', 'Niêm mạc âm đạo.', 'Niêm mạc vòi trứng.', 'Niêm mạc đường sinh dục.'], correct: "A", topic: "1" },
+{ id: 219, text: "Dấu hiệu báo động để tự phát hiện sớm u ở tử cung và buồng trứng là :", answers: ['Ra khí hư.', 'Đau bụng.', 'Ra máu âm đạo.', 'Rối loạn kinh nguyệt/ Rong huyết.'], correct: "D", topic: "1" },
+{ id: 220, text: "Khối u vú thường:", answers: ['Phát triển từ tuổi dậy thì, dưới ảnh hưởng của nội tiết tố nữ estrogen.', 'Thường không liên quan đến hội chứng đau trước kinh nguyệt.', 'Dấu hiệu báo động u xơ ở tử cung .', 'U vú thường gặp ở tuổi đang sinh đẻ.'], correct: "D", topic: "1" },
+{ id: 221, text: "U xơ tử cung thường gặp:", answers: ['Ở tuổi đang sinh đẻ, ra máu nhiều màu đỏ lẫn cục.', 'Ra khí hư nhiều, lẫn mủ, mùi hôi.', 'Khí hư lẫn mủ, có mùi hôi', 'Gây nhiễm trùng tử cung'], correct: "A", topic: "1" },
+{ id: 222, text: "Triệu chứng đau do nội tiết ở vú thường là:", answers: ['Phát triển từ tuổi dậy thì, do ảnh hưởng của nội tiết tố nữ estrogen.', 'Estrogen và Progesteron.', 'Dấu hiệu báo động u xơ ở tử cung.', 'Bắt đầu 2-3 ngày trước khi có kinh'], correct: "D", topic: "1" },
+{ id: 223, text: "Triệu chứng ở hầu hết các trường hợp viêm đường sinh dục ở phụ nữ là:", answers: ['Khí hư.', 'Bệnh khó có thể phòng tránh được', 'Có thể gây tử vong', 'Bệnh ít ảnh hưởng tới sinh hoạt nên người phụ nữ ít quan tâm.'], correct: "A", topic: "1" },
+{ id: 224, text: "Khi hướng dẫn bệnh nhân vệ sinh cơ quan sinh dục ngoài để phòng ngừa viêm nhiễm, điều dưỡng nên khuyên:", answers: ['Vệ sinh từ sau ra trước (hậu môn ra âm đạo).', 'Vệ sinh từ trước ra sau (âm đạo ra hậu môn).', 'Thụt rửa sâu vào trong âm đạo hàng ngày.', 'Sử dụng xà phòng có độ kiềm cao để diệt khuẩn.'], correct: "B", topic: "1" },
+{ id: 225, text: "Dấu hiệu thường gặp ở phụ nữ mãn kinh do giảm nội tiết estrogen là:", answers: ['Bốc hỏa, khô âm đạo', 'Ho ra máu kéo dài', 'Vàng da tăng dần', 'Đau răng cấp'], correct: "A", topic: "1" },
+{ id: 226, text: "Trong thai kỳ, phụ nữ có chỉ số BMI trung bình, thường tăng cân:", answers: ['Tăng càng nhiều càng tốt', '12 – 14 kg', '10 – 12 kg', '8 – 10 kg'], correct: "B", topic: "1" },
+{ id: 227, text: "Trong khám thai thường quy, chỉ số nào được dùng để theo dõi sự phát triển of thai bằng khám bụng?", answers: ['Chiều cao tử cung', 'Màu mắt của mẹ', 'Số răng của mẹ', 'Nhịp thở của mẹ khi ngủ'], correct: "A", topic: "1" },
+{ id: 228, text: "Dấu hiệu nào sau đây được xem là dấu hiệu chắc chắn có thai?", answers: ['Buồn nôn vào buổi sáng', 'Chậm kinh', 'Nghe được tim thai', 'Căng tức vú'], correct: "C", topic: "1" },
+{ id: 229, text: "Thai phụ cần được tư vấn bổ sung vi chất nào trước và trong ba tháng đầu thai kỳ để phòng dị tật ống thần kinh?", answers: ['Acid folic', 'Vitamin K', 'Canxi liều cao', 'Kháng sinh dự phòng'], correct: "A", topic: "1" },
+{ id: 230, text: "Tiêm phòng uốn ván trong thai kỳ có mục đích chính là phòng bệnh nào?", answers: ['Uốn ván cho mẹ và trẻ sơ sinh', 'Sởi cho trẻ sơ sinh', 'Thủy đậu cho mẹ', 'Lao phổi cho thai nhi'], correct: "A", topic: "1" },
+{ id: 231, text: "Dọa sẩy thai thường có đặc điểm cổ tử cung như thế nào?", answers: ['Cổ tử cung còn đóng kín', 'Cổ tử cung mở rộng hoàn toàn', 'Có sa dây rốn', 'Có sẹo mổ cũ'], correct: "A", topic: "1" },
+{ id: 232, text: "Máu âm đạo trong nhau bong non thường có đặc điểm màu sắc nào?", answers: ['Đỏ sẫm', 'Xanh nhạt', 'Trắng đục', 'Vàng trong'], correct: "A", topic: "1" },
+{ id: 233, text: "Rau bám ở vùng thân hoặc đáy tử cung, không che lỗ trong cổ tử cung, thường được xem là:", answers: ['Vị trí rau bám bình thường', 'Rau tiền đạo trung tâm', 'Rau bong non', 'Rau cài răng lược'], correct: "A", topic: "1" },
+{ id: 234, text: "Phương tiện thường dùng để theo dõi tim thai trong chuyển dạ tại cơ sở y tế là:", answers: ['Doppler hoặc monitor sản khoa', 'Chụp X-quang phổi', 'Đo thị lực', 'Nội soi dạ dày'], correct: "A", topic: "1" },
+{ id: 235, text: "Phương pháp nào không nên sử dụng trong chẩn đoán thai nghén:ĐK1", answers: ['Siêu âm', 'Xét nghiệm máu', 'X quang', 'Nghe tim thai.'], correct: "C", topic: "1" },
+{ id: 236, text: "Tư thế nằm ưu tiên cho bệnh nhân Tiền sản giật là:", answers: ['Nằm ngửa, đầu cao.', 'Nằm sấp để giảm đau lưng.', 'Nằm nghiêng trái.', 'Nằm nghiêng phải.'], correct: "C", topic: "1" },
+{ id: 237, text: "Kinh cuối cùng là 01/01/2024 (dương lịch), ngày tháng sinh dự đoán theo quy tắc Naegele là:", answers: ['Ngày 08 tháng 10 năm 2024', 'Ngày 01 tháng 09 năm 2024', 'Ngày 15 tháng 12 năm 2024', 'Ngày 08 tháng 08 năm 2024'], correct: "A", topic: "1" },
+{ id: 238, text: "Thời gian chuyển dạ trung bình đối với một sản phụ là:", answers: ['Con so từ 16 – 24 giờ  và con rạ từ 8 – 12 giờ', 'Con so từ 16 – 20 giờ  và con rạ từ 8 – 12 giờ', 'Con so từ 16 – 24 giờ  và con rạ từ 5 – 8 giờ', 'Con so từ 16 – 24 giờ  và con rạ từ 8 – 15 giờ'], correct: "A", topic: "1" },
+{ id: 239, text: "Bình thường bánh rau nặng so với trọng lượng thai nhi  khoảng bằng:", answers: ['1/8 trọng lượng của thai nhi.', '1/6 trọng lượng của thai nhi.', '1/4 trọng lượng của thai nhi.', '1/5 trọng lượng của thai nhi'], correct: "B", topic: "1" },
+{ id: 240, text: "Gọi là phù gai nhau khi cân bánh rau nếu to và nặng quá:", answers: ['> 1 Kg', '> 0,5  Kg', '> 0,8Kg', '= 1,5 Kg'], correct: "A", topic: "1" },
+{ id: 241, text: "Mục đích chính của việc khuyến khích sản phụ đi tiểu tiện đều đặn (mỗi 2-4 giờ) trong khi chuyển dạ là gì?", answers: ['Để tránh nhiễm trùng tiểu', 'Để bàng quang xẹp, không cản trở ngôi thai xuống và không ức chế cơn co tử cung', 'Để lấy nước tiểu làm xét nghiệm', 'Để sản phụ vận động cho dễ đẻ'], correct: "B", topic: "1" },
+{ id: 242, text: "Ở sản phụ chuyển dạ bình thường, tư thế nằm nào được khuyến khích nhất để tránh hội chứng hạ huyết áp do chèn ép tĩnh mạch chủ dưới, đồng thời đảm bảo tuần hoàn rau thai tốt nhất.?", answers: ['Nằm ngửa phẳng', 'Nằm ngửa đầu cao', 'Nằm nghiêng trái', 'Nằm nghiêng phải'], correct: "C", topic: "1" },
+{ id: 243, text: "Sự tiết sữa được điều khiển và duy trì bởi 2 nội tiết tố chính:", answers: ['Prolactin và oxytocin.', 'Prolactin và estrogen.', 'Progesteron và oxytocin.', 'Prolactin và estrogen.'], correct: "A", topic: "1" },
+{ id: 244, text: "Thời kỳ hậu sản được đánh dấu bằng những hiện tượng chính là:", answers: ['Sự co hồi của tử cung; Sản dịch; Lên sữa và tiết sữa.', 'Rụng rốn.', 'Bài tiết phân su.', 'Là thời gian 6 tuần lễ sau sinh'], correct: "A", topic: "1" },
+{ id: 245, text: "Trẻ sơ sinh có mẹ HIV cần được tắm khi nào:", answers: ['Tắm ngay sau khi sinh.', 'Tắm ngay sau khi sinh 24 giờ.', 'Tắm ngay sau khi sinh 72 giờ.', 'Tắm ngay sau khi sinh 48 giờ.'], correct: "A", topic: "1" },
+{ id: 246, text: "Trẻ sơ sinh đủ tháng, kiểu thở chủ yếu là:", answers: ['Thở không đều', 'Thở ngực', 'Thở bụng', 'Thở nhanh và sâu'], correct: "C", topic: "1" },
+{ id: 247, text: "Thời gian theo dõi sát sản phụ và trẻ sơ sinh tại phòng đẻ/phòng hồi sức ngay sau khi sinh tối thiểu là bao nhiêu giờ?", answers: ['30 phút', '1 giờ', '2 giờ', '6 giờ'], correct: "C", topic: "1" },
+{ id: 248, text: "Trong ngày đầu sau sinh, vị trí đáy tử cung của sản phụ bình thường nằm ở đâu?", answers: ['Ngang bờ trên xương mu', 'Ngang rốn hoặc dưới rốn khoảng 1 - 2 cm', 'Trên rốn khoảng 5 cm', 'Không sờ thấy trên bụng'], correct: "B", topic: "1" },
+{ id: 249, text: "Màu sắc sản dịch chảy ra từ âm đạo sản phụ trong 2-3 ngày đầu sau sinh có đặc điểm gì?", answers: ['Màu đỏ tươi, có thể lẫn cục máu nhỏ', 'Màu hồng nhạt, loãng', 'Màu vàng trong', 'Màu nâu đen, mùi hôi'], correct: "A", topic: "1" },
+{ id: 250, text: "Điều dưỡng nên hướng dẫn sản phụ vệ sinh vùng tầng sinh môn sau sinh với tần suất tối thiểu bao nhiêu lần một ngày?", answers: ['1 lần/ngày vào buổi sáng', '2 lần/ngày khi tắm', 'Mỗi lần sau khi đi tiểu tiện, đại tiện và thay băng vệ sinh (tối thiểu 3-4 lần/ngày)', 'Chỉ vệ sinh khi thấy ngứa'], correct: "C", topic: "1" },
+{ id: 251, text: "Phương pháp tốt nhất để phòng ngừa hạ thân nhiệt cho trẻ sơ sinh khỏe mạnh ngay sau khi sinh là gì?", answers: ['Quấn thật nhiều tã vải và chăn ấm', 'Đặt trẻ nằm dưới đèn sưởi công suất lớn', 'Cho trẻ tiếp xúc da kề da (Skin-to-skin) liên tục với mẹ', 'Đưa trẻ đi tắm nước ấm ngay lập tức'], correct: "C", topic: "1" },
+{ id: 252, text: "Theo khuyến cáo, trẻ sơ sinh nên được bú mẹ hoàn toàn trong bao lâu sau khi sinh?", answers: ['3 tháng đầu', '6 tháng đầu', '12 tháng đầu', '24 tháng đầu'], correct: "B", topic: "1" },
+{ id: 253, text: "Khi chăm sóc rốn cho trẻ sơ sinh bình thường, điều dưỡng nên hướng dẫn bà mẹ thực hiện điều gì?", answers: ['Băng kín rốn bằng băng gạc vô trùng hàng ngày', 'Bôi thuốc mỡ kháng sinh hoặc cồn 90 độ vào gốc rốn', 'Để rốn hở, giữ rốn sạch, khô thoáng và không bôi bất kỳ chất gì lên rốn', 'Đắp lá thuốc theo dân gian để rốn mau rụng'], correct: "C", topic: "1" },
+{ id: 254, text: "Thời điểm thích hợp nhất để tiêm vitamin K1 phòng xuất huyết não màng não cho trẻ sơ sinh là khi nào?", answers: ['Ngay sau khi kẹp cắt rốn và thực hiện xong giờ đầu da kề da', 'After khi sinh 24 giờ', 'Khi trẻ chuẩn bị xuất viện', 'Chỉ tiêm khi trẻ có dấu hiệu xuất huyết'], correct: "A", topic: "1" },
+{ id: 255, text: "Tư thế nằm nào được khuyến khích nhất cho trẻ sơ sinh để giảm nguy cơ hội chứng đột tử trẻ sơ sinh (SIDS)?", answers: ['Nằm sấp', 'Nằm nghiêng hoàn toàn sang bên phải', 'Nằm ngửa trên nệm phẳng, cứng vừa phải', 'Nằm ngửa trên gối cao'], correct: "C", topic: "1" },
+{ id: 256, text: "Vaccine nào sau đây được khuyến cáo tiêm cho trẻ sơ sinh trong vòng 24 giờ đầu sau sinh?", answers: ['Vaccine Sởi', 'Vaccine Viêm gan B mũi 0', 'Vaccine 5 trong 1 (Pentaxim)', 'Vaccine Phế cầu'], correct: "B", topic: "1" },
+{ id: 257, text: "Chuẩn bị  dung dịch sát khuẩn rốn loại nào là phù hợp nhất:", answers: ['1 %', '4 %', '10%', 'Cồn Povidine Iodine 5% Hoặc dung dịch Natri clorid 0,9%'], correct: "D", topic: "1" },
+{ id: 258, text: "Tất cả các sơ sinh khỏe mạnh, đủ tháng, sau đẻ đều phải được tắm theo qui định sau:", answers: ['24 giờ một lần.', '6 giờ một lần.', '12 giờ một lần.', '72 giờ một lần.'], correct: "A", topic: "1" },
+{ id: 259, text: "Trình tự khi tắm cho bé cần lưu ý điều nào sau đây:", answers: ['Tắm vùng sạch trước, vùng bẩn sau.', 'Tắm lưng, mông, chân.', 'Tắm bộ phận sinh dục.', 'Mặc áo, quấn tã, giữ ấm.'], correct: "A", topic: "1" },
+{ id: 260, text: "Các tiêu chuẩn đúng của mũ, áo, tã sơ sinh cần lưu ý là, chọn câu sai: ĐK2", answers: ['Chất liệu vải: phải mềm, mỏng, nhẵn, mịn, thấm nước, thoáng khí.', 'Áo rộng, mũ có giải buộc mịn;', 'Không quấn chặt tã áo.', 'Áo, mũ không được cộm và thuận tiện khi mặc, cởi.'], correct: "B", topic: "1" },
+{ id: 261, text: "Thời kỳ hậu sản được đánh dấu bằng những hiện tượng chính như, câu nào sai:", answers: ['Sự co hồi của tử cung; Tiết sản dịch', 'Sự xoá mở cổ tử cung', 'Lên sữa và tiết sữa', 'Những thay đổi tổng quát khác'], correct: "B", topic: "1" },
+{ id: 262, text: "Hiện tượng xuống sữa khi có các biểu hiện nào sau đây, ngoại trừ:", answers: ['Da vú căng đều.', 'Các tĩnh mạch dưới da vú nổi nhiều, quầng vú rộng, đầu vú nổi cao 1cm.', 'Sốt cao', 'Có khoảng 15-20 lỗ tiết sữa, các tia sữa chảy đều, sữa màu trắng đục hay vàng.'], correct: "C", topic: "1" },
+{ id: 263, text: "Các nội dung cần theo dõi và chăm sóc sau đẻ, ngoại trừ:", answers: ['Theo dõi sự co hồi tử cung hàng ngày; Vệ sinh bộ phận sinh dục ngoài.', 'Theo dõi toàn trạng và sản dịch hàng ngày.', 'Theo dõi sự xuống sữa và tiết sữa, vệ sinh vú và cách cho bú.', 'Hạn chế đại tiện, vì đại tiện làm ảnh hưởng đến vết khâu tầng sinh môn.'], correct: "D", topic: "1" },
+{ id: 264, text: "Những trường hợp mẹ không nên nuôi con bằng sữa mẹ là, câu nào sai:", answers: ['Mẹ bị nhiễm HIV/AIDS: trẻ bú mẹ sẽ bị lây nhiễm', 'Mẹ bị suy tim, lao phổi nặng, viêm gan đang tiến triển.', 'Mẹ phải điều trị các thuốc chống: ung thư, động kinh, thuốc hướng tâm thần.', 'Mẹ bị viêm nhiễm đường sinh dục trên.'], correct: "D", topic: "1" },
+{ id: 265, text: "Những trường hợp sau, vẫn khuyên bà mẹ nên nuôi trẻ bằng của mình:", answers: ['Mẹ bị nhiễm HIV/AIDS.', 'Mẹ bị suy tim, lao phổi nặng, viêm gan đang tiến triển.', 'Mẹ phải điều trị các thuốc chống: ung thư, động kinh, thuốc hướng tâm thần.', 'Bầu vú mẹ bị cương đau.'], correct: "D", topic: "1" },
+{ id: 266, text: "Một bà mẹ mới sinh con được 1 giờ, lo lắng vì thấy sữa tiết ra rất ít, màu vàng đậm và đặc. Điều dưỡng nên tư vấn như thế nào là ĐÚNG nhất?", answers: ['Khuyên mẹ nên cho bé uống thêm sữa công thức vì sữa đó chưa đủ cho bé bú.', 'Giải thích đây là "Sữa non" – cực kỳ quý giá, chứa nhiều kháng thể và vừa đủ với dung tích dạ dày của trẻ sơ sinh trong những ngày đầu.', 'Bảo mẹ hãy đợi 3 ngày sau khi sữa trắng về mới nên cho con bú.', 'Yêu cầu mẹ uống thuốc để kích thích sữa về nhanh hơn.'], correct: "B", topic: "1" },
+{ id: 267, text: "Vai trò của điều dưỡng trong việc hỗ trợ nuôi con bằng sữa mẹ ở sản phụ sau mổ là gì?", answers: ['Khuyên sản phụ cho bé uống sữa công thức vì mổ xong sữa chưa về ngay.', 'Hỗ trợ sản phụ tư nằm nghiêng hoặc tư thế phù hợp để cho bé bú sớm nhất có thể ngay khi sức khỏe mẹ cho phép.', 'Dặn sản phụ đợi 3 ngày sau mổ mới được cho bé bú.', 'Cách ly mẹ và bé hoàn toàn trong 24 giờ đầu để mẹ nghỉ ngơi.'], correct: "B", topic: "1" },
+{ id: 268, text: "Những trường hợp sau, vẫn khuyên bà mẹ nên nuôi trẻ bằng chính dòng sữa của mình:", answers: ['Mẹ bị viêm gan đang tiến triển.', 'Mẹ bị suy tim, lao phổi nặng.', 'Mẹ phải điều trị các thuốc chống: ung thư, động kinh.', 'Bầu vú mẹ bị cương đau.'], correct: "D", topic: "1" },
+{ id: 269, text: "Bàn làm rốn cần vô khuẩn, đủ ánh sáng, nhiệt độ bàn làm rốn cho trẻ là:", answers: ['30-35 độ C', '30-37 độ C', '28-35 độ C', '32-35 độ C'], correct: "B", topic: "1" },
+{ id: 270, text: "Nếu cắt dây rốn và làm rốn không đảm bảo vô khuẩn, không cẩn thận, các tai biến sau có thể xảy ra:", answers: ['Nhiễm khuẩn rốn. Viêm tấy quanh rốn. Chảy máu rốn', 'Cắt bỏ phần dây rốn còn lại trên kẹp rốn .', 'Người làm rốn hút đờm giãi ở mũi họng sơ sinh.', 'Rụng rốn sớm.'], correct: "A", topic: "1" },
+{ id: 271, text: "Khi dùng thuốc uống tránh thai nếu quên 2 viên cần phải làm gì ? Chọn câu sai", answers: ['Uống ngay 2 viên khi nhớ ra.', 'Ngày hôm sau đến giờ uống thuốc hàng ngày thì uống 2 viên.', 'Dùng BPTT hỗ trợ trong 7 ngày nếu có giao hợp.', 'Chỉ cần uống bù mà không cần dùng BPTT hỗ trợ.'], correct: "D", topic: "1" },
+{ id: 272, text: "Thai ngoài tử cung là do hậu quả của, ngoại trừ:", answers: ['Vòi tử cung bị chít hẹp', 'Do cấu trúc của vòi tử cung không thể giãn nở như buồng tử cung.', 'Do rối loạn hoạt động của nhung mao ống dẫn trứng.', 'Đây là cấp cứu sản khoa hàng đầu, có thể gây tử vong cho phụ nữ.'], correct: "B", topic: "1" },
+{ id: 273, text: "Trục hạ đồi - tuyến yên - buồng trứng là, Chọn câu sai:", answers: ['Trục nội tiết sinh sản', 'Giúp điều hòa chu kỳ kinh nguyệt', 'Giúp điều hòa hoạt động sinh sản của người phụ nữ.', 'Buồng trứng là cơ quan sinh dục chính của nữ giới.'], correct: "D", topic: "1" },
+{ id: 274, text: "Biện pháp tránh thai tạm thời, hiện đại dành cho nữ giới là, ngoại trừ:", answers: ['Đặt dụng tử cung tránh thai', 'Thuốc viên tránh thai', 'Tính vòng kinh', 'Thuốc tiêm tránh thai'], correct: "C", topic: "1" },
+{ id: 275, text: "Biện pháp tránh thai tạm thời, hiện đại dành cho nam giới là, ngoại trừ:", answers: ['Thuốc diệt tinh trùng', 'Xuất tinh ngoài âm đạo', 'Bao cao su tránh thao', 'Đình sản nam'], correct: "B", topic: "1" },
+{ id: 276, text: "Chỉ định dùng thuốc tránh thai 2 thành phần cho phụ nữ diện sinh đẻ là, ngoại trừ:", answers: ['Tất cả phụ nữ trong tuổi sinh đẻ, không có chống chỉ định đều có thể dùng.', 'Có thể dùng cho những phụ nữ thống kinh, rong kinh cơ năng, kinh nhiều.', 'Dùng được cho những phụ nữ có chu kỳ kinh không đều.', 'Phụ nữ có bệnh tim mạch; Tiền sử viêm, tắc nghẽn,  phồng tĩnh mạch.'], correct: "D", topic: "1" },
+{ id: 277, text: "Theo dõi sau khi dùng thuốc tránh thai, điều nào sau đây không đúng:", answers: ['Tính chất kinh nguyệt.', 'Các tác dụng phụ.', 'Khám vú và phụ khoa định kỳ.', 'Tính chất khí hư.'], correct: "D", topic: "1" },
+{ id: 278, text: "Khi tư vấn thuốc tránh thai cho phụ nữ sau sinh đang cho con bú, điều dưỡng cần nhấn mạnh điều gì?", answers: ['Dùng thuốc đúng hướng dẫn và tái khám khi có bất thường', 'Tự ý dùng thuốc phối hợp liều cao để tăng hiệu quả', 'Ngừng cho con bú hoàn toàn khi dùng thuốc', 'Uống bù nhiều viên bất cứ lúc nào thấy quên'], correct: "A", topic: "1" },
+{ id: 279, text: "Dấu hiệu nào ở người đang dùng thuốc tránh thai phối hợp cần được tư vấn đi khám ngay?", answers: ['Đau ngực, khó thở hoặc đau sưng một chân', 'Buồn nôn nhẹ trong vài ngày đầu', 'Ra huyết ít trong tháng đầu', 'Căng vú nhẹ trước kỳ kinh'], correct: "A", topic: "1" },
+{ id: 280, text: "Sau đặt dụng cụ tử cung, dấu hiệu nào cần được hướng dẫn tái khám sớm?", answers: ['Đau bụng tăng, sốt hoặc khí hư hôi', 'Ra máu thấm giọt trong ngày đầu', 'Cảm giác hơi căng tức nhẹ', 'Sờ thấy dây vòng khi kiểm tra'], correct: "A", topic: "1" },
+{ id: 281, text: "Khi tư vấn tiêm tránh thai DMPA, điều dưỡng cần dặn người bệnh lịch tiêm nhắc lại như thế nào?", answers: ['Tiêm nhắc lại đúng hẹn khoảng mỗi 3 tháng', 'Tiêm nhắc lại mỗi năm một lần', 'Chỉ tiêm lại khi có kinh trở lại', 'Chỉ tiêm khi có quan hệ tình dục'], correct: "A", topic: "1" },
+{ id: 282, text: "Chống chỉ định dùng thuốc tránh thai 2 thành phần là, câu nào sai:", answers: ['Thống kinh; Rong kinh cơ năng; Chu kỳ kinh không đều.', 'Có tiền sử bệnh tim mạch.', 'Ung thư  cổ tử cung.', 'Ung thu vú.'], correct: "A", topic: "1" },
+{ id: 283, text: "Một phụ nữ muốn tránh thai lâu dài (trên 5 năm) nhưng không muốn can thiệp nội tiết (hormone), biện pháp nào là tối ưu?", answers: ['Tiêm thuốc tránh thai.', 'Uống viên tránh thai kết hợp.', 'Đặt dụng cụ tử cung chứa đồng.', 'Miếng dán tránh thai.'], correct: "C", topic: "1" },
+{ id: 284, text: "Thắt ống dẫn tinh sẽ gây nên tình trạng nào sau đây, ngoại trừ:", answers: ['Tỷ lệ tránh thai cao.', 'Làm giảm ham muốn và khả năng sinh lý của nam giới.', 'Không ảnh hưởng đến hormone testosterone).', 'Kỹ thuật đơn giản, nhanh chóng, tiênl lợi khách hàng có thể về ngay sau làm thủ thuật.'], correct: "B", topic: "1" },
+{ id: 285, text: "Kinh mau hay chu kỳ kinh nguyệt ngắn là nguyên nhân gây:", answers: ['Thai ngoài tử cung', 'Viêm nhiễm đường sinh dục', 'Vô sinh hay dễ bị sẩy thai', 'Đẻ non'], correct: "C", topic: "1" },
+{ id: 286, text: "Khi giáo dục sức khỏe cho bệnh nhân rối loạn kinh nguyệt do tâm lý, lời khuyên nào là quan trọng nhất?", answers: ['Uống nước lá ngải cứu hàng ngày.', 'Cân bằng chế độ làm việc, nghỉ ngơi và giải tỏa căng thẳng.', 'Tuyệt đối không vận động mạnh khi hành kinh.', 'Tự mua thuốc nội tiết về uống để điều chỉnh chu kỳ.'], correct: "B", topic: "1" },
+{ id: 287, text: "Mục tiêu cuối cùng của quy trình chăm sóc điều dưỡng cho bệnh nhân rối loạn kinh nguyệt là:", answers: ['Chỉ làm cho bệnh nhân hết đau bụng kinh.', 'BN ổn định thể chất, tâm lý và có kiến thức tự chăm sóc sức khỏe sinh sản.', 'Bệnh nhân phụ thuộc hoàn toàn vào sự hỗ trợ của điều dưỡng.', 'Yêu cầu bệnh nhân không được vận động khi đang hành kinh'], correct: "B", topic: "1" },
+{ id: 288, text: "Kinh nguyệt là tấm gương phản ánh trung thành hoạt động nội tiết của buồng trứng thường thể hiện ở các đặc điểm sau, ngoại trừ:", answers: ['Vị thành niên nữ có kinh lần đầu khoảng 11-17 tuổi.', 'Chu kì kinh bình thường từ 28 – 30 ngày.', 'Thời gian hành kinh trung bình là từ 3 -5 ngày.', 'Thường đau bụng kinh.'], correct: "D", topic: "1" },
+{ id: 289, text: "Để hỗ trợ tâm lý và điều chỉnh rối loạn kinh nguyệt về lâu dài, điều dưỡng nên tư vấn bệnh nhân:", answers: ['Tuyệt đối không tham gia kỳ thi để tránh áp lực.', 'Sử dụng thuốc an thần liều cao mỗi đêm.', 'Xây dựng chế độ làm việc, học tập và nghỉ ngơi hợp lý, tránh thức khuya và stress.', 'Ăn kiêng để giảm cân vì béo phì là nguyên nhân gây rong kinh.'], correct: "C", topic: "1" },
+{ id: 290, text: "Tiến triển của Polyp nhầy cổ tử cung thường là:", answers: ['Tự rụng sau hành kinh, sau đẻ', 'Chảy máu sau khi có kinh', 'Hoại tử trước khi có kinh', 'Ra máu trước khi có kinh'], correct: "A", topic: "1" },
+{ id: 291, text: "Tiến triển và biến chứng của Polyp cổ trong tử cung là:", answers: ['Phát triển ngày càng to gây chảy máu, khó có thai, sảy thai, ung thư.', 'Tự rụng.', 'Thường không có cuống', 'Hoại tử.'], correct: "A", topic: "1" },
+{ id: 292, text: "Chẩn đoán điều dưỡng nào sau đây có thể ưu tiên trên bệnh nhân ung thư cổ tử cung, loại trừ:", answers: ['Ðau do chèn ép. Khó ngủ do lo lắng về bệnh tật.', 'Ra máu âm đạo do bệnh lý ung thư cổ tử cung.', 'Lo lắng do thiếu kiến thức về bệnh.', 'Kiểm tra dấu hiệu sống.'], correct: "D", topic: "1" },
+{ id: 293, text: "Biến chứng nguy hiểm và thường gặp nhất của viêm nhiễm đường sinh dục dưới không được điều trị kịp thời là:", answers: ['Gây rối loạn kinh nguyệt kéo dài.', 'Viêm ngược dòng lên đường sinh dục trên (vòi trứng, buồng trứng) gây vô sinh.', 'Gây tăng huyết áp kịch phát.', 'Làm thay đổi hoàn toàn độ pH nước tiểu.'], correct: "B", topic: "1" },
+{ id: 294, text: "Hành động nào của điều dưỡng là cần thiết nhất khi tiếp cận một nữ sinh viên trẻ đến khám vì viêm nhiễm đường sinh dục nhưng có tâm lý e thẹn, lo sợ?", answers: ['Mời thêm nhiều sinh viên khác vào cùng quan sát để học tập.', 'Thái độ nghiêm túc, hỏi nhanh các câu hỏi chuyên môn.', 'Tạo không gian riêng tư, thái độ thân thiện, cởi mở và giữ bí mật thông tin.', 'Yêu cầu người nhà vào đứng cạnh để trấn an bệnh nhân.'], correct: "C", topic: "1" },
+{ id: 295, text: "Nhiễm trùng đường sinh dục do Trichomonas vaginalis có thể gây nên các biến chứng sau:", answers: ['Vô sinh, ối vỡ non, ối vỡ sớm.', 'Ối vỡ sớm.', 'Ðẻ khó.', 'Nhau tiền đạo.'], correct: "A", topic: "1" },
+{ id: 296, text: "Một phụ nữ bị viêm cổ tử cung tái đi tái lại nhiều lần, nên vào nhập viện. Chẩn đoán điều dưỡng trường hợp này là, ngoại trừ:", answers: ['Nguy cơ bội nhiễm do chẩn đoán và điều trị không kip thời.', 'Nguy cơ lây truyền bệnh do chăm sóc và phòng bệnh không tốt.', 'Nguy cơ tái phát bệnh do điều trị dự phòng không tốt.', 'Đau bụng dưới'], correct: "D", topic: "1" },
+{ id: 297, text: "Cách dùng thuốc uống tránh thai, câu nào là sai:", answers: ['Uống viên đầu tiên vào ngày đầu tiên của chu kỳ kinh', 'Mỗi ngày uống 1 viên, vào 1 giờ nhất định theo chiều mũi tên của vỉ thuốc.', 'Nếu quên uống thuốc thì phải uống bù khi nhớ ra.', 'Nếu quên uống thuốc thì phải bỏ vỉ thuốc.'], correct: "D", topic: "1" },
+{ id: 298, text: "Khối u tuyến vú thường phát sinh:", answers: ['Sau một viêm tuyến vú hay áp xe tuyến vú liên quan đến thời kỳ cho con bú.', 'Gây viêm tắc tuyến sữa.', 'Gây viêm tuyến vú.', 'U xơ tuyến vú xuất hiện tự nhiên hay sau áp xe.'], correct: "D", topic: "1" },
+{ id: 299, text: "Tiền sản giật là rối loạn tăng huyết áp thường gặp nhất trong thai kỳ. Bệnh được biểu hiện bằng các dấu hiệu sau :", answers: ['Tăng huyết áp và protein niệu (0.3 gram P/ 24 giờ).', 'Tăng huyết áp mạn tính', 'Thai bị chết trong tử cung.', 'Chức năng gan bị rối loạn'], correct: "A", topic: "1" },
+{ id: 300, text: "Có nhiều cách để tính tuổi thai, câu nào sai:", answers: ['Tính tuổi thai từ ngày đầu của kỳ kinh cuối cùng.', 'Tính tuổi thai dựa vào chiều cao tử cung.', 'Tính tuổi thai theo đường kính lưỡng đỉnh của thai bằng đo qua siêu âm.', 'Tính tuổi thai theo chiều dài xương đùi'], correct: "D", topic: "1" },
+{ id: 301, text: "Mục đích khám thai là, câu nào sai:", answers: ['Để biết có thai hay không, để tiên lượng cuộc đẻ và dự đoán ngày đẻ.', 'Để đánh giá sự tăng trưởng của thai nghén.', 'Để phát hiện sớm những nguy cơ có thể xảy ra cho mẹ, cho thai.', 'Để chọn lựa ngày sinh theo ý muốn gia đình.'], correct: "D", topic: "1" },
+{ id: 302, text: "Khi thai phụ ba tháng đầu ra máu âm đạo, điều dưỡng cần ưu tiên thực hiện nội dung nào?", answers: ['Đánh giá dấu hiệu sinh tồn, lượng máu ra và báo bác sĩ', 'Hướng dẫn thụt rửa âm đạo tại nhà', 'Khuyên thai phụ vận động nhiều để máu ra hết', 'Dùng thuốc tăng co tử cung ngay'], correct: "A", topic: "1" },
+{ id: 303, text: "Khi nào cần thăm khám Âm đạo trong thai kì:", answers: ['Thai phụ ra máu âm đạo mà không liên quan đến cơn go tử cung và bong bánh nhau; Ra khí hư hôi, ngứa âm hộ âm đạo.', 'Cần khám theo quy trình bắt buộc.', 'Điều trị sớm viêm nhiễm đường sinh dục.', 'Dễ gây đẻ non'], correct: "A", topic: "1" },
+{ id: 304, text: "Nội dung nào sau đây không phù hợp khi chăm sóc thai phụ dọa sẩy thai?", answers: ['Hướng dẫn nghỉ ngơi theo chỉ định', 'Tránh quan hệ tình dục trong giai đoạn nguy cơ', 'Tự ý dùng thuốc tăng co tử cung tại nhà', 'Theo dõi đau bụng và lượng máu âm đạo'], correct: "C", topic: "1" },
+{ id: 305, text: "Khi thai phụ dọa sẩy thai được chỉ định nghỉ ngơi tại giường, điều dưỡng cần theo dõi chủ yếu nội dung nào?", answers: ['Lượng máu âm đạo và mức độ đau bụng', 'Màu tóc của thai phụ', 'Số lần ăn vặt trong ngày', 'Cân nặng từng giờ'], correct: "A", topic: "1" },
+{ id: 306, text: "Nguyên nhân thuộc về mẹ có thể làm tăng nguy cơ sẩy thai là:", answers: ['Nhiễm khuẩn, bệnh nội tiết hoặc bất thường tử cung', 'Thai dị dạng do rối loạn nhiễm sắc thể', 'Bánh rau kém phát triển', 'Dây rốn dài hơn bình thường'], correct: "A", topic: "1" },
+{ id: 307, text: "Khi chăm sóc thai phụ có thai chết lưu, xét nghiệm nào thường cần theo dõi để phát hiện nguy cơ rối loạn đông máu?", answers: ['Tiểu cầu và các xét nghiệm đông máu', 'Đường huyết ngẫu nhiên', 'Cholesterol máu', 'Soi đáy mắt'], correct: "A", topic: "1" },
+{ id: 308, text: "Dấu hiệu cần theo dõi sát ở người nghi thai ngoài tử cung chưa vỡ là:", answers: ['Đau bụng một bên, ra máu âm đạo ít và dấu hiệu choáng nếu nặng', 'Phù chân hai bên đơn thuần', 'Ho khan kéo dài', 'Tăng cân nhanh trong vài ngày'], correct: "A", topic: "1" },
+{ id: 309, text: "Một số nhận định khi chăm sóc thai phụ bị rau tiền đạo khi chưa chuyển dạ là,câu nào sai", answers: ['Nhận định toàn trạng: da, niêm mạc, mạch, huyết áp, nhịp thở và lượng máu âm đạo.', 'Tính chất chảy máu của nhau tiền đạo và hậu quả của nó đối với mẹ và con.', 'Tình trạng thai nhi trong tử cung và sự phát triển của thai nhi.', 'Tình trạng trẻ sơ sinh'], correct: "D", topic: "1" },
+{ id: 310, text: "Trong rau tiền đạo ra máu nhiều, mục tiêu chăm sóc ưu tiên là:", answers: ['Theo dõi mất máu, dấu hiệu sinh tồn và chuẩn bị hồi sức theo y lệnh', 'Cho sản phụ đi lại để máu ngừng chảy', 'Thăm âm đạo nhiều lần để đánh giá vị trí rau', 'Hướng dẫn sản phụ chờ theo dõi tại nhà'], correct: "A", topic: "1" },
+{ id: 311, text: "Yếu tố nào giúp điều dưỡng phối hợp đánh giá mức độ nguy cơ ở sản phụ rau tiền đạo?", answers: ['Lượng máu mất, mạch, huyết áp và tình trạng thai', 'Màu da của trẻ sau sinh', 'Chiều cao của sản phụ', 'Số lần đại tiện trong ngày'], correct: "A", topic: "1" },
+{ id: 312, text: "Trong nhau bong non nếu có máu chảy ra ngoài thì thường có tính chất là:", answers: ['Xuất hiện trong tất cả trường hợp.', 'Thường gây các rối loạn đông máu.', 'Máu chảy ra ngoài thường đỏ sẫm, lõang, không đông.', 'Cơn đau bụng có tính chất liên tục, kéo dài.'], correct: "C", topic: "1" },
+{ id: 313, text: "Biến chứng của mẹ cần được theo dõi sát trong nhau bong non là:", answers: ['Choáng mất máu và rối loạn đông máu', 'Viêm kết mạc', 'Tắc tia sữa', 'Nhiễm khuẩn rốn'], correct: "A", topic: "1" },
+{ id: 314, text: "Trong nhau bong non, dấu hiệu tử cung thường gặp là:", answers: ['Tử cung co cứng, đau liên tục', 'Tử cung mềm và không đau', 'Tử cung không thay đổi trương lực', 'Tử cung teo nhỏ nhanh'], correct: "A", topic: "1" },
+{ id: 315, text: "Dấu hiệu nào sau đây báo hiệu bệnh nhân Tiền sản giật sắp chuyển sang Sản giật?", answers: ['Đau đầu dữ dội, hoa mắt, đau vùng thượng vị.', 'Đau lưng và buồn đi đại tiện.', 'Thèm ăn đồ ngọt.', 'Huyết áp giảm đột ngột.'], correct: "A", topic: "1" },
+{ id: 316, text: "Chẩn đoán điều dưỡng có thể gặp ở thai phụ tiền sản giật là:", answers: ['Nguy cơ bị sản giật; Phù do ứ nước; Nhức đầu do tăng huyết áp.', 'Cho sản phụ nằm nghiêng trái.', 'Thời gian chuyển dạ kéo dài.', 'Trọng lượng của thai phụ tăng quá mức.'], correct: "A", topic: "1" },
+{ id: 317, text: "Trong thai kỳ, nhịp tim của thai phụ tăng thêm trung bình:", answers: ['5-10 nhịp/phút.', '10-15 nhịp/phút.', '15-20 nhịp/phút.', '20-25 nhịp/phút.'], correct: "B", topic: "1" },
+{ id: 318, text: "Nguyên nhân thiếu máu sinh lý khi có thai là:", answers: ['Do phối hợp giữa tăng thể tích huyết tương và giảm thể tích hồng hồng cầu do pha loãng.', 'Do tăng thể tích huyết tương và giữ nguyên thể tích khối hồng cầu.', 'Do giảm thể tích khối hồng cầu, không tăng thể tích huyết tương.', 'Do giảm nhẹ thể tích huyết tương, giảm mạnh thể tích khối hồng cầu.'], correct: "A", topic: "1" },
+{ id: 319, text: "Trong theo dõi thai phụ tiền sản giật, cần lưu ý những dấu hiệu biến chứng:", answers: ['Huyết áp tối thiểu > 110mmHg; Nước tiểu ít; Phù nhiều.', 'Dùng thuốc an thần.', 'Bù nước diện giải.', 'Hàm lượng protein trong chế độ ăn cao.'], correct: "A", topic: "1" },
+{ id: 320, text: "Bệnh nhân tiền sản giật nặng có chỉ định theo dõi sát lượng nước tiểu. Tại sao điều này lại quan trọng đối với điều dưỡng?", answers: ['Để biết bệnh nhân có uống đủ nước hay không.', 'Để đánh giá chức năng thận và dự phòng ngộ độc Magnesium Sulfate.', 'Để kiểm tra xem thai nhi có chèn ép bàng quang không.', 'Để chuẩn bị cho việc thụt tháo trước khi sinh.'], correct: "B", topic: "1" },
+{ id: 321, text: "Sản phụ thai 34 tuần đau bụng liên tục, tử cung tăng trương lực và thai máy giảm. Điều dưỡng cần ưu tiên:", answers: ['Đặt sản phụ nằm nghỉ, đánh giá dấu hiệu sinh tồn và tim thai, báo bác sĩ', 'Cho sản phụ ăn một bữa thật no', 'Hướng dẫn sản phụ về nhà theo dõi', 'Thụt tháo ngay để chuẩn bị sinh'], correct: "A", topic: "1" },
+{ id: 322, text: "Máu âm đạo đỏ sẫm, loãng, khó đông ở sản phụ nghi nhau bong non gợi ý biến chứng nào?", answers: ['Rối loạn đông máu', 'Nhiễm trùng tiểu', 'Vỡ ối sinh lý', 'Tắc tia sữa'], correct: "A", topic: "1" },
+{ id: 323, text: "Lập kế hoạch chăm sóc cho thai phụ sau sẩy thai 7 tuần đang nằm tại Bệnh viện gồm các bước sau, bước nào sai:", answers: ['Giải thích cho thai phụ và gia đình phối hợp chăm sóc sản phụ.', 'Ðánh giá các dấu hiệu sống, đánh giá sự ra máu và nhiễm trùng sau sẩy.', 'Chuẩn bị thuốc điều trị, hồi sức và chuẩn bị phẫu thuật.', 'Cần theo dõi sự co hồi tử cung, chảy máu và nhiễm trùng; Các xét nghiệm, thuốc và chế độ ăn uống sau nạo sẩy.'], correct: "C", topic: "1" },
+{ id: 324, text: "Nội tiết từ các cơ quan sau tham gia vào chu kỳ kinh nguyệt, câu nào sai:", answers: ['Vùng dưới đồi', 'Tuyến yên', 'Thượng thận', 'Buồng trứng'], correct: "C", topic: "1" },
+{ id: 325, text: "Thai phụ vào viện trong tình trạng cấp cứu đang sẩy thai, một số bước cơ bản trong lập kế hoạch chăm sóc thai phụ này là gì, ngoại trừ:", answers: ['Động viên thai phụ và gia đình; Theo dõi dấu hiệu sinh tồn, sự ra máu âm đạo;', 'Chuẩn bị thuốc, máu cùng loại và chuẩn bị dụng cụ nạo sẩy thai.', 'Chế độ ăn uống và kế hoạch theo dõi sau nạo sẩy.', 'Nguy cơ chảy máu sau nạo sẩy.'], correct: "D", topic: "1" },
+{ id: 326, text: "Chọn xét nghiệm tin cậy nhất để xác định sự có mặt của hCG:", answers: ['Xét nghiệm nước tiểu định lượng hCG bằng phương pháp sinh vật', 'Xét nghiệm nước tiểu định lượng hCG bằng phương pháp miễn dịch', 'Xét nghiệm máu định lượng hCG bằng phương pháp miễn dịch', 'Cả 3 loại xét nghiệm đều có độ tin cậy ngang nhau'], correct: "C", topic: "1" },
+{ id: 327, text: "Trong khám thai, tiền sử quan trọng nhất cần hỏi thai phụ là:", answers: ['Tiền sử sản khoa', 'Tiền sử phụ khoa', 'Tiền sử bệnh tật bản thân và gia đình', 'Tiền sử hôn nhân'], correct: "A", topic: "1" },
+{ id: 328, text: "Trong ba tháng đầu thai kỳ, phương pháp cận lâm sàng nào giúp chẩn đoán tuổi thai chính xác nhất:", answers: ['Dựa vào kinh cuối cùng.', 'Khám âm đạo xác định độ lớn tử cung.', 'Siêu âm.', 'X quang.'], correct: "C", topic: "1" },
+{ id: 329, text: "Từ sau tháng thứ 3 của thai kỳ Estrogen và Progesteron do cơ quan nào sản xuất:", answers: ['Buồng trứng', 'Niêm mạc tử cung', 'Rau thai', 'Thận'], correct: "C", topic: "1" },
+{ id: 330, text: "Dấu hiệu nào không phải là dấu hiệu chắc chắn có thai:", answers: ['Nghe được tim thai.', 'Người khám sờ được cử động thai.', 'Xét nghiệm thử Test nhanh thai dương tính.', 'Siêu âm thấy thai.'], correct: "C", topic: "1" },
+{ id: 331, text: "Chăm sóc trước mổ lấy thai rất quan trọng, câu nào sai:", answers: ['Giaỉ thích cho thai phụ biết rõ lý do mổ lấy thai', 'Kiểm tra thai phụ đã nhịn ăn trước mổ hay chưa.', 'Nguy cơ bế sản dịch sau mổ lấy thai', 'Thụt tháo, làm vệ sinh vùng mổ'], correct: "C", topic: "1" },
+{ id: 332, text: "Lập kế hoạch chăm sóc thai phụ trước mổ gồm các bước sau, câu nào sai:", answers: ['Theo dõi toàn trạng: Tinh thần, các dấu hiệu sống; Tình trạng thai.', 'Chế độ ăn, uống; Vệ sinh toàn thân và vùng mổ. Hoàn thành thủ tục trước mổ.', 'Báo phòng mổ và kế hoạch đón trẻ sơ sinh.', 'Chăm sóc sau mổ lấy thai.'], correct: "D", topic: "1" },
+{ id: 333, text: "Khi chuyển dạ thật sự thì trong 10 phút có bao nhiêu cơn go:ĐK2", answers: ['Hơn 3 cơn co tử cung.', '6 cơn co tử cung.', '10 cơn co tử cung.', '5 cơn co tử cung.'], correct: "A", topic: "1" },
+{ id: 334, text: "Sự xóa mở cổ tử cung trong chuyển dạ, câu nào là sai:", answers: ['Khi sinh con so lúc cổ tử cung xóa hết và mở 1 cm gọi là bắt đầu chuyển dạ.', 'Khi sinh con rạ cổ tử cung vừa xóa vừa mở > 2 cm gọi là bắt đầu chuyển dạ.', 'Khi sinh con so cổ tử cung vừa xóa vừa mở như con rạ.', 'Thời gian chuyển dạ trung bình con so là 16- 24 giờ, con rạ 8-12 giờ.'], correct: "C", topic: "1" },
+{ id: 335, text: "Lập kế hoạch theo dõi sự tiến triển của các dấu hiệu chuyển dạ gồm, điều nào sau đây là không đúng:", answers: ['Tình trạng sức khỏe của trẻ sơ sinh.', 'Ðo và đánh giá tiến triển cơn co tử cung.', 'Ðo và theo dõi những biến động về tim thai và cử động của thai.', 'Khám đánh giá độ lọt, ngôi thai; Theo dõi sự tiến triển xóa, mở cổ tử cung.'], correct: "A", topic: "1" },
+{ id: 336, text: "Cơn co tử cung hữu hiệu là cơn co làm cho sản phụ đau và, ngoại trừ:", answers: ['Giúp cho sự xóa mở cổ tử cung', 'Xảy ra khi sổ thai', 'Giúp cho đầu ối được thành lập', 'Giúp cho ngôi thai tiến triển.'], correct: "B", topic: "1" },
+{ id: 337, text: "Cơn co tử cung hữu hiệu là cơn co làm cho sản phụ đau và:", answers: ['Tăng cường tính cơn go.', 'Giúp cho Thành lập đầu ối; Xóa mở cổ tử cung; Ngôi thai tiến triển.', 'Giúp Sổ rau sau khi sổ thai.', 'Giúp tăng khoảng cách cơn go.'], correct: "B", topic: "1" },
+{ id: 338, text: "Sau khi bánh nhau đã sổ ra ngoài, việc làm nào của điều dưỡng là bắt buộc để đảm bảo không sót nhau?", answers: ['Chỉ cần cân trọng lượng bánh nhau.', 'Kiểm tra kỹ màng nhau và các múi nhau trên một mặt phẳng để đảm bảo tính nguyên vẹn.', 'Đưa bánh nhau cho người nhà xem rồi đem đi tiêu hủy ngay.', 'Không cần kiểm tra nếu thấy máu âm đạo ra ít.'], correct: "B", topic: "1" },
+{ id: 339, text: "Sau khi rau sổ, người hộ sinh kiểm tra bánh rau và phát hiện thấy bánh rau bị thiếu một múi rau ở rìa bánh rau. Nguy cơ lớn nhất sản phụ có thể gặp phải là gì?", answers: ['Nhiễm trùng vết may tầng sinh môn', 'Băng huyết sau sinh do sót rau và đờ tử cung', 'Tắc mạch ối', 'Trầm cảm sau sinh'], correct: "B", topic: "1" },
+{ id: 340, text: "Theo hướng dẫn Chăm sóc thiết yếu bà mẹ và trẻ sơ sinh ngay sau sinh (EENC), thời điểm thích hợp nhất để kẹp và cắt dây rốn muộn là khi nào?", answers: ['Ngay trong vòng 10 giây đầu sau khi trẻ ra đời', 'Khi dây rốn ngừng đập hoặc sau sinh từ 1 - 3 phút', 'After bánh rau đã sổ ra ngoài hoàn toàn', 'Khi trẻ cất tiếng khóc chào đời đầu tiên'], correct: "B", topic: "1" },
+{ id: 341, text: "Khi hướng dẫn sản phụ chăm sóc vết mổ tại nhà, điều dưỡng cần dặn dấu hiệu nào phải đi khám ngay?", answers: ['Vết mổ khô, chỉ còn đau nhẹ khi vận động.', 'Vết mổ sưng đỏ, nóng, đau tăng dần hoặc có dịch mủ/máu chảy ra.', 'Vết mổ có cảm giác hơi ngứa khi lên da non.', 'Vết mổ mờ dần và phẳng theo thời gian.'], correct: "B", topic: "1" },
+{ id: 342, text: "Các dấu hiệu sự co hồi tử cung của sản phụ sau sinh, câu nào là sai:", answers: ['Ở người con so co hồi nhanh hơn ở người con rạ', 'Người cho con bú co hồi  nhanh hơn người không cho con bú', 'Sản phụ có thể rét run sau khi sinh do sự mất nhiệt và mệt mỏi khi rặn sinh.', 'Khi tử cung bị nhiễm trùng co hồi tử cung chậm hơn người bình thường.'], correct: "A", topic: "1" },
+{ id: 343, text: "Trong thời kỳ hậu sản bình thường, câu nào sau đây là sai:", answers: ['Các cơ quan trong cơ thể người mẹ sẽ dần trở về trạng thái như trước có thai.', 'Tuyến vú vẫn tiếp tục phát triển để tiết ra sữa.', 'Có hiện tượng co hồi tử cung; Sản dịch; Tiết sữa.', 'Tình trạng Viêm âm đạo do nấm Candida thường xảy ra trong thời kì thai nghén.'], correct: "D", topic: "1" },
+{ id: 344, text: "Khi nào Bác sĩ cần can thiệp cho sản phụ sau sinh nếu chưa đi đại tiện được:", answers: ['Nếu sau đẻ 3 ngày vẫn chưa đi đại tiện được', 'Nếu sau đẻ 4 ngày vẫn chưa đi đại tiện được', 'Nếu sau đẻ 6 giờ vẫn chưa đi đại tiện được', 'Nếu sau đẻ 8 giờ vẫn chưa đi đại tiện được'], correct: "A", topic: "1" },
+{ id: 345, text: "Nếu đến ngày thứ 15 sau đẻ nếu sản dịch hôi là báo hiệu nguy cơ nào sau đây:", answers: ['Nhiễm trùng niêm mạc âm đạo, tử cung.', 'Biểu hiện sốt, cần báo bác sĩ xem lại.', 'Nhiễm trùng vú.', 'Nhiễm trùng vết mổ.'], correct: "A", topic: "1" },
+{ id: 346, text: "Khi theo dõi sản dịch ở sản phụ hậu sản ngày thứ 4, tính chất sản dịch như thế nào được coi là bình thường ?", answers: ['Sản dịch màu đỏ tươi, lượng nhiều như ngày đầu.', 'Sản dịch màu hồng thẫm hoặc nâu lờ lờ máu cá, không hôi.', 'Sản dịch màu trắng trong và có mùi hôi nồng.', 'Không còn sản dịch (hết hoàn toàn).'], correct: "B", topic: "1" },
+{ id: 347, text: "Nội dung cần chăm sóc những ngày tiếp theo cho trẻ sơ sinh đủ tháng là, chọn câu sai:", answers: ['Toàn trạng; Da và thân thể; Nhiệt độ, độ ẩm của môi trường sống.', 'Nhịp thở; Nhịp tim; Dinh dưỡng.', 'Cho uống thuốc kháng sinh dự phòng', 'Chăm sóc vệ sinh thân thể đại, tiểu tiện.'], correct: "C", topic: "1" },
+{ id: 348, text: "Những lưu ý khi tắm cho bé là, chọn câu sai:", answers: ['Tránh để bé xây xát.', 'Tránh để nước làm ướt rốn trẻ.', 'Thời gian tắm trẻ có thể đến 15 phút.', 'Tránh để nước vào tai trẻ.'], correct: "C", topic: "1" },
+{ id: 349, text: "Các nguyên tắc tắm bé sau sinh câu nào sai:", answers: ['Rửa tay trước khi tắm cho mỗi trẻ. Dụng cụ sạch dành riêng cho mỗi trẻ.', 'Phòng tắm và nước tắm ấm.', 'Trình tự tắm: vùng sạch trước, vùng bẩn sau.', 'Tắm toàn thân cho bé và lau khô ngay vùng đã tắm.'], correct: "D", topic: "1" },
+{ id: 350, text: "Sản phụ sau sinh thường 4 giờ than phiền với điều dưỡng là bụng trướng đau, cảm thấy buồn tiểu nhưng không thể tiểu được. Khám thấy có một khối cầu mềm, ấn đau ở vùng hạ vị. Nhận định nào sau đây là đúng?", answers: ['Đây là khối cầu an toàn của tử cung', 'Sản phụ bị cầu bàng quang (bí tiểu sau sinh)', 'Sản phụ bị tụ máu âm đạo', 'Đây là hiện tượng ruột ứ hơi bình thường'], correct: "B", topic: "1" },
+{ id: 351, text: "Biện pháp can thiệp điều dưỡng đầu tiên và đơn giản nhất để hỗ trợ sản phụ bị bí tiểu sau sinh (chưa có chỉ định đặt sonde) là gì?", answers: ['Cho sản phụ uống ngay thuốc lợi tiểu', 'Tiến hành đặt ống thông tiểu ngay lập tức', 'Chườm ấm vùng hạ vị, hướng dẫn sản phụ ngồi tư thế tự nhiên và mở vòi nước chảy nhẹ cho nghe tiếng nước', 'Yêu cầu sản phụ tiếp tục nhịn tiểu'], correct: "C", topic: "1" },
+{ id: 352, text: "Một sản phụ sau sinh ngày thứ 3 bị sốt 38.5 độ C, hai vú căng to, nổi cục cứng, đau nhức nhiều, sữa không tiết ra được. Điều dưỡng nhận định sản phụ có nguy cơ cao bị tình trạng gì?", answers: ['Nhiễm khuẩn hậu sản', 'Áp xe vú giai đoạn muộn', 'Tắc tia sữa (căng giãn vú quá mức)', 'Sốt sữa sinh lý bình thường'], correct: "C", topic: "1" },
+{ id: 353, text: "Để hỗ trợ sản phụ giải quyết tình trạng tắc tia sữa, hành động điều dưỡng nào sau đây là phù hợp?", answers: ['Khuyên sản phụ ngừng hoàn toàn cho con bú và vắt bỏ sữa', 'Chườm lạnh liên tục để giảm tiết sữa', 'Hướng dẫn sản phụ chườm ấm, massage vú nhẹ nhàng từ gốc đến núm vú, dùng máy hút sữa hoặc khuyến khích bé bú tích cực để thông tuyến sữa', 'Cho sản phụ uống kháng sinh ngay lập tức'], correct: "C", topic: "1" },
+{ id: 354, text: "Khi theo dõi phân của trẻ sơ sinh trong 48 giờ đầu, điều dưỡng thấy phân có màu xanh đen, quánh dính, không mùi hôi. Điều dưỡng nên giải thích cho người nhà như thế nào?", answers: ['Trẻ bị xuất huyết tiêu hóa, cần báo bác sĩ ngay', 'Đây là phân su bình thường của trẻ sơ sinh', 'Trẻ bị tiêu chảy do nhiễm trùng', 'Do trẻ nuốt phải nước ối bẩn'], correct: "B", topic: "1" },
+{ id: 355, text: "Khi thực hiện quy trình tắm cho trẻ sơ sinh tại phòng bệnh, điều dưỡng cần tuân thủ nguyên tắc nào để đảm bảo an toàn cho trẻ?", answers: ['Tắm cho trẻ ở nơi thoáng gió, mở cửa cho mát', 'Tắm từ dưới chân lên đến đầu', 'Lau khô từng vùng, tắm nhanh trong vòng 5-7 phút, phòng tắm phải kín gió và ấm áp', 'Cho trẻ ngâm người trong nước lạnh để tăng sức đề kháng'], correct: "C", topic: "1" },
+{ id: 356, text: "Sản phụ sau sinh mổ ngày thứ 2 than đau bụng và chưa trung tiện được. Điều dưỡng nên đưa ra lời khuyên nào phù hợp nhất?", answers: ['Nằm bất động tại giường, hạn chế cử động để tránh rách vết mổ', 'Khuyến khích sản phụ ngồi dậy, vận động đi lại nhẹ nhàng quanh phòng bệnh để kích thích nhu động ruột', 'Cho sản phụ ăn một bữa cơm thật no để ruột hoạt động lại', 'Uống thuốc nhuận tràng liều cao'], correct: "B", topic: "1" },
+{ id: 357, text: "Dấu hiệu lâm sàng nào sau đây ở sản phụ trong thời kỳ hậu sản là “dấu hiệu nguy hiểm” cần báo bác sĩ ngay lập tức?", answers: ['Tử cung co cục cứng khi bé bú', 'Sản dịch có mùi hôi thối kèm sốt cao, ấn vùng bụng dưới đau chói', 'Ra mồ hôi trộm nhiều vào ban đêm', 'Sữa về làm hai vú căng tức nhẹ'], correct: "B", topic: "1" },
+{ id: 358, text: "Sản phụ sau sinh 3 ngày vết khâu tầng sinh môn bị phù nề hướng xử trí là:", answers: ['Cắt chỉ, cắt cách mũi hay toàn bộ tùy chỉ định.', 'Cắt chỉ tầng sinh môn vào ngày thứ năm sau khâu.', 'Để vết may tầng sinh môn hết phù nề rồi cắt chỉ.', 'Vệ sinh vùng tầng sinh môn bị phù nề rồi dùng kháng sinh.'], correct: "D", topic: "1" },
+{ id: 359, text: "Một sản phụ sau sinh mổ giờ thứ 3, đột ngột than choáng váng, mệt lả. Khám thấy: Mạch 115 lần/phút, Huyết áp tụt còn 85/50 mmHg. Tử cung co hồi kém, nhão. Sản dịch ra âm đạo ồ ạt, đẫm ướt hết tấm lót (khoảng 500ml trong vòng 15 phút). Hành động ưu tiên hàng đầu của điều dưỡng là gì?", answers: ['Đi tìm bác sĩ trưởng khoa để xin chỉ thị', 'Ấn chuông cấp cứu tại giường, xoa bóp đáy tử cung liên tục bằng một tay, thiết lập/kiểm tra đường truyền tĩnh mạch lớn, cho thở oxy và chuẩn bị các thuốc co hồi tử cung', 'Lấy máu đem đi xét nghiệm nhóm máu ngay', 'Đưa sản phụ vào phòng mổ lại'], correct: "B", topic: "1" },
+{ id: 360, text: "Đối với sản phụ nghi ngờ có huyết khối tĩnh mạch sâu ở bắp chân, hành động chăm sóc nào của điều dưỡng bị NGHIÊM CẤM?", answers: ['Cho sản phụ nằm nghỉ ngơi tại giường', 'Đo chu vi bắp chân hai bên để so sánh', 'Thực hiện xoa bóp, xoa dầu hoặc massage mạnh vùng bắp chân bị đau', 'Báo cáo bác sĩ để làm siêu âm Doppler mạch máu'], correct: "C", topic: "1" },
+{ id: 361, text: "Phụ nữ dễ bị nhiễm khuẩn đường sinh sản hơn nam giới là do các nguyên nhân sau, ngoại trừ trường hợp:  ĐK3", answers: ['Ung thư cổ tử cung.', 'Cấu trúc phức tạp, có nhiều tuyến tiết dịch; Có chu kỳ kinh.', 'Thiếu vệ sinh hoặc vệ sinh không đúng cách.', 'Bộ phận sinh dục nữ ở vị trí dễ bị nhiễm khuẩn.'], correct: "A", topic: "1" },
+{ id: 362, text: "Bệnh nhân đã mãn kinh, đau bụng dưới, ra máu âm đạo nhiều, lẫn mủ, mùi hôi. Được chẩn đoán ung thư cổ tử cung giai đoạn II, hãy lập kế hoạch thực hiện y lệnh cho bệnh nhân trên, chọn câu sai: ĐK3", answers: ['Ra máu âm đạo do ung thư cổ tử cung.', 'Thực hiện y lệnh về liều thuốc, thời gian dùng thuốc.', 'Lấy mẫu bệnh phẩm để chẩn đoán và theo dõi bệnh.', 'Thực hiện y lệnh về liều tia xạ và thời gian dùng.'], correct: "A", topic: "1" },
+{ id: 363, text: "Dặn dò quan trọng nhất của điều dưỡng khi bệnh nhân thực hiện y lệnh thuốc nội tiết điều trị rối loạn kinh nguyệt là: ĐK3", answers: ['Uống thuốc vào lúc nào thấy thuận tiện nhất.', 'Uống đúng giờ hàng ngày và không tự ý ngưng thuốc giữa chừng.', 'Uống tăng liều gấp đôi nếu lỡ quên một ngày.', 'Chỉ uống thuốc khi thấy có ra máu kinh.'], correct: "B", topic: "1" },
+{ id: 364, text: "Trong chăm sóc bệnh nhân rong kinh rong huyết, thiếu máu nặng , ưu tiên can thiệp điều dưỡng hàng đầu là gì? ĐK3", answers: ['Hướng dẫn vệ sinh bộ phận sinh dục.', 'Tư vấn chế độ ăn giàu sắt.', 'Theo dõi sát dấu hiệu sinh tồn và tình trạng mất máu (số lượng băng vệ sinh).', 'Hỗ trợ tâm lý giúp bệnh nhân bớt lo lắng.'], correct: "C", topic: "1" },
+{ id: 365, text: "Sau đặt dụng cụ tử cung 1 tuần, bệnh nhân sốt, đau hạ vị tăng và khí hư hôi. Điều dưỡng cần xử trí ưu tiên:", answers: ['Báo bác sĩ, đánh giá dấu hiệu nhiễm khuẩn và chuẩn bị thực hiện y lệnh', 'Trấn an đây luôn là phản ứng bình thường', 'Khuyên bệnh nhân vận động mạnh để vòng ổn định', 'Hướng dẫn tự dùng thuốc giảm đau kéo dài'], correct: "A", topic: "1" },
+{ id: 366, text: "Nữ sinh bị thống kinh dữ dội kèm ngất xỉu và đau không giảm sau chăm sóc thông thường. Điều dưỡng nên:", answers: ['Chuyển khám chuyên khoa để loại trừ nguyên nhân thống kinh thứ phát', 'Khuyên nhịn ăn hoàn toàn trong kỳ kinh', 'Chỉ chườm lạnh vùng bụng dưới', 'Bỏ qua vì mọi trường hợp đều là sinh lý'], correct: "A", topic: "1" },
+{ id: 367, text: "Bệnh nhân u xơ tử cung rong kinh kéo dài, huyết sắc tố giảm. Can thiệp điều dưỡng quan trọng trước thủ thuật là:", answers: ['Theo dõi mạch, huyết áp, chuẩn bị xét nghiệm và nhóm máu theo y lệnh', 'Cho bệnh nhân vận động mạnh để tăng tuần hoàn', 'Hạn chế uống nước trong nhiều ngày', 'Bỏ qua tư vấn dinh dưỡng vì không liên quan'], correct: "A", topic: "1" },
+{ id: 368, text: "Phụ nữ sau mãn kinh ra máu âm đạo lo lắng khi được chỉ định sinh thiết. Cách giao tiếp phù hợp nhất của điều dưỡng là:", answers: ['Giải thích mục đích thủ thuật, hỗ trợ tâm lý và không kết luận trước', 'Khẳng định chắc chắn bệnh nhân đã bị ung thư', 'Từ chối trả lời các thắc mắc của bệnh nhân', 'Khuyên bệnh nhân tự mua thuốc cầm máu'], correct: "A", topic: "1" },
+{ id: 369, text: "Sau phẫu thuật vú có nạo hạch nách, hướng dẫn nào giúp giảm nguy cơ phù tay?", answers: ['Tập vận động tay nhẹ nhàng theo hướng dẫn và tránh tổn thương tay bên mổ', 'Tiêm truyền thường xuyên ở tay bên mổ', 'Xách vật nặng sớm bằng tay bên mổ', 'Băng bó thật chặt toàn bộ cánh tay'], correct: "A", topic: "1" },
+{ id: 370, text: "Bệnh nhân xuất huyết âm đạo nhiều do bệnh phụ khoa, dấu hiệu nào cần báo bác sĩ ngay?", answers: ['Mạch nhanh, huyết áp tụt, da niêm nhợt', 'Hơi mệt sau khi nằm lâu', 'Ăn kém trong một bữa', 'Ngủ ít vào đêm trước'], correct: "A", topic: "1" },
+{ id: 371, text: "Bệnh nhân sau cấy que tránh thai ra huyết kéo dài kèm chóng mặt. Điều dưỡng cần ưu tiên:", answers: ['Đánh giá lượng máu, dấu hiệu thiếu máu và hướng dẫn tái khám theo chỉ định', 'Khuyên bệnh nhân tự tháo que tại nhà', 'Bỏ qua vì mọi trường hợp đều tự hết', 'Tăng vận động mạnh để cầm máu'], correct: "A", topic: "1" },
+{ id: 372, text: "Khi dạy tự khám vú, điều dưỡng cần hướng dẫn sờ nắn theo nguyên tắc nào?", answers: ['Sờ toàn bộ vú và hố nách theo vòng tròn hoặc đường dọc, so sánh hai bên', 'Chỉ sờ phần núm vú', 'Chỉ khám khi vú đau nhiều', 'Khám qua lớp áo dày để tránh khó chịu'], correct: "A", topic: "1" },
+{ id: 373, text: "Sau phá thai bằng thuốc, dấu hiệu nào khiến người bệnh phải quay lại cơ sở y tế ngay?", answers: ['Ra máu ồ ạt, đau bụng tăng, sốt hoặc khí hư hôi', 'Mệt nhẹ sau khi uống thuốc', 'Ra máu ít trong vài ngày', 'Buồn ngủ sau khi nghỉ ngơi'], correct: "A", topic: "1" },
+{ id: 374, text: "Ở bệnh nhân buồng trứng đa nang thừa cân và mong có thai, tư vấn điều dưỡng nào có ý nghĩa nhất?", answers: ['Giảm cân hợp lý, ăn cân đối và vận động đều đặn', 'Ăn nhiều đường để tăng năng lượng', 'Nghỉ hoàn toàn, không vận động', 'Dùng lá cây dân gian để làm sạch nang'], correct: "A", topic: "1" },
+{ id: 375, text: "Trong chuẩn bị phẫu thuật phụ khoa, nếu bệnh nhân chóng mặt, mạch nhanh trong lúc thụt tháo, điều dưỡng cần:", answers: ['Dừng thủ thuật, đặt bệnh nhân an toàn và kiểm tra dấu hiệu sinh tồn', 'Tiếp tục thao tác nhanh hơn để hoàn thành', 'Tăng áp lực nước thụt tháo', 'Cho bệnh nhân đứng dậy ngay lập tức'], correct: "A", topic: "1" },
+{ id: 376, text: "Bệnh nhân rối loạn kinh nguyệt nghi không phóng noãn và mong có con, nội dung tư vấn phù hợp là:", answers: ['Khám chuyên khoa để đánh giá rụng trứng và điều trị hỗ trợ', 'Tự uống thuốc nội tiết không cần khám', 'Chờ đợi vô thời hạn vì không ảnh hưởng sinh sản', 'Kiêng quan hệ hoàn toàn trong nhiều tháng'], correct: "A", topic: "1" },
+{ id: 377, text: "Chị Mai mới sinh bé 3 tháng, Chị muốn áp dụng dùng thuốc tránh thai cho ổn định trước khi đi làm, hãy tư vấn cho Chị về loại thuốc tránh thai phù hợp nhất :", answers: ['Thuốc tránh thai khẩn cấp.', 'Thuốc tránh thai phối hợp 2 thành phần.', 'Thuốc tiêm tránh thai DMPA.', 'Thuốc cấy tránh thai.'], correct: "B", topic: "1" },
+{ id: 378, text: "Bệnh nhân bị rong kinh kéo dài đã 10 ngày, vào nhập viện. Bước nào sau đây là sai trong lập kế hoạch chăm sóc:", answers: ['Theo dõi toàn trạng; Ra máu âm đạo hàng ngày, tuỳ mức độ ra máu.', 'Chuẩn bị bệnh nhân để nạo buồng tử cung.', 'Kế hoạch dinh dưỡng cho bệnh nhân bị mất máu do rối lọan kinh nguyệt.', 'Kế hoạch vệ sinh chống bội nhiễm; Xét nghiệm hỗ trợ chẩn đoán.'], correct: "B", topic: "1" },
+{ id: 379, text: "Bệnh nhân nữ, 28 tuổi, đến khám vì khí hư ra nhiều, màu trắng đục như váng sữa, đóng thành mảng, kèm theo ngứa rát vùng âm hộ rất nhiều. Qua thăm khám, niêm mạc âm đạo đỏ rực, có các mảng trắng bám trên thành âm đạo. Bệnh nhân hiện đang điều trị kháng sinh liều cao để chữa viêm amidan hơn 10 ngày nay. Nội dung giáo dục sức khỏe quan trọng nhất để phòng ngừa tái phát cho bệnh nhân này là:", answers: ['Tránh sử dụng kháng sinh kéo dài khi không thực sự cần thiết.', 'Chỉ cần điều trị cho bệnh nhân, không cần điều trị cho bạn đời.', 'Sử dụng dung dịch vệ sinh có độ pH kiềm cao thường xuyên.', 'Thụt rửa sâu vào trong âm đạo mỗi ngày 2 lần.'], correct: "A", topic: "1" },
+{ id: 380, text: "Bệnh nhân nữ, 19 tuổi, sinh viên, vào viện vì kinh nguyệt ra nhiều và kéo dài trên 8 ngày (rong kinh). Bệnh nhân mệt mỏi, hoa mắt chóng mặt khi thay đổi tư thế. Khám lâm sàng: Da xanh niêm mạc nhợt, mạch 90 lần/phút, huyết áp 100/60 mmHg. Bệnh nhân cho biết thời gian gần đây đang lo lắng vì kỳ thi cuối kỳ sắp tới. Hành động chăm sóc nào sau đây cần được thực hiện ngay để đảm bảo an toàn cho bệnh nhân ?", answers: ['Hướng dẫn bệnh nhân vận động nhẹ nhàng tại hành lang để lưu thông khí huyết.', 'Đặt bệnh nhân nằm nghỉ ngơi tại giường, đầu thấp, theo dõi sát mạch và huyết áp.', 'Cho bệnh nhân uống nhiều nước cam và nước chanh.', 'Chuẩn bị dụng cụ để bác sĩ tiến hành nạo buồng tử cung cầm máu ngay lập tức'], correct: "B", topic: "1" },
+{ id: 381, text: "Hãy thực hiện kế hoạch chăm sóc thai phụ vào nhập viện with chẩn đoán thai phụ mang thai 7 tuần đã sẩy thai tự nhiên ở nhà, chọn câu sai:", answers: ['Chuẩn bị thuốc, dụng cụ cho cuộc kiểm soát tử cung.', 'Theo dõi sự go hồi tử cung và máu ra ở âm đạo.', 'Thực hiện vệ sinh vùng sinh dục ngoài trước, trong và sau nạo kiểm soát.', 'Thực hiện theo dõi những dấu hiệu bệnh lý của dọa sẩy thai.'], correct: "D", topic: "1" },
+{ id: 382, text: "Chị Ánh 30 tuổi vào viện cấp cứu trong tình trạng ra máu âm đạo và được chẩn đoán là sẩy thai tự nhiên thai phụ mang thai 7 tuần, một số chẩn đoán điều dưỡng có thể gặp trong trường hợp này là:", answers: ['Choáng do mất máu.', 'Ðau do cơn co tử cung. Nguy cơ nhiễm trùng tử cung do thủ thuật.', 'Theo dõi tình trạng ra máu âm đạo.', 'Nạo sẩy thai.'], correct: "A", topic: "1" },
+{ id: 383, text: "Sau sẩy thai lần thứ ba, điều dưỡng cần tư vấn cặp vợ chồng trước lần mang thai tiếp theo là:", answers: ['Khám tiền thai sản để tìm nguyên nhân và lập kế hoạch theo dõi sớm', 'Chỉ cần nghỉ ngơi nhiều hơn lần trước', 'Tự mua thuốc nội tiết về uống dài ngày', 'Không cần tái khám nếu không đau bụng'], correct: "A", topic: "1" },
+{ id: 384, text: "Chi tiết nào sau đây sai khi thực hiện kế hoạch điều dưỡng cho thai phụ chuyển dạ bị rau tiền đạo khi chuyển dạ:", answers: ['Kế hoạch huy động nhân lực có mặt để thực hiện theo dõi và chăm sóc.', 'Không thông báo tình hình bệnh cho gia đình biết vì sợ gia đình lo lắng.', 'Theo dõi tiến triển của cuộc chuyển dạ, tình trạng thai.', 'Thực hiện y lệnh chăm sóc và điều trị.'], correct: "B", topic: "1" },
+{ id: 385, text: "Thai phụ vào viện sau thăm khám âm đạo được chẩn đoán là rau tiền đạo trung tâm hoàn toàn thì xử trí thế nào:", answers: ['Phải mổ lấy thai ngay kết hợp với hồi sức (truyền dịch, truyền máu).', 'Cho sinh thường qua đường âm đạo sau khi xé rộng màng ối.', 'Theo dõi sát tổng trạng và các dấu hiệu sinh tồn của mẹ.', 'Nếu tổng trạng mẹ suy sụp là do mất máu nhiều thì cho phải mổ lấy thai ngay.'], correct: "A", topic: "1" },
+{ id: 386, text: "Thai phụ vào viện sau chấn thương bụng có đau tăng và thai máy giảm. Điều dưỡng cần khuyên:", answers: ['Đến cơ sở y tế ngay để đánh giá tình trạng mẹ và thai', 'Nằm nhà theo dõi trong nhiều ngày', 'Uống thuốc giảm đau rồi đi ngủ', 'Xoa bóp mạnh vùng bụng để giảm đau'], correct: "A", topic: "1" },
+{ id: 387, text: "Sản phụ nghi nhau bong non nặng có dấu hiệu choáng. Chuẩn bị điều dưỡng cần ưu tiên:", answers: ['Thiết lập đường truyền lớn, lấy máu xét nghiệm, chuẩn bị máu và mổ cấp cứu theo y lệnh', 'Cho sản phụ uống nhiều nước đường', 'Chờ chuyển dạ tự nhiên', 'Thụt tháo trước khi xử trí'], correct: "A", topic: "1" },
+{ id: 388, text: "Chị Lan (thai 36 tuần) bị tiền sản giật nặng. Khi đang đo huyết áp, chị đột ngột trợn mắt, co cứng toàn thân. Hành động đầu tiên của điều dưỡng là:", answers: ['Chạy đi gọi bác sĩ ngay lập tức.', 'Cố gắng đè chặt tay chân để chị không co giật.', 'Giữ thông đường thở, đặt gạc/que ngáng miệng (nếu có thể) và cho nằm nghiêng để tránh hít sặc.', 'Tiêm thuốc hạ áp ngay.'], correct: "C", topic: "1" },
+{ id: 389, text: "Một sản phụ 34 tuổi, thai 39 tuần, đang được theo dõi chuyển dạ Nghe tim thai đột ngột giảm xuống còn 120 lần/phút. THÁI ĐỘ XỬ TRÍ CỦA ĐIỀU DƯỠNG cần thực hiện trong là gì?", answers: ['Giải thích cho gia đình và làm thủ tục mổ đẻ ngay', 'Cho sản phụ nằm nghiêng trái, thở oxy qua mặt nạ, truyền dịch tĩnh mạch và ngưng ngay Oxytocin (nếu đang truyền)', 'Tiêm ngay thuốc kích thích rặn đẻ', 'Khám âm đạo lại để nong cổ tử cung'], correct: "B", topic: "1" },
+{ id: 390, text: "Một sản phụ đang trong giai đoạn sổ thai. Sau khi đầu em bé đã sổ ra ngoài, vai của em bé bị mắc kẹt lại ở xương chậu của mẹ (tai biến kẹt vai). Hành động nào sau đây là SAI VÀ NGUY HIỂM mà điều dưỡng tuyệt đối không được làm?", answers: ['Kêu gọi hỗ trợ cấp cứu ngay lập tức từ các nhân viên y tế khác.', 'Phụ giúp nâng và gập đùi của sản phụ áp sát vào hai bên mạn sườn.', 'Cố sức kéo mạnh đầu em bé xuống hoặc ấn mạnh vào đáy tử cung của sản phụ.', 'Chuẩn bị sẵn sàng các dụng cụ hồi sức cấp cứu cho trẻ sơ sinh.'], correct: "C", topic: "1" },
+{ id: 391, text: "Khi đỡ đẻ ngôi chỏm, sau khi đầu thai nhi đã sổ ra ngoài, người hộ sinh tiến hành kéo nhẹ đầu theo trục âm đạo nhưng vai thai nhi bị kẹt lại ở bờ dưới xương mu (Kẹt vai). Hành động nào sau đây là BỊ CẤM thực hiện?", answers: ['Áp dụng nghiệm pháp gập mạnh hai đùi sản phụ vào bụng.', 'Ấn trên xương mu của sản phụ để đẩy vai trước ra', 'Cố sức kéo mạnh, kéo cố đầu thai nhi xuống hoặc ấn vào đáy tử cung sản phụ', 'Gọi hỗ trợ cấp cứu từ các đồng nghiệp khác'], correct: "C", topic: "1" },
+{ id: 392, text: "Sau khi sổ rau 10 phút, kiểm tra thấy tử cung sản phụ co hồi kém, mật độ nhão, máu đỏ tươi chảy ra từ âm đạo lượng nhiều khoảng 400ml. Mạch 100 lần/phút, huyết áp 90/60 mmHg. Chẩn đoán sơ bộ và xử trí ưu tiên hàng đầu là gì?", answers: ['Rách đường sinh dục; Xử trí: Đưa lên phòng mổ khâu lại ngay', 'Đờ tử cung gây băng huyết sau sinh; Xử trí: Xoa đáy tử cung liên tục, kiểm tra bánh rau, thiết lập đường truyền tĩnh mạch và dùng thêm thuốc co hồi tử cung', 'Lộn tử cung; Xử trí: Đẩy tử cung vào lại', 'Sót rau; Xử trí: Chờ đợi thêm 30 phút nữa'], correct: "B", topic: "1" },
+{ id: 393, text: "Điểm khác biệt cốt lõi trong việc theo dõi một ca chuyển dạ có vết mổ đẻ cũ (Vết mổ lấy thai lần trước) so với một ca chuyển dạ bình thường là gì?", answers: ['Phải cho sản phụ dùng kháng sinh dự phòng ngay khi bắt đầu chuyển dạ', 'Không được sử dụng biểu đồ chuyển dạ để theo dõi', 'Phải theo dõi liên tục, sát sao các dấu hiệu dọa vỡ tử cung (đau vết mổ, vòng Bandl) và cực kỳ thận trọng/hạn chế tối đa việc dùng Oxytocin tăng co', 'Bắt buộc phải bấm ối chủ động ngay từ khi cổ tử cung mở 2 cm'], correct: "C", topic: "1" },
+{ id: 394, text: "Người điều dưỡng cần làm gì khi sản phụ sau sinh 30 phút báo máu chảy từ âm đạo có màu đỏ thẫm rồi đỏ tươi và máu loãng, chọn câu sai:", answers: ['Cần báo bác sĩ ngay và đo lại mạch, huyết áp.', 'Kiểm tra khối an toàn. Kiểm tra xem có rách cổ tử cung âm đạo không?', 'Làm xét nghiệm công thức máu và sẵn những phương tiện cấp cứu.', 'Tiếp tục theo dõi mức độ chảy máu.'], correct: "D", topic: "1" },
+{ id: 395, text: "Một sản phụ sau sinh ngày thứ 10 đến khám vì sốt, buồn nôn. Khám thấy vết khâu tầng sinh môn sưng mọng, đỏ, có dịch mủ rỉ ra từ kẽ chỉ khâu, sản phụ đau rát không ngồi được. Kế hoạch chăm sóc điều dưỡng tối ưu cho trường hợp này là gì?", answers: ['Khuyên sản phụ về nhà tự rửa bằng nước muối tiếp', 'Chuẩn bị dụng cụ để bác sĩ cắt chỉ muộn, giải thoát mủ, vệ sinh sạch ổ nhiễm khuẩn bằng dung dịch sát khuẩn, hướng dẫn ngồi ngâm mông và thực hiện y lệnh kháng sinh', 'Băng kín vết thương lại để mủ không chảy ra ngoài', 'Khâu thêm vài mũi để đóng kín vết thương'], correct: "B", topic: "1" },
+{ id: 396, text: "Khi nhận bàn giao một trẻ sơ sinh 12 giờ tuổi từ ca trước, điều dưỡng phát hiện trẻ có nhịp thở 68 lần/phút, có rút lõm lồng ngực rõ, phập phồng cánh mũi, da tái quanh môi. Nhận định điều dưỡng chính xác nhất là gì?", answers: ['Trẻ đang khóc nên thở nhanh sinh lý', 'Trẻ có dấu hiệu suy hô hấp sơ sinh cấp tính', 'Trẻ bị lạnh, chỉ cần sưởi ấm là đủ', 'Hệ hô hấp của trẻ đang thích nghi bình thường'], correct: "B", topic: "1" },
+{ id: 397, text: "Một trẻ sơ sinh 2 ngày tuổi, nặng 2.800g (cân nặng lúc sinh là 3.000g). Trẻ tỉnh, bú tốt, không sốt, da hồng. Điều dưỡng đánh giá tình trạng sụt cân này như thế nào?", answers: ['Trẻ bị suy dinh dưỡng cấp tính cần truyền dịch', 'Đây là hiện tượng sụt cân sinh lý bình thường của trẻ sơ sinh', 'Do mẹ thiếu sữa nghiêm trọng cần cho uống sữa công thức ngay', 'Trẻ bị mất nước nặng'], correct: "B", topic: "1" },
+{ id: 398, text: "Khi chăm sóc một trẻ sơ sinh có mẹ có xét nghiệm HBsAg dương tính (mẹ bị viêm gan B), quy trình tiêm phòng cho trẻ có điểm gì đặc biệt?", answers: ['Chỉ cần tiêm vaccine Viêm gan B như trẻ bình thường', 'Tiêm vaccine Viêm gan B mũi 0 phối hợp tiêm đồng thời Huyết thanh kháng viêm gan B (HBIG) ở hai vị trí đùi khác nhau trong vòng 12 giờ đầu sau sinh', 'Chờ đến khi trẻ được 2 tháng tuổi mới tiêm phòng', 'Không được cho trẻ bú mẹ để tránh lây truyền'], correct: "B", topic: "1" },
+{ id: 399, text: "Một bà mẹ mới sinh con lần đầu tỏ ra vô cùng lo lắng, khóc lóc vô cớ, than phiền bất lực không biết chăm con, sợ hãi khi nghe tiếng con khóc và không muốn nhìn mặt con ở ngày thứ 4 sau sinh. Điều dưỡng cần nhận diện và xử trí tình trạng tâm lý này như thế nào?", answers: ['Măng sản phụ vô trách nhiệm để họ tỉnh ngộ', 'Nhận diện nguy cơ trầm cảm sau sinh (hoặc tâm thần phân liệt hậu sản), báo cáo bác sĩ để hội chẩn chuyên khoa, phối hợp với gia đình cô lập các yếu tố nguy cơ và không để mẹ ở một mình với bé', 'Bỏ mặc vì đây là tâm lý "đỏng đảnh" bình thường của sản phụ', 'Cho sản phụ uống thuốc ngủ để ổn định tinh thần'], correct: "B", topic: "1" },
+{ id: 400, text: "Khi kiểm tra một trẻ sơ sinh 4 ngày tuổi tại giường bệnh, điều dưỡng thấy rốn trẻ rỉ dịch vàng mủ, có mùi hôi, vùng da bụng xung quanh gốc rốn sưng đỏ lan rộng đường kính khoảng 3cm. Trẻ quấy khóc nhiều, bú kém, nhiệt độ cơ thể 38.2 độ", answers: ['Điều dưỡng cần đưa ra nhận định và hành động gì?', 'Đây là hiện tượng rốn bình thường trước khi rụng, chỉ cần lau cồn', 'Trẻ bị viêm rốn nặng có nguy cơ nhiễm trùng huyết; Hành động: Báo bác sĩ ngay để dùng kháng sinh toàn thân, lấy dịch rốn làm kháng sinh đồ', 'Do tã cọ vào rốn gây xước nhẹ, không cần xử trí', 'Cho trẻ đi tắm bằng lá chè xanh để sát khuẩn rốn'], correct: "B", topic: "1" },
+{ id: 401, text: "Trong giờ đầu sau mổ lấy thai, biến chứng nguy hiểm nhất mà điều dưỡng cần theo dõi sát sao nhất là:", answers: ['Nhiễm trùng vết mổ.', 'Đờ tử cung gây băng huyết sau mổ.', 'Sản phụ cảm thấy khát nước.', 'Bí tiểu.'], correct: "B", topic: "1" }
+
+      ];
+
+     let currentTopic = null;
+    let shuffleQuestions = true;
+    let shuffleAnswers = true;
+    let currentQuestions = [];
+    let userSelections = {};
+    let answersMapping = new Map();
+    
+    const questionsContainer = document.getElementById("questionsContainer");
+    const scoreContainer = document.getElementById("scoreContainer");
+    const shuffleQuestionsToggle = document.getElementById("shuffleQuestionsToggle");
+    const shuffleAnswersToggle = document.getElementById("shuffleAnswersToggle");
+    const liveScoreSpan = document.getElementById("liveScore");
+    
+    function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+    
+    function getFilteredQuestions() {
+        if (!currentTopic) return [];
+        let filtered = QUESTION_SET.filter(q => currentTopic === "all" || q.topic === currentTopic);
+        let result = [...filtered];
+        if (shuffleQuestions) result = shuffleArray(result);
+        return result;
+    }
+    
+    function buildAnswerMapping(question) {
+        const originalAnswers = question.answers;
+        const correctIndex = question.correct.charCodeAt(0) - 65;
+        const correctText = originalAnswers[correctIndex];
+        
+        if (!shuffleAnswers) {
+            return {
+                displayList: [
+                    { letter: "A", text: originalAnswers[0] },
+                    { letter: "B", text: originalAnswers[1] },
+                    { letter: "C", text: originalAnswers[2] },
+                    { letter: "D", text: originalAnswers[3] }
+                ],
+                correctLetterDisplay: question.correct
+            };
+        } else {
+            let items = originalAnswers.map((text, idx) => ({ text }));
+            items = shuffleArray([...items]);
+            const displayList = items.map((item, newIdx) => ({ letter: String.fromCharCode(65+newIdx), text: item.text }));
+            const found = displayList.find(item => item.text === correctText);
+            return {
+                displayList,
+                correctLetterDisplay: found ? found.letter : "A"
+            };
+        }
+    }
+    
+    function updateAllUI() {
+        if (!currentQuestions.length) {
+            liveScoreSpan.innerText = `0 / 0`;
+            return;
+        }
+        let correctCount = 0;
+        
+        for (let q of currentQuestions) {
+            const mapping = answersMapping.get(q.id);
+            if (!mapping) continue;
+            const selectedLetter = userSelections[q.id];
+            const isCorrect = (selectedLetter && selectedLetter === mapping.correctLetterDisplay);
+            if (isCorrect) correctCount++;
+            
+            const cardDiv = document.querySelector(`.question-card[data-qid='${q.id}']`);
+            if (!cardDiv) continue;
+            
+            const iconSpan = cardDiv.querySelector('.status-icon');
+            if (iconSpan) {
+                if (!selectedLetter) {
+                    iconSpan.innerHTML = "⚪ Chưa làm";
+                    iconSpan.className = "status-icon status-none";
+                } else if (isCorrect) {
+                    iconSpan.innerHTML = "✓ Đúng";
+                    iconSpan.className = "status-icon status-correct";
+                } else {
+                    iconSpan.innerHTML = "✗ Sai";
+                    iconSpan.className = "status-icon status-wrong";
+                }
+            }
+            
+            const answerDivs = cardDiv.querySelectorAll('.answer-option');
+            for (let ansDiv of answerDivs) {
+                const letter = ansDiv.dataset.letter;
+                const isSelected = (selectedLetter === letter);
+                
+                ansDiv.classList.remove('correct-highlight', 'wrong-highlight');
+                
+                if (isSelected) {
+                    if (isCorrect) {
+                        ansDiv.classList.add('correct-highlight');
+                    } else {
+                        ansDiv.classList.add('wrong-highlight');
+                    }
+                }
+                
+                let statusSpan = ansDiv.querySelector('.answer-status');
+                if (!statusSpan) {
+                    statusSpan = document.createElement('span');
+                    statusSpan.className = 'answer-status';
+                    ansDiv.appendChild(statusSpan);
+                }
+                
+                if (isSelected && isCorrect) {
+                    statusSpan.innerHTML = '✓';
+                    statusSpan.className = 'answer-status check-mark';
+                } else if (isSelected && !isCorrect) {
+                    statusSpan.innerHTML = '✗';
+                    statusSpan.className = 'answer-status cross-mark';
+                } else {
+                    statusSpan.innerHTML = '';
+                }
+            }
+        }
+        liveScoreSpan.innerText = `${correctCount} / ${currentQuestions.length}`;
+    }
+    
+    function onAnswerClick(questionId, selectedLetter) {
+        userSelections[questionId] = selectedLetter;
+        
+        const questionCard = document.querySelector(`.question-card[data-qid='${questionId}']`);
+        if (questionCard) {
+            const allOptions = questionCard.querySelectorAll('.answer-option');
+            allOptions.forEach(opt => {
+                const letter = opt.dataset.letter;
+                if (letter === selectedLetter) {
+                    opt.classList.add('selected');
+                } else {
+                    opt.classList.remove('selected');
+                }
+            });
+        }
+        updateAllUI();
+    }
+    
+    // Hàm cuộn xuống câu hỏi đầu tiên
+    function scrollToFirstQuestion() {
+        setTimeout(() => {
+            const firstQuestion = document.querySelector('.question-card');
+            if (firstQuestion) {
+                firstQuestion.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }, 100);
+    }
+    
+    function renderFullQuiz() {
+        if (!currentTopic) {
+            scoreContainer.style.display = "none";
+            questionsContainer.innerHTML = `
+                <div class="welcome-message">
+                    👋 Chào bạn!<br>
+                    Hãy chọn một chủ đề bên trên để bắt đầu làm bài trắc nghiệm.
+                </div>
+            `;
+            return;
+        }
+        
+        currentQuestions = getFilteredQuestions();
+        answersMapping.clear();
+        for (let q of currentQuestions) {
+            answersMapping.set(q.id, buildAnswerMapping(q));
+        }
+        userSelections = {};
+        
+        if (currentQuestions.length === 0) {
+            scoreContainer.style.display = "block";
+            questionsContainer.innerHTML = `<div class="card" style="text-align:center">⚠️ Không có câu hỏi cho chủ đề này.</div>`;
+            liveScoreSpan.innerText = `0 / 0`;
+            return;
+        }
+        
+        let html = '';
+        currentQuestions.forEach((q, idx) => {
+            const mapping = answersMapping.get(q.id);
+            if (!mapping) return;
+            const { displayList } = mapping;
+            let answersHtml = '';
+            for (let ans of displayList) {
+                answersHtml += `
+                    <div class="answer-option" data-qid="${q.id}" data-letter="${ans.letter}">
+                        <span class="answer-letter">${ans.letter}</span>
+                        <span class="answer-text">${escapeHtml(ans.text)}</span>
+                        <span class="answer-status"></span>
+                    </div>
+                `;
+            }
+            html += `
+                <div class="question-card" data-qid="${q.id}">
+                    <div class="question-text">
+                        <span><strong>${idx+1}.</strong> ${escapeHtml(q.text)}</span>
+                        <span class="status-icon status-none">⚪ Chưa làm</span>
+                    </div>
+                    <div class="answers">
+                        ${answersHtml}
+                    </div>
+                </div>
+            `;
+        });
+        
+        questionsContainer.innerHTML = html;
+        scoreContainer.style.display = "flex";
+        
+        document.querySelectorAll('.answer-option').forEach(el => {
+            el.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const qid = parseInt(el.dataset.qid);
+                const letter = el.dataset.letter;
+                if (!isNaN(qid) && letter) {
+                    onAnswerClick(qid, letter);
+                }
+            });
+        });
+        
+        updateAllUI();
+        
+        // Tự động cuộn xuống câu hỏi đầu tiên
+        scrollToFirstQuestion();
+    }
+    
+function escapeHtml(str) {
+    if (!str) return "";
+    return str.replace(/[&<>"']/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+    });
+}
+    
+    function refreshQuiz() {
+        renderFullQuiz();
+    }
+    
+    function initEventListeners() {
+        const topicBtns = document.querySelectorAll('.topic-btn');
+        topicBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const topic = btn.dataset.topic;
+                if (!topic) return;
+                currentTopic = topic;
+                topicBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                refreshQuiz();
+            });
+        });
+        
+        shuffleQuestionsToggle.addEventListener('change', (e) => {
+            shuffleQuestions = e.target.checked;
+            if (currentTopic) refreshQuiz();
+        });
+        
+        shuffleAnswersToggle.addEventListener('change', (e) => {
+            shuffleAnswers = e.target.checked;
+            if (currentTopic) refreshQuiz();
+        });
+    }
+    
+    function init() {
+        shuffleQuestions = shuffleQuestionsToggle.checked;
+        shuffleAnswers = shuffleAnswersToggle.checked;
+        initEventListeners();
+        currentTopic = null;
+        renderFullQuiz();
+    }
+    
+    init();
+</script>
+</body>
+</html>
