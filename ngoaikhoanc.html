@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Trắc nghiệm Chăm sóc người lớn có bệnh ngoại khoa nâng cao - Chauhuynh0104</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: #f0f4f8;
+            font-family: system-ui, 'Segoe UI', 'Roboto', 'Noto Sans', sans-serif;
+            padding: 16px 12px 80px;
+            color: #0f172a;
+        }
+
+        .app-container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 28px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            padding: 20px 18px;
+            margin-bottom: 20px;
+        }
+
+        .quiz-header {
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 12px;
+            margin-bottom: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .quiz-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1e3c72, #2b4c7c);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .badge {
+            background: #eef2ff;
+            padding: 6px 12px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #1e3c72;
+        }
+
+        .topic-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .topic-btn {
+            background: #eef2ff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.2s;
+            color: #1e293b;
+            flex: 1 0 auto;
+            text-align: center;
+        }
+
+        .topic-btn.active {
+            background: #1e3c72;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .toggle-row {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            background: #f8fafc;
+            padding: 12px 16px;
+            border-radius: 60px;
+            margin-bottom: 20px;
+        }
+
+        .toggle-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e1;
+            transition: 0.3s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #2d6a4f;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+
+        .question-card {
+            background: white;
+            border-radius: 24px;
+            margin-bottom: 20px;
+            padding: 18px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+            scroll-margin-top: 20px;
+        }
+
+        .question-text {
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 16px;
+            line-height: 1.4;
+            background: #fefce8;
+            padding: 12px;
+            border-radius: 20px;
+            border-left: 5px solid #eab308;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .status-icon {
+            font-size: 0.85rem;
+            font-weight: bold;
+            background: white;
+            border-radius: 40px;
+            padding: 4px 12px;
+            min-width: 95px;
+            text-align: center;
+        }
+
+        .status-correct {
+            color: #15803d;
+            background: #dcfce7;
+            border: 1px solid #86efac;
+        }
+
+        .status-wrong {
+            color: #b91c1c;
+            background: #fee2e2;
+            border: 1px solid #fca5a5;
+        }
+
+        .status-none {
+            color: #64748b;
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+        }
+
+        .answers {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .answer-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            background: #f9f9ff;
+            border-radius: 60px;
+            border: 2px solid #e2edff;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+
+        .answer-option:hover {
+            background: #eef2ff;
+        }
+
+        .answer-option.correct-highlight {
+            border: 3px solid #15803d;
+            background: #e8f5e9;
+        }
+
+        .answer-option.wrong-highlight {
+            border: 3px solid #dc2626;
+            background: #fee2e2;
+        }
+
+        .answer-option.selected {
+            background: #e0f2fe;
+            border-color: #0284c7;
+        }
+
+        .answer-letter {
+            font-weight: 800;
+            background: #e2e8f0;
+            width: 36px;
+            height: 36px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 60px;
+            font-size: 0.9rem;
+        }
+
+        .answer-text {
+            flex: 1;
+            font-size: 0.92rem;
+        }
+
+        .answer-status {
+            font-size: 1.2rem;
+            font-weight: bold;
+            min-width: 44px;
+            text-align: center;
+        }
+
+        .check-mark {
+            color: #15803d;
+        }
+
+        .cross-mark {
+            color: #dc2626;
+        }
+
+        .score-bar {
+            background: #e6f7ed;
+            padding: 14px 18px;
+            border-radius: 60px;
+            text-align: center;
+            font-weight: bold;
+            margin: 8px 0 16px;
+            font-size: 1rem;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .progress-text {
+            background: #1e3c72;
+            color: white;
+            border-radius: 30px;
+            padding: 4px 16px;
+        }
+
+        .welcome-message {
+            text-align: center;
+            padding: 40px 20px;
+            background: #fef9e3;
+            border-radius: 28px;
+            color: #b45309;
+            font-weight: 500;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 32px;
+            padding: 20px 10px;
+            font-size: 0.75rem;
+            color: #475569;
+            border-top: 1px solid #cbd5e1;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="card">
+        <div class="quiz-header">
+            <h2>📚 Trắc nghiệm Chăm sóc người lớn có bệnh ngoại khoa nâng cao</h2>
+      
+        </div>
+
+
+        <div class="topic-buttons" id="topicButtons">
+            <button data-topic="all" class="topic-btn">📖 Bắt đầu</button>
+				  
+
+        </div>
+
+      <div class="toggle-row">
+            <div class="toggle-item">
+                <span>🔄 Xáo trộn câu hỏi</span>
+                <label class="switch">
+                    <input type="checkbox" id="shuffleQuestionsToggle" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="toggle-item">
+                <span>🎲 Xáo trộn đáp án</span>
+                <label class="switch">
+                    <input type="checkbox" id="shuffleAnswersToggle" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div id="scoreContainer" class="score-bar" style="display: none;">
+        <span>🏆 Kết quả hiện tại</span>
+        <span id="liveScore" class="progress-text">0 / 0</span>
+    </div>
+
+    <div id="questionsContainer">
+        <div class="welcome-message">
+            👋 Chào bạn!<br>
+            Hãy chọn một chủ đề bên trên để bắt đầu làm bài trắc nghiệm.
+        </div>
+    </div>
+    
+    <footer>© 2014-2026 Dr.Châu</footer>
+</div>
+
+<script>
+    // ---------- DỮ LIỆU CÂU HỎI ----------
+    const QUESTION_SET = [
+{ id: 1, text: "Khó thở trong chấn thương ngực thường có đặc điểm sinh lý bệnh nào sau đây", answers: ['Khó thở giảm dần theo thời gian', 'Khó thở tiến triển tăng dần', 'Khó thở chủ yếu vào buổi sáng', 'Khó thở xuất hiện về ban đêm'], correct: "B", topic: "1" },
+{ id: 2, text: "Triệu chứng ho ra máu trong chấn thương ngực có ý nghĩa lâm sàng là", answers: ['Rất hay gặp và báo hiệu có tổn thương nhu mô phổi/phế quản.', 'Thỉnh thoảng xuất hiện nhưng không có giá trị chẩn đoán.', 'Hiếm gặp nhưng có giá trị chẩn đoán xác định rất cao.', 'Là triệu chứng hoàn toàn không liên quan đến chấn thương ngực.'], correct: "A", topic: "1" },
+{ id: 3, text: "Dấu hiệu gợi ý tình trạng tràn máu màng phổi khi điều dưỡng thực hiện kỹ thuật gõ ngực là:", answers: ['Gõ vang vùng tổn thương.', 'Gõ đục vùng thấp bên tổn thương.', 'Gõ kêu như tiếng thùng rỗng.', 'Không có thay đổi âm gõ rõ rệt.'], correct: "B", topic: "1" },
+{ id: 4, text: "Biến chứng sớm nguy hiểm nhất có nguy cơ đe dọa tính mạng người bệnh ngay trong chấn thương ngực là:", answers: ['Dày dính màng phổi hạn chế hô hấp.', 'Nhiễm trùng mủ màng phổi muộn.', 'Sốc chấn thương và suy hô hấp cấp tính.', 'Ho kéo dài gây suy kiệt cơ thể.'], correct: "C", topic: "1" },
+{ id: 5, text: "Nguyên tắc xử trí và điều trị ưu tiên đầu tiên đối với người bệnh chấn thương ngực là:", answers: ['Chỉ định kháng sinh phổ rộng liều cao.', 'Thực hiện các biện pháp giảm đau tại chỗ.', 'Cấp cứu chống sốc và chống suy hô hấp cấp.', 'Hướng dẫn tập vận động phục hồi chức năng.'], correct: "C", topic: "1" },
+{ id: 6, text: "Nguyên nhân chính gây nên tình trạng suy hô hấp cấp trong chấn thương ngực kín là:", answers: ['Tình trạng nhiễm trùng nhu mô phổi tiến triển.', 'Rối loạn thông khí do đau, tràn dịch/khí màng phổi hoặc mảng sườn di động.', 'Tình trạng tăng huyết áp kịch phát do stress.', 'Thiếu máu mức độ nhẹ từ các mạch máu nhỏ.'], correct: "B", topic: "1" },
+{ id: 7, text: "Dấu hiệu lâm sàng đặc trưng nhất của mảng sườn di động là:", answers: ['Người bệnh có cảm giác khó thở nhẹ.', 'Hiện tượng hô hấp đảo chiều tại vùng tổn thương.', 'Không biểu hiện dấu hiệu nào đặc trưng trên thành ngực.', 'Người bệnh chỉ thở nhanh và nông đơn thuần.'], correct: "B", topic: "1" },
+{ id: 8, text: "Dấu hiệu lâm sàng điển hình gợi ý hội chứng chèn ép tim cấp là:", answers: ['Chỉ số huyết áp động mạch tăng cao đột ngột.', 'Tam chứng Beck: Tĩnh mạch cổ nổi, huyết áp kẹt/tụt, tiếng tim mờ xa xăm.', 'Nhịp tim chậm dần dưới 50 lần/phút.', 'Da và niêm mạc môi tím tái đơn thuần.'], correct: "B", topic: "1" },
+{ id: 9, text: "Biện pháp giảm đau hiệu quả và an toàn nhất cho người bệnh gãy nhiều xương sườn nặng trên lâm sàng là:", answers: ['Chỉ dùng Paracetamol đường uống đơn thuần để giảm đau.', 'Phong bế thần kinh liên sườn bằng thuốc tê phù hợp.', 'Hướng dẫn người bệnh nằm nghỉ ngơi hoàn toàn tại giường.', 'Không can thiệp điều dưỡng hay điều trị gì đặc hiệu.'], correct: "B", topic: "1" },
+{ id: 10, text: "Trong quy trình chăm sóc hậu phẫu sau mổ ngực, người bệnh cần được:", answers: ['Hạn chế ho hoàn toàn để chống bục rách vết mổ thành ngực.', 'Khuyến khích tập thở sâu, ho có hỗ trợ để tống đờm dãi, tránh xẹp phổi.', 'Nằm bất động tuyệt đối tại giường trong nhiều ngày liên tục.', 'Tất cả các phương án trên đều đúng.'], correct: "B", topic: "1" },
+{ id: 11, text: "Người bệnh chấn thương ngực vào viện có mạch nhanh nhỏ, huyết áp tụt, tĩnh mạch cổ nổi to, tiếng tim nghe mờ xa xăm. Điều dưỡng cần nhận định ngay người bệnh có nguy cơ cao bị:", answers: ['Tràn khí màng phổi kín đơn thuần.', 'Hội chứng chèn ép tim cấp do tràn máu màng tim.', 'Gãy xương đòn phối hợp đơn thuần.', 'Viêm phế quản cấp tính hậu phẫu.'], correct: "B", topic: "1" },
+{ id: 12, text: "Triệu chứng cơ năng và thực thể nào dưới đây điển hình của chấn thương sọ não mức độ nhẹ?", answers: ['Người bệnh rơi vào trạng thái hôn mê sâu.', 'Có hiện tượng dãn đồng tử một bên cố định.', 'Người bệnh tỉnh, đau đầu nhiều, buồn nôn hoặc nôn ói.', 'Xuất hiện dấu hiệu yếu hoặc liệt tứ chi progresive.'], correct: "C", topic: "1" },
+{ id: 13, text: "Trong thang điểm mê Glasgow (GCS), tổng mức điểm từ 13 đến 15 điểm được phân loại lâm sàng là:", answers: ['Chấn thương sọ não mức độ nhẹ.', 'Chấn thương sọ não mức độ trung bình.', 'Chấn thương sọ não mức độ nặng.', 'Người bệnh rơi vào hôn mê sâu.'], correct: "A", topic: "1" },
+{ id: 14, text: "Thuốc lợi tiểu thẩm thấu qua đường tĩnh mạch (như Mannitol 20%) có tác dụng chính gì trong điều trị nội khoa chấn thương sọ não?", answers: ['Tăng chỉ số huyết áp động mạch trung bình cho người bệnh.', 'Làm giảm áp lực nội sọ bằng cách kéo dịch từ mô não vào lòng mạch.', 'Chống tình trạng nhiễm trùng hệ thống thần kinh trung ương.', 'Làm giảm triệu chứng đau đầu dai dẳng cho người bệnh.'], correct: "B", topic: "1" },
+{ id: 15, text: "Dấu hiệu lâm sàng sớm nhất cảnh báo nguy cơ hình thành loét tì đè ở người bệnh hôn mê nằm lâu là:", answers: ['Vết mổ sọ não thấm dịch huyết thanh.', 'Xuất hiện vùng da đỏ, nề tại vị trí các ụ xương tì đè.', 'Nổi ban đỏ trên da và mất đi khi ấn ngón tay vào.', 'Nổi ban hoại tử không mất đi khi ấn ngón tay vào.'], correct: "B", topic: "1" },
+{ id: 16, text: "Tư thế nằm phù hợp cho người bệnh sau phẫu thuật lấy khối máu tụ ngoài màng cứng thường được chỉ định là:", answers: ['Nằm ngửa, đầu cao từ $15^{\circ}$ đến $30^{\circ}$ (hoặc nghiêng bên lành) để tăng hồi lưu tĩnh mạch.', 'Nằm sấp hoàn toàn, đầu nghiêng sang một bên.', 'Nằm ngửa bằng phẳng và không kê gối dưới đầu.', 'Nằm nghiêng hoàn toàn sang phía bên có vết mổ sọ não.'], correct: "A", topic: "1" },
+{ id: 17, text: "Khi đánh giá điểm vận động theo thang điểm Glasgow, người bệnh có biểu hiện "duỗi cứng mất não" khi kích thích đau sẽ nhận được mức điểm là:", answers: ['1 điểm.', '2 điểm.', '3 điểm.', '4 điểm.'], correct: "B", topic: "1" },
+{ id: 18, text: "Nguyên tắc điều trị quan trọng hàng đầu trong cấp cứu chấn thương sọ não nặng là tập trung đảm bảo:", answers: ['Công tác vệ sinh vô khuẩn phòng chống nhiễm trùng toàn thân.', 'Duy trì thông khí tốt (Oxy) và áp lực tưới máu não ổn định.', 'Hướng dẫn tập vận động sớm đề phòng biến chứng teo cơ, cứng khớp.', 'Chế độ ăn giàu vitamin, đạm để đảm bảo cung cấp đủ dinh dưỡng.'], correct: "B", topic: "1" },
+{ id: 19, text: "Nguyên tắc xử trí và điều trị chính áp dụng cho người bệnh chấn thương sọ não mức độ nhẹ là:", answers: ['Tiến hành phẫu thuật mở sọ giải áp ngay lập tức.', 'Chỉ định truyền thuốc lợi tiểu thẩm thấu liều mạnh.', 'Nghỉ ngơi tại giường, dùng thuốc triệu chứng và theo dõi sát tri giác tại nhà/viện.', 'Thực hiện truyền liên tục các dung dịch nhược trương hoặc ưu trương.'], correct: "C", topic: "1" },
+{ id: 20, text: "Theo dõi và đánh giá thang điểm Glasgow trong giai đoạn cấp cứu chấn thương sọ não chưa ổn định cần thực hiện với tần suất:", answers: ['Chỉ cần đánh giá 1 lần duy nhất trong mỗi ngày trực.', 'Theo dõi sát 15 phút một lần cho đến khi tình trạng huyết động và tri giác ổn định.', 'Đánh giá định kỳ 1 tuần một lần tại phòng bệnh.', 'Đây là chấn thương cố định, không cần thiết phải theo dõi liên tục.'], correct: "B", topic: "1" },
+{ id: 21, text: "Khi phát hiện người bệnh chấn thương sọ não xuất hiện cơn co giật, hành động xử trí ưu tiên đầu tiên của điều dưỡng là:", answers: ['Cho người bệnh uống hoặc bơm thức ăn ngay để tránh hạ đường huyết.', 'Dùng dây trói chặt chân tay người bệnh để hạn chế biên độ co giật.', 'Đi lấy thuốc và thực hiện ngay y lệnh thuốc chống động kinh khẩn cấp.', 'Đặt người bệnh nằm nơi an toàn, kê gối mềm dưới đầu, ngáng miệng tránh cắn lưỡi và bảo vệ tránh chấn thương thứ phát.'], correct: "D", topic: "1" },
+{ id: 22, text: "Thời điểm nào người bệnh chấn thương sọ não thường được chỉ định chụp cộng hưởng từ (MRI) thay vì chụp cắt lớp vi tính (CT Scan)?", answers: ['Ngay khi mới nhập viện cấp cứu trong tình trạng nguy kịch.', 'Khi cần chẩn đoán nhanh tình trạng lún xương sọ cấp tính.', 'Khi tình trạng lâm sàng đã ổn định nhưng triệu chứng thần kinh không cải thiện hoặc nghi tổn thương sợi trục.', 'Khi người bệnh có vết thương sọ não xuyên thấu cấp tính cần mổ ngay.'], correct: "C", topic: "1" },
+{ id: 23, text: "Nguyên nhân nào sau đây được phân loại là cơ chế gián tiếp gây nên tình trạng chấn thương cột sống?", answers: ['Cây đổ hoặc thanh gỗ lớn đè trực tiếp vào vùng lưng người bệnh.', 'Tai nạn ngã cao ngồi dốc mông xuống đất gây lún sập các đốt sống.', 'Cơn co cứng cơ mạnh, liên tục trong bệnh lý uốn ván ác tính.', 'Bức tường sập đè trực tiếp vào vùng cột sống thắt lưng.'], correct: "B", topic: "1" },
+{ id: 24, text: "Trong gãy cột sống đơn thuần không có liệt tủy kèm theo, dấu hiệu biến dạng nào thường được quan sát thấy trên lâm sàng?", answers: ['Khoảng cách giải phẫu giữa hai mấu gai sống bị thu hẹp lại rõ rệt.', 'Mấu gai sống vùng tổn thương gồ hẳn ra phía sau gây tình trạng gù lưng.', 'Trục cột sống bị vẹo hẳn sang một bên một cách rõ rệt.', 'Không xuất hiện bất kỳ biến dạng hình thái nào có thể quan sát bằng mắt thường.'], correct: "B", topic: "1" },
+{ id: 25, text: "Tình trạng rối loạn hô hấp nặng, đe dọa ngừng thở thường xảy ra trong chấn thương cột sống cổ tổn thương đoạn tủy nào?", answers: ['Từ đoạn tủy cổ C1 đến C5 (tổn thương trung tâm hô hấp và dây hoành).', 'Từ đoạn tủy cổ thấp C6 đến C7.', 'Tại các đoạn tủy sống vùng lưng từ D1 đến D5.', 'Tại đoạn tủy sống vùng thắt lưng từ L1 đến L5.'], correct: "A", topic: "1" },
+{ id: 26, text: "Dấu hiệu lâm sàng đặc trưng nào ở người bệnh nam giới gợi ý tình trạng đứt tủy sống cổ/ngực cấp tính trong giai đoạn sốc tủy?", answers: ['Mất hoàn toàn khả năng cương cứng của cơ quan sinh dục.', 'Dương vật luôn trong tình trạng cương cứng kéo dài do mất ức chế thần kinh.', 'Xuất hiện tình trạng tiểu tiện không tự chủ ngay lập tức.', 'Tăng nhạy cảm và cảm giác đau vùng tầng sinh môn.'], correct: "B", topic: "1" },
+{ id: 27, text: "Kỹ thuật chẩn đoán hình ảnh nào được xem là tiêu chuẩn tốt nhất để khảo sát chi tiết các tổn thương cấu trúc bên trong nhu mô tủy sống?", answers: ['Chụp X-quang cột sống quy ước hai tư thế thẳng và nghiêng.', 'Chụp cắt lớp vi tính kỹ thuật số (CT Scanner) cửa sổ xương.', 'Chụp cộng hưởng từ (MRI) cột sống - tủy sống.', 'Chụp phim X-quang sọ mặt tư thế Blondeau.'], correct: "C", topic: "1" },
+{ id: 28, text: "Khi tiến hành sơ cứu và vận chuyển người bệnh nghi ngờ gãy cột sống, tư thế vận chuyển nào sau đây là SAI nguyên tắc?", answers: ['Đặt người bệnh nằm ngửa cố định trên ván cán cứng.', 'Đặt người bệnh nằm sấp trên ván cán mềm.', 'Cho người bệnh ngồi dậy tựa lưng vào ghế để giúp dễ thở hơn.', 'Nằm thẳng trục cơ thể và cố định cột sống cổ bằng nẹp cứng cổ.'], correct: "C", topic: "1" },
+{ id: 29, text: "Bệnh nhân chấn thương cột sống ngực cao (từ đoạn D6 trở lên) thường xuất hiện biến đổi mạch và huyết áp do sốc thần kinh như thế nào?", answers: ['Mạch quay nhanh nhỏ và huyết áp động mạch tăng cao.', 'Mạch thường chậm (50–60 lần/phút) kèm theo huyết áp tụt.', 'Chỉ số mạch và huyết áp hoàn toàn không thay đổi so với bình thường.', 'Mạch nhanh nhỏ nhưng huyết áp hạ tụt kẹt.'], correct: "B", topic: "1" },
+{ id: 30, text: "Tại sao điều dưỡng cần đặt ống thông dạ dày giải áp liên tục cho bệnh nhân chấn thương cột sống trong 48 - 72 giờ đầu?", answers: ['Để bắt đầu quy trình nuôi dưỡng bệnh nhân sớm qua đường tiêu hóa.', 'Do tình trạng liệt ruột cơ năng do mất phân bố thần kinh gây chướng bụng, hạn chế thở.', 'Để kiểm tra tầm soát xem bệnh nhân có bị xuất huyết dạ dày do stress hay không.', 'Để chuẩn bị làm sạch đường tiêu hóa cho phẫu thuật cột sống cổ.'], correct: "B", topic: "1" },
+{ id: 31, text: "Trong thực hiện quy trình chăm sóc bệnh nhân chấn thương cột sống, tần suất đánh giá lại chức năng vận động và cảm giác ngoại vi được khuyến cáo là:", answers: ['Tối thiểu mỗi 2 giờ một lần ở giai đoạn cấp hoặc tùy theo chỉ định sát sao của bác sĩ.', 'Tối thiểu mỗi 4 giờ một lần định kỳ cho mọi giai đoạn.', 'Mỗi ngày chỉ cần lượng giá 1 lần duy nhất vào ca sáng.', 'Chỉ tiến hành đánh giá khi bệnh nhân kêu đau hoặc có yêu cầu trực tiếp.'], correct: "A", topic: "1" },
+{ id: 32, text: "Biện pháp hỗ trợ nào hiệu quả nhất giúp bệnh nhân liệt tủy cao có thể tống xuất dịch tiết, đờm dãi đường hô hấp ra ngoài?", answers: ['Cho bệnh nhân uống nhiều thuốc làm loãng đờm.', 'Luôn đặt bệnh nhân nằm ngửa hoàn toàn, bằng phẳng tại giường.', 'Yêu cầu tự lực ho mạnh mà không cần bất kỳ sự hỗ trợ nào từ bên ngoài.', 'Điều dưỡng đặt tay lên vùng thượng vị/thành ngực đẩy mạnh hướng lên trên nhịp nhàng khi bệnh nhân ho.'], correct: "D", topic: "1" },
+{ id: 33, text: "Bệnh nhân chấn thương cột sống cổ cao có nguy cơ bị biến nhiệt (sốt cao hoặc hạ thân nhiệt) theo nhiệt độ môi trường do cơ chế:", answers: ['Mất khả năng điều nhiệt và mất phản xạ vã mồ hôi bên dưới mức tổn tủy.', 'Do tình trạng nhiễm trùng đường tiết niệu cấp tính gây sốt.', 'Do bệnh nhân không được cung cấp đủ lượng nước uống hàng ngày.', 'Do tình trạng loét da vùng tì đè làm thoát nhiệt lượng cơ thể.'], correct: "A", topic: "1" },
+{ id: 34, text: "Trong chăm sóc người bệnh chấn thương tủy sống giai đoạn cấp, mục đích chính của việc điều dưỡng theo dõi và nghe đánh giá âm ruột (nhu động ruột) định kỳ là:", answers: ['Phát hiện sớm tình trạng xuất huyết tiêu hóa do loét stress (loét Cushing).', 'Đánh giá sự hồi phục của nhu động ruột để xác định thời điểm bắt đầu cho người bệnh ăn qua đường miệng.', 'Kiểm tra xem ống thông dạ dày có bị tắc nghẽn hoặc lệch vị trí giải phẫu hay không.', 'Đánh giá mức độ dung nạp của cơ thể đối với các thuốc vận mạch nâng huyết áp.'], correct: "B", topic: "1" },
+{ id: 35, text: "Hành động nào mang tính nhân văn và quan trọng nhất giúp bệnh nhân liệt tứ chi do chấn thương tủy vượt qua mặc cảm, tự ti để phục hồi tâm lý?", answers: ['Nói dối hoặc hứa hẹn rằng họ sẽ sớm đi lại được bình thường như trước.', 'Cách ly bệnh nhân ở phòng riêng biệt để họ tránh tiếp xúc với xã hội bên ngoài.', 'Khuyến khích, hỗ trợ và kiên nhẫn để bệnh nhân tự thực hiện các hoạt động chăm sóc cá nhân trong khả năng.', 'Nhân viên y tế và người nhà làm thay hoàn toàn mọi việc để bệnh nhân không phải vận động.'], correct: "C", topic: "1" },
+{ id: 36, text: "Mở khí quản cấp cứu được chỉ định trong các trường hợp sau đây, NGOẠI TRỪ:", answers: ['Tắc nghẽn đường hô hấp trên hoàn toàn do dị vật đường thở.', 'Chấn thương hàm mặt gây dập nát, phù nề nặng ở cổ và thanh quản.', 'Tình trạng khó thở do bệnh lý viêm phổi thùy mức độ vừa.', 'Bỏng sâu đường hô hấp có nguy cơ co thắt, phù nề thanh môn.'], correct: "C", topic: "1" },
+{ id: 37, text: "Biến chứng muộn xảy ra sau khi người bệnh đã được mở khí quản một thời gian thường gặp bao gồm các tổn thương sau, NGOẠI TRỪ:", answers: ['Hẹp lòng khí quản tại vị trí đặt ống.', 'Tắc nghẽn ống đột ngột do cục máu đông lớn ngay sau mổ.', 'Nhiễm trùng da và mô mềm xung quanh vị trí đặt canule.', 'Hình thành đường dò khí quản – thực quan.'], correct: "B", topic: "1" },
+{ id: 38, text: "Để đảm bảo tưới máu niêm mạc khí quản tốt, áp lực trong bóng chèn (cuff) của canule mở khí quản không được vượt quá mốc:", answers: ['10 cmH2O.', '20 cmH2O.', '30 cmH2O (hoặc duy trì khoảng 20-25 mmHg).', '40 cmH2O.'], correct: "C", topic: "1" },
+{ id: 39, text: "Khi xảy ra tai biến sút/tuột ống canule mở khí quản đột ngột tại phòng bệnh, hành động xử trí khẩn cấp ưu tiên đầu tiên của điều dưỡng là:", answers: ['Tiếp tục đứng ngoài theo dõi sát tình trạng nhịp thở của người bệnh.', 'Mang găng, lau rửa sạch vết thương rồi cố gắng ấn mạnh đặt lại canule mở khí quản cũ.', 'Dùng kìm banh rộng (bộ mở khí quản) giữ mở rộng lỗ thở, cho người bệnh thở oxy qua lỗ mở và lập tức gọi hỗ trợ.', 'Đi tìm và báo cho Bác sĩ điều trị đến phòng bệnh xử trí.'], correct: "C", topic: "1" },
+{ id: 40, text: "Vị trí giải phẫu thông thường được lựa chọn để thực hiện kỹ thuật mở khí quản là ở vị trí các vòng sụn khí quản số:", answers: ['Vòng sụn số 1 và số 2.', 'Vòng sụn số 2, số 3 và số 4.', 'Vòng sụn số 5, số 6 và số 7.', 'Vòng sụn số 7 và số 8.'], correct: "B", topic: "1" },
+{ id: 41, text: "Một trong những lợi ích quan trọng của thủ thuật mở khí quản đối với hệ hô hấp là:", answers: ['Làm gia tăng khoảng chết giải phẫu của đường hô hấp.', 'Giúp người bệnh có thể phát âm và nói chuyện dễ dàng ngay sau khi mở ống.', 'Giúp dễ dàng hút sạch đờm nhớt ứ đọng trong lòng phế quản.', 'Ngăn ngừa hoàn toàn nguy cơ nhiễm trùng đường hô hấp dưới.'], correct: "C", topic: "1" },
+{ id: 42, text: "Loại canule mở khí quản hiện nay thường được ưu tiên lựa chọn sử dụng rộng rãi trên lâm sàng là:", answers: ['Ống chất liệu kim loại không cấu tạo bóng chèn (như ống Silver).', 'Ống chất liệu nhựa y tế mềm có tráng silicon và thiết kế bóng chèn (cuff).', 'Ống thông chất liệu cao su Foley hai nhánh.', 'Ống Nelaton loại mềm không bóng.'], correct: "B", topic: "1" },
+{ id: 43, text: "Khi thực hiện kỹ thuật cố định dây mở khí quản cho người bệnh, điều dưỡng cần tuân thủ các nguyên tắc sau đây, NGOẠI TRỪ:", answers: ['Buộc dây thật căng, sát cổ để không thể luồn được ngón tay qua dưới dây buộc.', 'Đặt vị trí nút thắt buộc lệch hẳn về một bên cổ của người bệnh.', 'Sử dụng loại dây vải bản dẹt, sạch sẽ, mềm mại và không có độ co giãn.', 'Tiến hành kiểm tra lại độ căng của dây sau khi người bệnh có cơn ho mạnh hoặc thay đổi tư thế nằm.'], correct: "A", topic: "1" },
+{ id: 44, text: "Chỉ định mở khí quản nào sau đây thuộc nhóm giải quyết tình trạng bít tắc đường hô hấp cơ học?", answers: ['Viêm phù nề thanh quản cấp tính không đáp ứng với điều trị nội khoa.', 'Người bệnh hôn mê sâu cần duy trì thở máy dài ngày trên 7–10 ngày.', 'Cơn hen phế quản ác tính giai đoạn co thắt.', 'Phù phổi cấp do suy tim trái toàn bộ.'], correct: "A", topic: "1" },
+{ id: 45, text: "Mục đích sinh lý bệnh quan trọng nhất của việc mở khí quản trong hỗ trợ thông khí nhân tạo là:", answers: ['Làm tăng áp lực dương của đường dẫn khí vào phổi.', 'Ngăn ngừa một cách tuyệt đối nguy cơ nhiễm khuẩn bệnh viện đường hô hấp.', 'Tăng áp lực lọc tại mao mạch phổi.', 'Giảm khoảng chết sinh lý của đường thở và giảm sức cản đường hô hấp.'], correct: "D", topic: "1" },
+{ id: 46, text: "Trong thực hành lâm sàng hiện nay, loại canule mở khí quản thường được sử dụng cho bệnh nhân hồi sức cấp cứu thở máy lâu ngày là loại:", answers: ['Nhựa có tráng chất liệu silicon vô khuẩn có bóng chèn.', 'Chất liệu thủy tinh hữu cơ.', 'Chất liệu kim loại cứng Silver hai nòng.', 'Chất liệu cao su dẻo thông thường.'], correct: "A", topic: "1" },
+{ id: 47, text: "Một tổn thương ở vùng bụng được định nghĩa chính xác là "vết thương thấu bụng" khi:", answers: ['Vết thương làm rách sâu lớp da bụng và tổ chức dưới da.', 'Vết thương gây chảy máu nhiều từ các mạch máu nông ở thành bụng.', 'Vết thương có tổn thương xuyên thủng lớp phúc mạc thành vào bên trong ổ bụng.', 'Vết thương gây đụng dập và bầm tím các khối cơ thành bụng.'], correct: "C", topic: "1" },
+{ id: 48, text: "Kỹ thuật cận lâm sàng nào có giá trị cao, thực hiện nhanh chóng và an toàn nhất để tầm soát dịch tự do/tổn thương tạng đặc ngay tại phòng cấp cứu?", answers: ['Siêu âm bụng cấp cứu theo quy trình FAST (Focused Assessment with Sonography for Trauma).', 'Chụp X-quang bụng đứng không chuẩn bị tìm liềm hơi.', 'Tiến hành chọc hút dịch ổ bụng (DPL) hoặc chọc dò túi cùng Douglas.', 'Chụp cắt lớp vi tính (CT Scanner) bụng có cản quang toàn bộ.'], correct: "A", topic: "1" },
+{ id: 49, text: "Xử trí điều dưỡng ban đầu đối với một vết thương thấu bụng có phủ tạng (ruột, mạc nối) lòi ra ngoài miệng vết thương là:", answers: ['Nhanh chóng dùng tay đẩy toàn bộ phần ruột lộ ra vào lại bên trong ổ bụng rồi băng ép chặt.', 'Dùng dung dịch cồn $70^{\circ}$ hoặc cồn I-ốt đổ trực tiếp lên phần ruột lòi ra để sát khuẩn.', 'Dùng gạc vô khuẩn thấm nước muối sinh lý ấm đắp bảo vệ ruột, đặt bát úp lên trên và băng cố định.', 'Để hở hoàn toàn khối ruột lòi ra ngoài cho thông thoáng và chuyển đi mổ.'], correct: "C", topic: "1" },
+{ id: 50, text: "Những can thiệp điều dưỡng nào sau đây nằm trong kế hoạch chống sốc cho bệnh nhân có vết thương thấu bụng, NGOẠI TRỪ:", answers: ['Ủ ấm cơ thể và cho bệnh nhân nằm yên tĩnh, đầu thấp nếu có tụt huyết áp.', 'Thực hiện khẩn cấp y lệnh truyền dịch đặt đường truyền lớn, truyền máu.', 'Cho bệnh nhân uống nước đường ấm hoặc sữa ấm để tăng cường năng lượng nội sinh.', 'Thực hiện tiêm thuốc trợ tim, thuốc vận mạch nâng huyết áp theo đúng y lệnh.'], correct: "C", topic: "1" },
+{ id: 51, text: "Sau phẫu thuật điều trị chấn thương bụng, việc chăm sóc hệ thống ống dẫn lưu ổ bụng cần đảm bảo nguyên tắc:", answers: ['Tiến hành rút ống dẫn lưu hệ thống ngay sau 24 giờ đầu sau mổ cho mọi trường hợp.', 'Theo dõi và ghi nhận chính xác màu sắc, tính chất và số lượng dịch dẫn lưu định kỳ hàng ngày.', 'Luôn treo đặt túi chứa dịch cao hơn vị trí chân ống dẫn lưu của người bệnh từ 10-20 cm.', 'Kẹp ống dẫn lưu thường xuyên liên tục và chỉ mở khóa khi cần lấy mẫu dịch làm xét nghiệm.'], correct: "B", topic: "1" },
+{ id: 52, text: "Sau phẫu thuật mở bụng, mục đích chính của việc đặt ống thông (sonde) dạ dày và duy trì hút dẫn lưu áp lực âm thấp là:", answers: ['Để bơm thức ăn lỏng sớm, phòng tránh nguy cơ suy dinh dưỡng cho người bệnh.', 'Giảm áp lực trong lòng ống tiêu hóa, hạn chế chướng bụng, bảo vệ đường khâu miệng nối.', 'Để lấy mẫu dịch vị dạ dày làm xét nghiệm sinh hóa định kỳ.', 'Dùng làm đường bơm thuốc điều trị dạ dày sau mổ.'], correct: "B", topic: "1" },
+{ id: 53, text: "Sau phẫu thuật ổ bụng, dấu hiệu lâm sàng chính và khách quan nào khẳng định hệ thống tiêu hóa của người bệnh bắt đầu hồi phục nhu động?", answers: ['Người bệnh bắt đầu có cảm giác khát nước và thèm ăn.', 'Vết mổ thành bụng khô ráo, không có dịch huyết thanh chảy ra.', 'Người bệnh có hiện tượng trung tiện (đánh rắm) hoặc đại tiện trở lại.', 'Thân nhiệt của người bệnh trở về mức bình thường, hết sốt.'], correct: "C", topic: "1" },
+{ id: 54, text: "Để phòng ngừa biến chứng nhiễm trùng hậu phẫu hiệu quả cho bệnh nhân chấn thương bụng, điều dưỡng cần thực hiện:", answers: ['Thực hiện y lệnh kháng sinh điều trị đúng giờ, đúng liều lượng.', 'Thay băng vết mổ và chân ống dẫn lưu định kỳ đảm bảo nguyên tắc vô khuẩn tuyệt đối.', 'Hướng dẫn bệnh nhân vệ sinh răng miệng đúng cách và khuyến khích vận động sớm tại giường.', 'Tất cả các can thiệp nêu trên.'], correct: "D", topic: "1" },
+{ id: 55, text: "Biến chứng viêm phúc mạc do hoại tử và thủng ruột muộn sau chấn thương bụng kín thường có cơ chế liên quan đến:", answers: ['Việc người bệnh được cho ăn bằng đường miệng quá sớm sau phẫu thuật.', 'Tổn thương rách/tắc mạch máu mạc treo gây thiếu máu nuôi dưỡng hoại tử đoạn ruột tương ứng.', 'Do lạm dụng thuốc giảm đau nhóm Opioid quá liều lượng quy định.', 'Do rách bán phần khối cơ thẳng bụng thành bụng trước.'], correct: "B", topic: "1" },
+{ id: 56, text: "Dấu hiệu Kehr (người bệnh có cảm giác đau chói lan lên vùng vai bên trái) trong chấn thương bụng kín thường gợi ý tổn thương cấu trúc tạng nào?", answers: ['Tổn thương nhu mô gan.', 'Tổn thương vỡ nhu mô lách gây chảy máu nội ổ bụng.', 'Tổn thương thủng vách dạ dày.', 'Tổn thương đụng dập nhu mô tụy.'], correct: "B", topic: "1" },
+{ id: 57, text: "Bỏng được định nghĩa là những tổn thương bề mặt và cấu trúc sâu của cơ thể gây nên bởi:", answers: ['Chỉ do tác động của nguồn sức nhiệt (nóng hoặc lạnh).', 'Chỉ do tác động của các loại hóa chất ăn mòn (axit hoặc kiềm).', 'Tác động của sức nhiệt, hóa chất độc hại, dòng điện năng và các loại bức xạ.', 'Chỉ do tác động từ tia xạ của các nguồn năng lượng hạt nhân.'], correct: "C", topic: "1" },
+{ id: 58, text: "Tổn thương bỏng gây ra do các tác nhân như xăng, dầu, củi gỗ đang cháy được phân loại vào nhóm:", answers: ['Bỏng gây ra do tác nhân sức nóng ướt.', 'Bỏng gây ra do tác nhân sức nóng khô.', 'Bỏng gây ra do tác nhân hóa chất hữu cơ.', 'Bỏng gây ra do tác nhân nhiệt độ lạnh sâu.'], correct: "B", topic: "1" },
+{ id: 59, text: "Cấu trúc da của cơ thể người bình thường chỉ có khả năng chịu đựng được giới hạn nhiệt độ tối đa khoảng:", answers: ['$30^{\circ}\text{C}$.', '$37^{\circ}\text{C}$.', '$43^{\circ}\text{C}$', '$60^{\circ}\text{C}$.'], correct: "C", topic: "1" },
+{ id: 60, text: "Dịch chứa bên trong các nốt phỏng (vết bỏng nông) được hình thành chủ yếu do cơ chế sinh lý bệnh nào?", answers: ['Tình trạng tăng sinh quá mức của các mô hạt vùng tổn thương.', 'Hiện tượng tăng tính thấm thành mạch làm thoát dịch huyết tương ra khoảng gian bào.', 'Tình trạng tăng cường tiết bã nhờn của các tuyến dưới da.', 'Quá trình hoại tử các tế bào sợi của tổ chức cơ sâu.'], correct: "B", topic: "1" },
+{ id: 61, text: "Tổn thương bỏng được phân loại ở mức độ II (bỏng nông) có đặc điểm hình thái tổn thương là:", answers: ['Tổn thương lớp biểu bì và một phần lớp đáy, tự hoại tử và khỏi không để lại sẹo.', 'Tổn thương toàn bộ các lớp của cấu trúc da bao gồm cả lớp mỡ dưới da.', 'Chỉ có hiện tượng viêm đỏ, sung huyết bề mặt da đơn thuần (như bỏng nắng).', 'Tổn thương sâu xuống cấu trúc xương và các màng gân sâu.'], correct: "A", topic: "1" },
+{ id: 62, text: "Theo quy luật số 9 của Wallace dùng để ước tính diện tích bỏng, diện tích bề mặt của hai chi dưới ở người trưởng thành chiếm tỷ lệ:", answers: ['18% tổng diện tích cơ thể.', '27% tổng diện tích cơ thể.', '36% tổng diện tích cơ thể (mỗi chi dưới chiếm 18%).', '45% tổng diện tích cơ thể.'], correct: "C", topic: "1" },
+{ id: 63, text: "Tình trạng sốc bỏng (sốc giảm thể tích do thoát huyết tương) thường xuất hiện nguy cơ cao nhất trong khoảng thời gian nào?", answers: ['Trong vòng 6 giờ đầu tiên sau tai nạn bỏng.', 'Trong vòng 12 giờ đầu tiên sau tai nạn bỏng.', 'Trong vòng 24 đến 48 giờ đầu tiên sau khi bị bỏng.', 'Chỉ xuất hiện sau 48 giờ khi có nhiễm trùng vết bỏng.'], correct: "C", topic: "1" },
+{ id: 64, text: "Cơ quan nội tạng dễ bị ảnh hưởng tổn thương sớm và nặng nề nhất do tình trạng giảm tưới máu trong sốc bỏng là:", answers: ['Hệ thống cơ tim.', 'Nhu mô gan.', 'Hệ thống nhu mô phổi.', 'Hệ thống thận (nguy cơ gây suy thận cấp do thiếu máu nuôi dưỡng và bít tắc ống thận).'], correct: "D", topic: "1" },
+{ id: 65, text: "Giai đoạn nhiễm độc cấp tính (nhiễm độc độc tố từ mô hoại tử bỏng) trong bệnh lý bỏng thường bắt đầu xuất hiện từ thời điểm nào?", answers: ['Từ ngày thứ 3 đến ngày thứ 15 sau tai nạn bỏng.', 'Thường xuất hiện muộn sau ngày thứ 5.', 'Chỉ bắt đầu xuất hiện sau 1 tuần điều trị.', 'Xuất hiện rất muộn sau 1 tháng tiến triển.'], correct: "A", topic: "1" },
+{ id: 66, text: "Chủng vi khuẩn sinh mủ thường gặp nhất gây biến chứng nhiễm trùng tại các tổn thương vết bỏng trên lâm sàng là:", answers: ['Tụ cầu vàng (Staphylococcus aureus) và trực khuẩn mủ xanh.', 'Vi khuẩn não mô cầu (Neisseria meningitidis).', 'Vi khuẩn phế cầu (Streptococcus pneumoniae).', 'Phẩy khuẩn tả (Vibrio cholerae).'], correct: "A", topic: "1" },
+{ id: 67, text: "Nguyên nhân hàng đầu dẫn đến tỷ lệ tử vong cao nhất cho người bệnh bỏng trong giai đoạn thứ ba (giai đoạn nhiễm trùng vết bỏng) là:", answers: ['Tình trạng tăng huyết áp ác tính không kiểm soát được.', 'Biến chứng mất ngủ kéo dài gây suy nhược thần kinh.', 'Biến chứng nhiễm khuẩn huyết và sốc nhiễm khuẩn từ vết bỏng.', 'Biến chứng gãy xương do các tổn thương cơ học phối hợp đi kèm.'], correct: "C", topic: "1" },
+{ id: 68, text: "Để tạo phẫu trường rộng rãi và an toàn trong mổ nội soi ổ bụng, áp lực bơm hơi khí CO2 tiêu chuẩn thường được duy trì ở mức:", answers: ['2 – 4 mmHg.', '5 – 7 mmHg.', '12 – 14 mmHg', '25 – 30 mmHg.'], correct: "C", topic: "1" },
+{ id: 69, text: "Ống Trocar đầu tiên (thường dùng để đặt camera quan sát ổ bụng) trong phẫu thuật nội soi ổ bụng thông thường có kích thước đường kính là:", answers: ['3 mm.', '5 mm.', '8 mm.', '10 mm (hoặc 12 mm tùy loại camera).'], correct: "D", topic: "1" },
+{ id: 70, text: "Phương pháp vô cảm tiêu chuẩn và bắt buộc phải áp dụng cho hầu hết các ca phẫu thuật nội soi ổ bụng có bơm hơi là:", answers: ['Thực hiện gây tê tại chỗ vùng chọc Trocar.', 'Thực hiện gây tê tủy sống vùng thắt lưng.', 'Gây mê toàn thân nội khí quản có giãn cơ.', 'Tiền mê kết hợp giảm đau đơn thuần.'], correct: "C", topic: "1" },
+{ id: 71, text: "Một biến chứng hệ hô hấp đặc thù có thể gặp hậu phẫu sau mổ nội soi ổ bụng do quá trình bơm hơi khí CO2 áp lực lớn gây ra là:", answers: ['Phù thanh quản cấp do dị ứng chất liệu ống.', 'Tràn khí màng phổi hoặc tràn khí trung thất do rách các rãnh màng bụng.', 'Bệnh lý lao phổi tiến triển cấp tính.', 'Viêm thanh quản cấp tính do kích thích đường thở.'], correct: "B", topic: "1" },
+{ id: 72, text: "Biến chứng tim mạch thường gặp nhất trong quá trình bơm hơi tạo áp lực ổ bụng trong mổ nội soi là gì?", answers: ['Nhịp tim chậm do kích thích dây thần kinh phế vị (dây X).', 'Biến chứng Block tim hoàn toàn (Block nhĩ thất độ III).', 'Ngừng tuần hoàn đột ngột do vô tâm thu.', 'Cơn loạn nhịp rung thất nguy hiểm.'], correct: "A", topic: "1" },
+{ id: 73, text: "Cơ chế chính gây nên tình trạng giảm lượng nước tiểu (thiểu niệu) tạm thời của người bệnh trong quá trình bơm hơi ổ bụng nội soi là:", answers: ['Giảm bài tiết hormone chống bài niệu ADH từ tuyến yên.', 'Tăng lưu lượng dòng máu đến nuôi dưỡng hai thận.', 'Tăng tốc độ và chỉ số lọc của cầu thận.', 'Áp lực hơi tăng cao trực tiếp chèn ép lên nhu mô thận và hệ thống tĩnh mạch thận.'], correct: "D", topic: "1" },
+{ id: 74, text: "Trong quá trình phẫu thuật nội soi, tình trạng tăng nồng độ khí PaCO2 trong máu kéo dài có thể gây nên hệ quả nào sau đây?", answers: ['Co mạch máu hệ thống thận và gây toan hô hấp.', 'Làm gia tăng đột ngột lượng nước tiểu bài tiết.', 'Làm tăng chỉ số pH của máu toàn phần.', 'Gây hiện tượng giảm nhịp tim sinh lý kéo dài.'], correct: "A", topic: "1" },
+{ id: 75, text: "Biến chứng hình thành ổ áp xe tồn lưu trong ổ bụng sau phẫu thuật nội soi thường có nguyên nhân xuất phát từ:", answers: ['Quá trình lau hút dịch viêm, dịch máu tích tụ trong ổ bụng không sạch sẽ, triệt để.', 'Do người bệnh được chỉ định cho ăn uống quá sớm sau mổ.', 'Do người bệnh tiến hành tập đi lại, vận động quá sớm tại phòng bệnh.', 'Do lạm dụng liệu pháp thở oxy kéo dài sau phẫu thuật.'], correct: "A", topic: "1" },
+{ id: 76, text: "Biện pháp kỹ thuật quan trọng nhất giúp hạn chế tối đa nguy cơ tai biến tắc mạch khí (Gas embolism) do khí CO2 lọt vào lòng mạch trong mổ nội soi là:", answers: ['Tiến hành bơm hơi thật nhanh vào ổ bụng với áp lực lớn ngay từ đầu.', 'Kiểm tra kỹ vị trí kim Veress đảm bảo nằm đúng trong khoang phúc mạc trước khi bơm khí.', 'Duy trì tốc độ bơm khí cố định ở mức rất thấp 1 lít/phút suốt cuộc mổ.', 'Tăng áp lực bơm hơi lên mức tối đa cho phép của máy bơm khí.'], correct: "B", topic: "1" },
+{ id: 77, text: "Người bệnh sau mổ nội soi ổ bụng có biểu hiện đau bụng tiến triển tăng dần, sốt cao, bí trung đại tiện, bụng chướng nề kèm phản ứng thành bụng rõ. Điều dưỡng cần nhận định ngay nguy cơ biến chứng:", answers: ['Liệt ruột sinh lý thông thường sau mổ.', 'Viêm phúc mạc toàn bộ sau mổ do tổn thương tạng hoặc bục miệng nối.', 'Cơn viêm ruột cấp tính do nhiễm khuẩn thức ăn.', 'Biểu hiện của hội chứng ruột kích thích hậu phẫu.'], correct: "B", topic: "1" },
+{ id: 78, text: "Người bệnh sau phẫu thuật lồng ngực xuất hiện tràn khí dưới da tiến triển tăng dần kèm theo khó thở. Hành động ưu tiên hàng đầu của điều dưỡng là:", answers: ['Tiếp tục theo dõi và ghi nhận diễn tiến vào hồ sơ.', 'Báo ngay cho bác sĩ điều trị để xử trí kịp thời.', 'Cho người bệnh nằm đầu cao và thở oxy qua gọng kính.', 'Tiến hành kẹp tạm thời ống dẫn lưu màng phổi.'], correct: "B", topic: "1" },
+{ id: 79, text: "Người bệnh sau mổ ngực đột ngột xuất hiện khó thở dữ dội, tím tái, co kéo mạnh các cơ hô hấp phụ, tăng tiết nhiều đờm dãi trong đường thở. Xử trí điều dưỡng ưu tiên số một là:", answers: ['Cho người bệnh thở oxy lưu lượng cao qua mặt nạ.', 'Hút đờm dãi, khai thông đường thở ngay lập tức.', 'Đặt người bệnh ở tư thế Fowler cao và động viên hít thở sâu.', 'Kiểm tra tính thông suốt của hệ thống dẫn lưu và báo bác sĩ.'], correct: "B", topic: "1" },
+{ id: 80, text: "Trong chăm sóc giảm đau cho người bệnh chấn thương ngực bằng thuốc giảm đau truyền tĩnh mạch thuộc nhóm Opioid (như Morphine), thông số lâm sàng nào điều dưỡng cần theo dõi sát nhất?", answers: ['Tình trạng tri giác và tổng trạng toàn thân.', 'Tần số, biên độ và nhịp điệu hô hấp.', 'Thị lực và phản xạ đồng tử.', 'Tình trạng xuất huyết tại vết thương.'], correct: "B", topic: "1" },
+{ id: 81, text: "Người bệnh sau phẫu thuật vết thương ngực xuất hiện khó thở nặng, tím tái, tĩnh mạch cổ nổi to (cổ bạnh), hõm trên xương ức phồng khi thở ra. Biến chứng ngoại khoa cần nghĩ đến nhiều nhất là:", answers: ['Xẹp phổi sau mổ.', 'Tràn khí trung thất cấp tính.', 'Viêm phổi bệnh viện.', 'Tràn dịch màng tim mạn tính.'], correct: "B", topic: "1" },
+{ id: 82, text: "Một người bệnh chấn thương ngực vào viện có dấu hiệu: huyết áp tụt, mạch nhanh nhỏ, chân tay lạnh, da niêm mạc nhợt nhạt, gõ đục vùng thấp phổi bên trái. Nguyên nhân lâm sàng phù hợp nhất là:", answers: ['Tràn máu màng phổi trái lượng nhiều gây sốc mất máu.', 'Cơn hen phế quan cấp tính.', 'Viêm thanh quan cấp gây co thắt.', 'Viêm phổi thùy mức độ nhẹ.'], correct: "A", topic: "1" },
+{ id: 83, text: "Người bệnh chấn thương ngực có tình trạng khó thở tăng dần, rì rào phế nang giảm bên tổn thương, da tím tái, kích thích, vật vã rồi chuyển sang ngủ gà. Các dấu hiệu này cảnh báo tình trạng nguy hiểm nào?", answers: ['Thiếu O2 và tăng CO2 máu nghiêm trọng (Suy hô hấp cấp).', 'Cơn tăng huyết áp giới hạn.', 'Rối loạn tiêu hóa chức năng.', 'Thiếu hụt vitamin và vi chất dinh dưỡng.'], correct: "A", topic: "1" },
+{ id: 84, text: "Ngay sau khi người bệnh chấn thương sọ não vào viện, thông thường điều dưỡng cần đo dấu hiệu sinh tồn và đánh giá tri giác (thang điểm Glasgow) với tần suất tối thiểu bao lâu một lần trong những giờ đầu?", answers: ['5 phút một lần cho đến khi ra viện.', '15 phút một lần cho đến khi tình trạng ổn định hoặc theo y lệnh.', '30 phút một lần trong suốt quá trình điều trị.', '1 giờ một lần bất kể tình trạng lâm sàng.'], correct: "B", topic: "1" },
+{ id: 85, text: "Mục đích chính của việc sử dụng dung dịch ưu trương (như Mannitol 20%) qua đường tĩnh mạch cho người bệnh chấn thương sọ não là:", answers: ['Kéo nước từ khoảng kẽ tế bào não vào lòng mạch để làm giảm áp lực nội sọ.', 'Làm tăng huyết áp động mạch trung bình cho người bệnh.', 'Kích thích tăng bài tiết để dự phòng nhiễm trùng đường tiết niệu.', 'Kích thích trực tiếp tế bào thần kinh giúp người bệnh tỉnh lại nhanh hơn.'], correct: "A", topic: "1" },
+{ id: 86, text: "Mục đích chính của việc chỉ định thuốc chống động kinh cho người bệnh chấn thương sọ não từ trung bình đến nặng trong tuần đầu tiên sau tai nạn là:", answers: ['Giúp người bệnh dễ ngủ và giảm lo âu.', 'Điều trị triệu chứng đau đầu dai dẳng hậu phẫu.', 'Phòng tránh các tổn thương thứ phát ở não gây ra do cơn co giật/động kinh.', 'Tăng cường khả năng phục hồi trí nhớ sau chấn thương.'], correct: "C", topic: "1" },
+{ id: 87, text: "Tư thế nằm ưu tiên cho người bệnh chấn thương sọ não còn hôn mê, chưa có chỉ định mổ để đảm bảo an toàn đường thở là:", answers: ['Nằm sấp, đầu nghiêng sang một bên.', 'Nằm đầu thấp, chân gác cao trên gối.', 'Nằm ngửa, đầu cao 30∘ và nghiêng sang một bên (hoặc nằm nghiêng an toàn).', 'Nằm nghiêng hoàn toàn sang bên có tổn thương não.'], correct: "C", topic: "1" },
+{ id: 88, text: "Khi người bệnh chấn thương sọ não nhẹ được xuất viện theo dõi tại nhà, dấu hiệu nguy hiểm nào quan trọng nhất cần hướng dẫn người nhà đưa bệnh nhân trở lại viện cấp cứu ngay?", answers: ['Người bệnh cảm thấy mệt mỏi nhẹ sau khi thức dậy.', 'Người bệnh ngủ nhiều hơn bình thường (khoảng 8 tiếng/ngày).', 'Người bệnh có cảm giác ăn uống không ngon miệng.', 'Xuất hiện triệu chứng mới hoặc chuyển biến xấu (nôn tái diễn, đau đầu tăng, lơ mơ).'], correct: "D", topic: "1" },
+{ id: 89, text: "Sau phẫu thuật chấn thương sọ não, dấu hiệu lâm sàng nào gợi ý tình trạng nhiễm trùng thần kinh trung ương (viêm não hoặc viêm màng não)?", answers: ['Hội chứng màng não dương tính (Vạch màng não (+), dấu hiệu Brudzinski (+), cổ cứng).', 'Người bệnh ngủ sâu và thở đều theo chu kỳ.', 'Người bệnh có cảm giác thèm ăn và đòi ăn liên tục.', 'Vết mổ rỉ dịch huyết thanh màu hồng nhạt lượng ít.'], correct: "A", topic: "1" },
+{ id: 90, text: "Để ngăn ngừa loét do tì đè hiệu quả cho bệnh nhân chấn thương cột sống chưa vững, giải pháp nào sau đây là phù hợp nhất?", answers: ['Nằm ngửa liên tục trên đệm cứng và không thay đổi tư thế.', 'Cho bệnh nhân nằm sấp luân phiên trong ngày.', 'Sử dụng kỹ thuật lăn trở khối gỗ (Log-rolling) để đổi tư thế mỗi 2 giờ trên đệm phù hợp.', 'Cho bệnh nhân ngồi dậy sớm trên ghế có đệm mềm.'], correct: "C", topic: "1" },
+{ id: 91, text: "Người bệnh bị tổn thương tủy sống hoàn toàn từ mức thắt lưng 1 (L1) trở xuống thường bị mất cảm giác và vận động ở vùng nào?", answers: ['Toàn bộ vùng bụng và hai chi dưới.', 'Vùng tầng sinh môn và hai chi dưới.', 'Chỉ mất cảm giác chọn lọc ở hai bàn chân.', 'Mất cảm giác từ ngang đường liên sườn trở xuống.'], correct: "B", topic: "1" },
+{ id: 92, text: "Mục đích chính của việc tiến hành tập vận động thụ động các khớp cho bệnh nhân liệt tủy ngay từ tuần đầu tiên sau chấn thương là gì?", answers: ['Để phục hồi nhanh chóng sức cơ cho bệnh nhân.', 'Để đề phòng biến chứng co rút cơ, teo cơ và cứng khớp.', 'Để kích thích bệnh nhân có thể đứng và đi lại được ngay.', 'Để kích thích sự phát triển chiều dài của xương chi dưới.'], correct: "B", topic: "1" },
+{ id: 93, text: "Khi lập kế hoạch tái hòa nhập cộng đồng cho bệnh nhân liệt hoàn toàn hai chi dưới (hai tay và trí tuệ bình thường), định hướng nghề nghiệp nào sau đây là phù hợp nhất?", answers: ['Công nhân xây dựng công trình.', 'Nhân viên văn phòng, kế toán, công nghệ thông tin.', 'Thợ may công nghiệp đứng chuyền.', 'Vận động viên điền kinh'], correct: "B", topic: "1" },
+{ id: 94, text: "Tình trạng hạ huyết áp tư thế đứng ở bệnh nhân tổn thương tủy sống có thể được phòng ngừa hiệu quả bằng cách nào?", answers: ['Đỡ bệnh nhân ngồi dậy thật nhanh để cơ thể tự thích nghi.', 'Cho bệnh nhân thay đổi tư thế từ từ, nâng cao đầu giường dần dần trước khi ngồi dậy.', 'Cho bệnh nhân uống thuốc co mạch tăng huyết áp liên tục trong ngày.', 'Tiến hành băng kín hai chân bệnh nhân thật chặt bằng băng thun liên tục 24/24h.'], correct: "B", topic: "1" },
+{ id: 95, text: "Trong chăm sóc người bệnh chấn thương tủy sống giai đoạn cấp, mục đích chính của việc theo dõi và nghe đánh giá âm ruột (nhu động ruột) định kỳ là:", answers: ['Phát hiện sớm tình trạng xuất huyết tiêu hóa do loét stress (loét Cushing).', 'Đánh giá sự hồi phục của nhu động ruột để xác định thời điểm bắt đầu cho người bệnh ăn qua đường miệng.', 'Kiểm tra xem ống thông dạ dày có bị tắc nghẽn hoặc lệch vị trí hay không.', 'Đánh giá mức độ dung nạp của cơ thể đối với các thuốc vận mạch.'], correct: "B", topic: "1" },
+{ id: 96, text: "Hành động nào mang tính nhân văn và quan trọng nhất giúp bệnh nhân liệt tứ chi do chấn thương tủy vượt qua mặc cảm, tự ti?", answers: ['Nói dối với bệnh nhân rằng họ sẽ sớm đi lại được như người bình thường.', 'Cách ly bệnh nhân ở phòng riêng để họ tránh tiếp xúc với xã hội.', 'Khuyến khích, hỗ trợ bệnh nhân tự thực hiện các hoạt động chăm sóc cá nhân trong khả năng.', 'Nhân viên y tế và người nhà làm thay tất cả mọi việc để bệnh nhân không phải vận động.'], correct: "C", topic: "1" },
+{ id: 97, text: "Biến chứng cấp tính xuất hiện sớm ngay trong hoặc sau những giờ đầu mở khí quản là:", answers: ['Hẹp lòng khí quản thứ phát.', 'Xơ hóa nhu mô phổi.', 'Viêm phổi mạn tính do trào ngược.', 'Chảy máu cấp tính tại chân lỗ mở khí quản hoặc lòng đường thở.'], correct: "D", topic: "1" },
+{ id: 98, text: "Khi chăm sóc người bệnh có mở khí quản, điều dưỡng phát hiện vùng da quanh cổ người bệnh sưng nề, khi ấn ngón tay vào có tiếng nổ lép bép dưới da. Đây là dấu hiệu điển hình của biến chứng nào?", answers: ['Nhiễm trùng vết mổ sâu.', 'Tràn khí dưới da.', 'Phù nề dị ứng do chất liệu dây cố định.', 'Tụ máu lớn chân mở khí quản.'], correct: "B", topic: "1" },
+{ id: 99, text: "Trong quy trình thay dây cố định ống canule mở khí quản, tại sao bắt buộc phải cố định xong dây mới rồi mới được cắt bỏ dây cũ?", answers: ['Để đảm bảo canun luôn được giữ cố định, tránh nguy cơ tuột/sút ống khi người bệnh ho đột ngột.', 'Để tiết kiệm thời gian và đơn giản hóa các bước làm việc của điều dưỡng.', 'Để tránh việc canun bị xoay trục làm tổn thương niêm mạc khí quản.', 'Để người bệnh cảm thấy an tâm hơn về mặt tâm lý.'], correct: "A", topic: "1" },
+{ id: 100, text: "Khi tiến hành kỹ thuật vệ sinh, chăm sóc vết mổ mở khí quản, thứ tự thực hiện nào sau đây là đúng nguyên tắc vô khuẩn?", answers: ['Sát khuẩn da vùng xa → sát khuẩn da vùng gần → lau mặt ngoài canun.', 'Lau miệng ống bên trong → lau mặt ngoài ống cố định → sát khuẩn vùng da xung quanh từ trong ra ngoài.', 'Sát khuẩn vùng da dưới cánh canun trước vì đây là nơi tập trung nhiều dịch bẩn nhất.', 'Lau rửa dây cố định trước rồi mới tiến hành sát khuẩn da.'], correct: "B", topic: "1" },
+{ id: 101, text: "Khi thay dây cố định mở khí quản cho người bệnh, tiêu chuẩn để đánh giá độ căng (độ chặt) của dây đạt yêu cầu trên lâm sàng là:", answers: ['Dây phải được buộc thật chặt, không thể luồn được bất cứ vật gì qua. B. Dây buộc lỏng để có thể luồn được ba đến bốn ngón tay thoải mái.', 'Độ căng vừa phải, luồn vừa khít từ một đến hai ngón tay dưới dây buộc.', 'Dây thật lỏng để canun có thể tự do xoay tròn theo chuyển động của cổ.'], correct: "C", topic: "1" },
+{ id: 102, text: "Tại sao bắt buộc phải cung cấp oxy có qua hệ thống làm ẩm và làm ấm cho người bệnh đang thở qua ống mở khí quản?", answers: ['Để người bệnh cảm thấy dễ chịu và ấm áp hơn khi hít thở.', 'Để thay thế chức năng sinh lý của mũi, tránh khô niêm mạc đường thở, xẹp phổi và đờm đặc đóng bánh gây tắc ống.', 'Để dung dịch sát khuẩn trong bình làm ẩm tiến hành diệt khuẩn dòng khí oxy.', 'Để giữ cho áp lực trong bóng chèn (cuff) luôn được ổn định.'], correct: "B", topic: "1" },
+{ id: 103, text: "Khi người bệnh có ống mở khí quản được chỉ định cho ăn qua ống thông dạ dày, tại sao cần kiểm tra áp lực bóng chèn (cuff) trước khi ăn và giữ bóng chèn bơm phù hợp trong và sau khi ăn 15-30 phút?", answers: ['Nhằm tạo khoảng trống cho người bệnh tập nói chuyện dễ dàng hơn.', 'Nhằm ngăn chặn hiện tượng dịch thức ăn trào ngược từ dạ dày bị hít sặc vào đường hô hấp dưới.', 'Nhằm kích thích dạ dày tăng co bóp và tiêu hóa thức ăn nhanh hơn.', 'Nhằm mục đích ngăn ngừa tuyệt đối tình trạng người bệnh bị nôn ói.'], correct: "B", topic: "1" },
+{ id: 104, text: "Tại sao chấn thương bụng kín thường gây khó khăn và dễ bỏ sót trong việc chẩn đoán tổn thương ở những giờ đầu?", answers: ['Do nạn nhân thường nhập viện trong tình trạng sốc mất máu hoặc hôn mê sâu.', 'Do các tổn thương phối hợp nặng ở sọ não, cột sống hoặc gãy xương chi che lấp triệu chứng bụng.', 'Do tổn thương tạng rỗng giai đoạn đầu chưa rõ ràng, biểu hiện viêm phúc mạc thường xuất hiện muộn sau 6–12 giờ.', 'Tất cả các nguyên nhân trên đều đúng.'], correct: "D", topic: "1" },
+{ id: 105, text: "Tiến hành chọc dò hoặc chọc rửa ổ bụng cấp cứu hút ra máu dòng không đông (chiếm khoảng 80% trường hợp chấn thương) có ý nghĩa lâm sàng là:", answers: ['Xác định bệnh nhân có tiền sử mắc bệnh lý máu khó đông (Hemophilia).', 'Khẳng định có tình trạng chảy máu nội tạng hoạt động trong ổ bụng.', 'Phản ánh tình trạng bệnh nhân đang bị thiếu máu mạn tính mức độ nặng.', 'Biểu hiện của kỹ thuật chọc dò thực hiện sai vị trí giải phẫu.'], correct: "B", topic: "1" },
+{ id: 106, text: "Chẩn đoán điều dưỡng nào sau đây được xếp vào nhóm ưu tiên hàng đầu đối với người bệnh vỡ tạng đặc (gan, lách) gây chảy máu trong ổ bụng?", answers: ['Nguy cơ nhiễm trùng thứ phát liên quan đến vết mổ ngoại khoa.', 'Thiếu hụt dinh dưỡng liên quan đến tình trạng chướng bụng, nôn ói.', 'Giảm khối lượng tuần hoàn liên quan đến tình trạng mất máu cấp tính từ tạng vỡ.', 'Lo âu, căng thẳng liên quan đến việc chưa hiểu rõ về tình trạng bệnh lý.'], correct: "C", topic: "1" },
+{ id: 107, text: "Biến chứng "Chảy máu thì hai" trong tổn thương chấn thương gan, lách kín được hiểu trên lâm sàng là do cơ chế nào?", answers: ['Do khối máu tụ áp lực lớn nằm dưới bao tạng bị vỡ vào ổ bụng sau vài ngày theo dõi.', 'Do người bệnh cử động xoay trở mình quá mạnh trong phòng hậu phẫu.', 'Do vi khuẩn xâm nhập gây nhiễm trùng và hoại tử mạch máu vết mổ.', 'Do tác dụng phụ của thuốc kháng sinh điều trị gây rối loạn đông máu.'], correct: "A", topic: "1" },
+{ id: 108, text: "Người bệnh nam nhập viện do bị đâm vào vùng bụng, hiện tại con dao nhọn vẫn còn cắm nguyên vị trí ở thành bụng. Điều dưỡng cần xử trí tại chỗ như thế nào là đúng nguyên tắc?", answers: ['Rút ngay con dao ra khỏi thành bụng và tiến hành băng ép chặt để cầm máu.', 'Giữ nguyên dị vật và không làm gì cả vì sẽ ảnh hưởng đến vết thương gây chảy máu thêm', 'Giữ nguyên dị vật, dùng gạc vô khuẩn cuộn cố định vững chắc xung quanh chân dị vật và chuyển ngay lên phòng mổ cấp cứu.', 'Đổ trực tiếp dung dịch oxy già hoặc cồn sát khuẩn liều cao vào xung quanh dị vật.'], correct: "C", topic: "1" },
+{ id: 109, text: "Một người bệnh sau mổ chấn thương bụng xuất hiện tình trạng nấc cụt liên tục, đau tăng nhiều ở vùng hạ sườn phải kèm theo sốt cao dao động. Điều dưỡng cần nghi ngờ biến chứng hậu phẫu nào?", answers: ['Tắc ruột cơ học muộn sau mổ.', 'Viêm dạ dày cấp tính do stress.', 'Hình thành ổ áp xe dưới cơ hoành.', 'Tụ máu hoặc chảy máu thành bụng tại vết mổ.'], correct: "C", topic: "1" },
+{ id: 110, text: "Trong theo dõi chấn thương bụng kín chưa có chỉ định mổ, tại sao thời gian theo dõi sát tại bệnh viện tối thiểu phải từ 5 đến 7 ngày?", answers: ['Nhằm mục đích hoàn thiện các thủ tục hành chính và đóng đủ viện phí.', 'Vì có những tổn thương diễn tiến chậm, tiềm tàng như vỡ tạng đặc thì hai hoặc hoại tử thủng ruột do thiếu máu cục bộ.', 'Để tuân thủ theo quy định chung về thời gian lưu viện tối thiểu của bảo hiểm.', 'Để chờ đợi đầy đủ tất cả các kết quả xét nghiệm sinh hóa máu chuyên sâu.'], correct: "B", topic: "1" },
+{ id: 111, text: "Một mảnh da tự thân được ghép lên vùng tổn thương, ở giai đoạn sống bám bình thường (được tưới máu tốt) sẽ có màu sắc như thế nào?", answers: ['Tím đen hoặc xám xịt do hoại tử.', 'Xanh tái, lạnh khi sờ vào.', 'Trắng bệch do thiếu máu nuôi dưỡng.', 'Hồng hào, ấm áp, tương đồng hoặc hơi đậm hơn màu da lành xung quanh.'], correct: "D", topic: "1" },
+{ id: 112, text: "Sau khi phẫu thuật ghép da, nếu tiến hành ấn ngón tay lên vùng da ghép và nhận thấy màu sắc da trở lại rất chậm (thời gian làm đầy mao mạch >2−3 giây), đây là dấu hiệu cảnh báo tình trạng gì?", answers: ['Sự gia tăng lưu lượng tuần hoàn vi mạch tại mảnh ghép.', 'Giảm lưu lượng máu nuôi dưỡng hoặc có tình trạng thiếu máu cục bộ mảnh ghép.', 'Diễn tiến hoàn toàn bình thường của mảnh ghép ở tuần đầu tiên.', 'Hiện tượng sinh lý không liên quan đến hệ thống tuần hoàn ngoại vi.'], correct: "B", topic: "1" },
+{ id: 113, text: "Dấu hiệu lâm sàng nào gợi ý có tình trạng tắc nghẽn mạch máu tĩnh mạch (ứ máu) ở vùng vạt da hoặc mảnh da được ghép?", answers: ['Da có màu đỏ tím hoặc sẫm màu, bề mặt quá căng, xuất hiện nhiều nốt phồng ứ dịch.', 'Da trở nên trắng bệch, nhợt nhạt và lạnh.', 'Da có màu hồng nhạt, mềm mại khi ấn vào.', 'Người bệnh bị mất hoàn toàn cảm giác đau tại vị trí lấy da.'], correct: "A", topic: "1" },
+{ id: 114, text: "Người bệnh bỏng ở giai đoạn phục hồi cần được hướng dẫn tập vận động các khớp sớm nhằm mục đích chính là gì?", answers: ['Giảm cảm giác đau đớn tại vị trí các vết bỏng sâu.', 'Ngăn ngừa biến chứng teo cơ, co rút gân và cứng khớp do sẹo bỏng co kéo.', 'Kích thích làm bong nhanh các tế bào hoại tử khô để mau liền sẹo.', 'Giúp dịch mủ thoát ra tốt hơn và tăng lưu thông tuần hoàn hệ thống.'], correct: "B", topic: "1" },
+{ id: 115, text: "Dấu hiệu lâm sàng nào sau đây cho thấy người bệnh bỏng đang có nguy cơ cao bị tổn thương đường hô hấp do nhiệt hoặc khí độc?", answers: ['Người bệnh than phiền đau rát nhiều tại vùng ngực và thành bụng.', 'Mạch nhanh trên 100 lần/phút, huyết áp tụt, lượng nước tiểu giảm rõ rệt.', 'Cháy xém lông mũi, niêm mạc mũi miệng có muội than, đờm sẫm màu, ho khan, tiếng thở rít hoặc tím tái.', 'Vết bỏng ở vùng chi dưới có dấu hiệu tiết nhiều dịch huyết thanh.'], correct: "C", topic: "1" },
+{ id: 116, text: "Trong giai đoạn phòng chống sốc bỏng (24 - 48 giờ đầu), chỉ số nào cần được điều dưỡng theo dõi và ghi nhận hàng giờ để đánh giá chính xác nhất hiệu quả bù dịch và sự tưới máu thận?", answers: ['Chỉ số huyết áp tâm thu và huyết áp tâm trương.', 'Số lượng và màu sắc nước tiểu đo được qua ống thông tiểu liên tục.', 'Nồng độ chất điện giải Kali (Potassium) trong máu.', 'Áp lực tĩnh mạch trung tâm (CVP) đo qua catheter.'], correct: "B", topic: "1" },
+{ id: 117, text: "Các can thiệp điều dưỡng để giữ ổn định thân nhiệt cho người bệnh bỏng diện rộng bao gồm các nội dung sau, NGOẠI TRỪ:", answers: ['Kiểm soát tốt nhiệt độ phòng bệnh (giữ ấm) và đắp chăn ấm cho người bệnh.', 'Hạn chế tối đa việc bộc lộ toàn bộ vết bỏng quá lâu trong quá trình thay băng.', 'Duy trì chế độ dinh dưỡng giàu Calo trong ngày để tạo năng lượng nội sinh giữ ấm.', 'Tiến hành tắm nước mát hoặc lau người bằng nước lạnh hàng ngày để hạ nhiệt vết bỏng.'], correct: "D", topic: "1" },
+{ id: 118, text: "Người bệnh có tiền sử bệnh phổi tắc nghẽn mạn tính (COPD) khi thực hiện phẫu thuật nội soi ổ bụng cần được điều dưỡng và kíp gây mê chú ý theo dõi sát nguy cơ biến chứng nào do bơm khí CO2?", answers: ['Cơn tăng huyết áp kịch phát do thiếu oxy mạn tính', 'Toan hô hấp do hấp thu khí CO2 từ ổ bụng kết hợp với tình trạng giảm thông khí.', 'Táo bón chức năng kéo dài sau mổ.', 'Hạ đường huyết đột ngột do stress phẫu thuật.'], correct: "B", topic: "1" },
+{ id: 119, text: "Trên điện tâm đồ (ECG), dấu hiệu nào sau đây có thể xuất hiện đột ngột cảnh báo biến chứng tắc mạch khí trong quá trình bơm hơi nội soi ổ bụng?", answers: ['ST chênh xuống đơn thuần ở các chuyển đạo ngoại biên.', 'Phức hợp QRS giãn rộng đột ngột kèm theo dấu hiệu tâm phế cấp', 'Sóng P biến mất hoàn toàn trên toàn bộ băng ghi.', 'Xuất hiện Block nhĩ thất độ I ổn định.'], correct: "B", topic: "1" },
+{ id: 120, text: "Khi áp lực bơm hơi khí CO2 trong ổ bụng được duy trì quá cao (>15 mmHg) trong thời gian dài, hậu quả huyết động học hệ thống quan trọng xảy ra là gì?", answers: ['Tăng cung lượng tim do kích thích giao cảm.', 'Giảm sức cản mạch máu ngoại vi toàn thân.', 'Chèn ép tĩnh mạch chủ dưới làm giảm lượng máu hồi lưu về tim (giảm tiền gánh).', 'Tăng dòng máu tưới trực tiếp cho nhu mô thận.'], correct: "C", topic: "1" },
+{ id: 121, text: "Người bệnh đang trong quá trình phẫu thuật nội soi ổ bụng đột ngột xuất hiện tụt huyết áp sâu, da tím tái, chỉ số EtCO2 (áp lực khí CO2 cuối kỳ thở ra) sụt giảm rất nhanh. Biến chứng ngoại khoa/gây mê cần nghĩ đến đầu tiên là:", answers: ['Nhồi máu cơ tim cấp tính diện rộng.', 'Tắc mạch khí do khí CO2 lọt vào lòng mạch tổn thương.', 'Xuất huyết tiêu hóa cấp tính do loét cũ.', 'Co thắt phế quản đơn thuần do kích thích ống nội khí quản.'], correct: "B", topic: "1" },
+{ id: 122, text: "Khi áp lực khí ổ bụng tăng cao vượt mốc 20 mmHg và kéo dài suốt cuộc mổ nội soi, hậu quả sinh lý nào sau đây là nguy hiểm nhất đối với hệ tuần hoàn?", answers: ['Tăng mạnh nhu động ruột và tăng tiết dịch tiêu hóa.', 'Giảm thể tích cuối tâm trương và giảm chức năng co bóp của thất trái do cơ hoành bị đẩy lên cao kèm giảm máu về tim.', 'Tăng chỉ số lọc cầu thận do tăng áp lực thẩm thấu.', 'Tăng lưu lượng tim để bù trừ cho mô ngoại vi.'], correct: "B", topic: "1" },
+{ id: 123, text: "Người bệnh sau phẫu thuật nội soi ổ bụng kéo dài xuất hiện tình trạng thiểu niệu (lượng nước tiểu <0,5 ml/kg/giờ), xét nghiệm thấy chỉ số Creatinin máu tăng nhẹ. Cơ chế bệnh sinh phù hợp nhất giải thích cho tình trạng này là gì?", answers: ['Sự gia tăng đột ngột lưu lượng máu nuôi dưỡng thận trong cuộc mổ.', 'Giảm bài tiết hormone chống bài niệu ADH của tuyến yên.', 'Tăng áp lực ổ bụng khi bơm hơi gây chèn ép nhu mô thận, tĩnh mạch thận và làm giảm áp lực lọc cầu thận.', 'Tăng cường tốc độ lọc của các nephron ở vỏ thận.'], correct: "C", topic: "1" },
+{ id: 124, text: "Khó thở trong chấn thương ngực thường:", answers: ['Khó thở giảm dần', 'Khó thở tăng dần', 'Khó thở buổi sáng', 'Khó thở ban đêm'], correct: "B", topic: "1" },
+{ id: 125, text: "Ho ra máu trong chấn thương ngực là:", answers: ['Rât hay gặp', 'Thỉnh thoảng nhưng không có giá trị chẩn đoán', 'Hiếm nhưng giá trị cao', 'Không liên quan đến chấn thương ngực'], correct: "C", topic: "1" },
+{ id: 126, text: "Dấu hiệu gợi ý tràn máu màng phổi khi gõ là:", answers: ['Gõ vang', 'Gõ đục', 'Gõ kêu như thùng rỗng', 'Dấu hiệu không rõ'], correct: "B", topic: "1" },
+{ id: 127, text: "Biến chứng sớm nguy hiểm nhất  trong chấn thương ngực là:", answers: ['Dày dính màng phổi', 'Mủ màng phổi', 'Sốc', 'Ho kéo dài'], correct: "C", topic: "1" },
+{ id: 128, text: "Nguyên tắc điều trị đầu tiên trong chấn thương ngực là:", answers: ['Kháng sinh', 'Giảm đau', 'Chống sốc và suy hô hấp', 'Tập vận động'], correct: "C", topic: "1" },
+{ id: 129, text: "Nguyên nhân chính gây suy hô hấp trong chấn thương ngực kín là:", answers: ['Nhiễm trùng', 'Rối loạn thông khí', 'Tăng huyết áp', 'Thiếu máu nhẹ'], correct: "B", topic: "1" },
+{ id: 130, text: "Dấu hiệu đặc trưng của mảng sườn di động là:", answers: ['Khó thở', 'Hô hấp đảo chiều', 'Không có dấu hiệu đặc trưng', 'Thở nhanh và nông'], correct: "B", topic: "1" },
+{ id: 131, text: "Dấu hiệu chèn ép tim cấp là:", answers: ['Huyết áp tăng', 'Tĩnh mạch cổ nổi', 'Nhịp tim chậm', 'Da môi tím tái'], correct: "B", topic: "1" },
+{ id: 132, text: "Biện pháp giảm đau hiệu quả trong gãy sườn nặng là:", answers: ['Dùng Paracetamol để giảm đau', 'Phong bế thần kinh liên sườn', 'Nghỉ ngơi hoàn toàn', 'Không điều trị gì'], correct: "B", topic: "1" },
+{ id: 133, text: "Trong chăm sóc sau mổ ngực, người bệnh cần được:", answers: ['Hạn chế ho hoàn toàn để chống bục vết mổ', 'Khuyến khích thở sâu', 'Nằm bất động tuyệt đối nhiều ngày', 'Tất cả đều đúng'], correct: "B", topic: "1" },
+{ id: 134, text: "Người bệnh chấn thương ngực có mạch nhanh, HA tụt, tĩnh mạch cổ nổi, tiếng tim mờ xa xăm. Điều dưỡng nghĩ nhiều đến:", answers: ['Tràn khí màng phổi đơn thuần', 'Hội chứng chèn ép tim cấp', 'Gãy xương đòn', 'Viêm phế quản'], correct: "B", topic: "1" },
+{ id: 135, text: "Triệu chứng thực thể nào dưới đây điển hình của chấn thương sọ não nhẹ?", answers: ['Hôn mê sâu', 'Dãn đồng tử', 'Đau đầu, buồn nôn', 'Yếu liệt tứ chi'], correct: "C", topic: "1" },
+{ id: 136, text: "Trong thang điểm Glasgow, mức điểm từ 13 - 15 được phân loại là:", answers: ['Chấn thương sọ não nhẹ', 'Chấn thương sọ não trung bình', 'Chấn thương sọ não nặng', 'Hôn mê sâu'], correct: "A", topic: "1" },
+{ id: 137, text: "Thuốc lợi tiểu qua đường tĩnh mạch có tác dụng gì trong chấn thương sọ não?", answers: ['Tăng huyết áp', 'Giảm áp lực nội sọ', 'Chống nhiễm trùng', 'Giảm đau đầu'], correct: "B", topic: "1" },
+{ id: 138, text: "Dấu hiệu sớm của nguy cơ loét ép do tỳ đè là:", answers: ['Vết mổ thấm dịch', 'Da vùng tỳ đè đỏ lên', 'Da rỉ dịch', 'Huyết áp tăng cao'], correct: "B", topic: "1" },
+{ id: 139, text: "Tư thế nằm cho người bệnh sau mổ máu tụ ngoài màng cứng thường là:", answers: ['Nằm nghiêng bên lành, đầu cao 45 độ', 'Nằm sấp', 'Nằm ngửa không gối', 'Nằm nghiêng bên mổ'], correct: "D", topic: "1" },
+{ id: 140, text: "Người bệnh có biểu hiện 'duỗi cứng mất não' nhận được mấy điểm vận động Glasgow?", answers: ['1 điểm', '2 điểm', '3 điểm', '4 điểm'], correct: "B", topic: "1" },
+{ id: 141, text: "Nguyên tắc điều trị chấn thương nặng tập trung vào việc đảm bảo:", answers: ['Vệ sinh sạch sẽ', 'Oxy và lượng máu tưới não', 'Vận động sớm', 'Chế độ ăn nhiều vitamin'], correct: "B", topic: "1" },
+{ id: 142, text: "Nguyên tắc điều trị chính cho chấn thương sọ não nhẹ là:", answers: ['Phẫu thuật ngay', 'Dùng thuốc lợi tiểu mạnh', 'Nghỉ ngơi và theo dõi tại nhà', 'Truyền dịch ưu trương'], correct: "C", topic: "1" },
+{ id: 143, text: "Theo dõi Glasgow trong cấp cứu nên thực hiện:", answers: ['1 lần/ngày', '15 phút/lần khi chưa ổn định', '1 tuần/lần', 'Không cần theo dõi'], correct: "B", topic: "1" },
+{ id: 144, text: "Khi bệnh nhân có dấu hiệu co giật, xử trí đầu tiên của điều dưỡng là:", answers: ['Cho ăn ngay', 'Trói tay chân hạn chế co giật', 'Thực hiện y lệnh thuốc khẩn cấp', 'Giữ an toàn, tránh chấn thương'], correct: "D", topic: "1" },
+{ id: 145, text: "Thời điểm nào người bệnh CTSN thường được chỉ định chụp MRI thay vì CT Scan?", answers: ['Ngay khi mới nhập viện để cấp cứu nhanh', 'Khi cần phát hiện lún xương sọ', 'Khi tình trạng người bệnh đã ổn định hoặc triệu chứng không cải thiện', 'Khi người bệnh có vết thương xuyên thấu cấp tính', 'Hôn mê sâu', 'Dãn đồng tử', 'Đau đầu, buồn nôn', 'Yếu liệt tứ chi'], correct: "C", topic: "1" },
+{ id: 146, text: "Ngay sau khi người bệnh CTSN vào viện, điều dưỡng cần đo dấu hiệu sinh tồn và đánh giá tình trạng thần kinh với tần suất bao lâu một lần?", answers: ['5 phút/lần', '15 phút/lần cho đến khi ổn định', '30 phút/lần', '1 giờ/lần'], correct: "B", topic: "1" },
+{ id: 147, text: "Mục đích chính của việc sử dụng thuốc lợi tiểu (như Manitol 20%) qua đường tĩnh mạch cho người bệnh CTSN là:", answers: ['Để tăng huyết áp cho người bệnh', 'Làm giảm áp lực nội sọ bằng cách giảm lượng dịch trong các mô', 'Để dự phòng nhiễm trùng đường tiết niệu', 'Để kích thích người bệnh tỉnh lại nhanh hơn Đáp án: B..'], correct: "B", topic: "1" },
+{ id: 148, text: "Tại sao thuốc chống động kinh được chỉ định cho người bệnh CTSN từ trung bình đến nặng trong tuần đầu tiên?", answers: ['Để giúp người bệnh dễ ngủ hơn', 'Để giảm đau đầu dai dẳng', 'Để phòng tránh các tổn thương thêm ở não gây ra do cơn động kinh', 'Để tăng cường trí nhớ sau chấn thương'], correct: "C", topic: "1" },
+{ id: 149, text: "Tư thế nằm ưu tiên cho người bệnh CTSN trước mổ để đảm bảo hô hấp là:", answers: ['Nằm sấp, đầu nghiêng một bên', 'Nằm đầu thấp, chân cao', 'Nằm ngửa, đầu nghiêng một bên', 'Nằm nghiêng hoàn toàn sang bên tổn thương'], correct: "C", topic: "1" },
+{ id: 150, text: "Khi người bệnh CTSN nhẹ được theo dõi tại nhà, dấu hiệu nào là quan trọng nhất cần hướng dẫn người nhà đưa bệnh nhân trở lại viện ngay?", answers: ['Người bệnh kêu mệt mỏi', 'Người bệnh ngủ nhiều hơn 8 tiếng/ngày', 'Người bệnh chán ăn', 'Xuất hiện các triệu chứng mới hoặc dấu hiệu xấu đi (nôn nhiều, đau đầu tăng, lơ mơ)'], correct: "D", topic: "1" },
+{ id: 151, text: "Dấu hiệu lâm sàng nào gợi ý tình trạng viêm não hoặc viêm màng não sau mổ?", answers: ['Vạch màng não (+) và dấu hiệu Brudzinsky (+)', 'Người bệnh ngủ say', 'Người bệnh đòi ăn liên tục', 'Vết mổ rỉ dịch màu hồng nhạt'], correct: "A", topic: "1" },
+{ id: 152, text: "Trước khi cho người bệnh sau mổ CTSN ăn qua đường miệng, bước quan trọng nhất là:", answers: ['Cho người bệnh uống nhiều nước', 'Kiểm tra khả năng tự nuốt của người bệnh khi đã tỉnh hẳn', 'Chỉ cho ăn khi người bệnh yêu cầu mãnh liệt', 'Luôn luôn đặt ống thông dạ dày trước mỗi bữa ăn để dự phòng'], correct: "B", topic: "1" },
+{ id: 153, text: "Trong giáo dục sức khỏe trước khi xuất viện, nội dung nào cần lưu ý đặc biệt cho người nhà người bệnh CTSN nặng?", answers: ['Tuyệt đối không cho người bệnh vận động', 'Cho người bệnh ăn chế độ ăn ít đạm mãi mãi', 'Theo dõi sát các cơn động kinh và các dấu hiệu thần kinh bất thường để tái khám ngay', 'Tự thay băng vết mổ tại nhà bằng nước muối tự pha'], correct: "C", topic: "1" },
+{ id: 154, text: "Việc massage toàn thân 24 giờ/lần và vệ sinh cá nhân hàng ngày cho người bệnh CTSN hôn mê nhằm mục đích chính là:", answers: ['Để người bệnh không bị hôi', 'Giúp người bệnh tỉnh lại nhanh hơn', 'Để người nhà hài lòng với dịch vụ chăm sóc', 'Phòng ngừa nhiễm trùng, loét tỳ đè và tăng cường tuần hoàn'], correct: "D", topic: "1" },
+{ id: 155, text: "Dấu hiệu nào sau đây ở nam giới là đặc trưng khi bị đứt tủy sống cấp tính?", answers: ['Mất khả năng cương cứng hoàn toàn.', 'Dương vật luôn trong tình trạng co cứng.', 'Tiểu tiện không tự chủ ngay lập tức.', 'Tăng cảm giác vùng tầng sinh môn.'], correct: "B", topic: "1" },
+{ id: 156, text: "Kỹ thuật chẩn đoán hình ảnh nào là tốt nhất để khảo sát tổn thương chi tiết trong nhu mô tủy sống?", answers: ['Chụp X-quang cột sống thẳng nghiêng.', 'Chụp cắt lớp vi tính (CT Scanner).', 'Chụp cộng hưởng từ (MRI) cột sống.', 'Chụp phim tư thế Blondeau.'], correct: "C", topic: "1" },
+{ id: 157, text: "Khi sơ cứu người bệnh nghi ngờ gãy cột sống, tư thế vận chuyển nào sau đây là SAI?", answers: ['Nằm ngửa trên cán cứng.', 'Nằm sấp trên cán mềm.', 'Cho người bệnh ngồi tựa lưng để dễ thở.', 'Nằm thẳng và cố định cổ bằng nẹp.'], correct: "C", topic: "1" },
+{ id: 158, text: "Bệnh nhân chấn thương cột sống ngực đoạn D6 thường có biểu hiện mạch và huyết áp như thế nào?", answers: ['Mạch nhanh và huyết áp tăng cao.', 'Mạch thường chậm (50-60 lần/phút) và huyết áp giảm.', 'Mạch và huyết áp không thay đổi.', 'Mạch nhanh nhưng huyết áp hạ thấp.'], correct: "B", topic: "1" },
+{ id: 159, text: "Tại sao cần đặt dẫn lưu dạ dày giải áp cho bệnh nhân chấn thương cột sống trong 48-72 giờ đầu?", answers: ['Để nuôi dưỡng bệnh nhân qua đường tiêu hóa.', 'Do tình trạng liệt ruột cơ năng gây chướng bụng.', 'Để kiểm tra xem bệnh nhân có bị xuất huyết dạ dày không.', 'Để chuẩn bị cho phẫu thuật cột sống cổ.'], correct: "B", topic: "1" },
+{ id: 160, text: "Trong thực hiện kế hoạch chăm sóc, tần suất đánh giá chức năng vận động và cảm giác được khuyến cáo là bao nhiêu?", answers: ['Tối thiểu mỗi 2 giờ/lần.', 'Tối thiểu mỗi 4 giờ/lần.', 'Mỗi ngày 1 lần vào buổi sáng.', 'Chỉ đánh giá khi bệnh nhân kêu đau hoặc có yêu cầu.'], correct: "A", topic: "1" },
+{ id: 161, text: "Biện pháp nào hiệu quả nhất để giúp bệnh nhân liệt tủy tống dịch tiết đường hô hấp ra ngoài?", answers: ['Cho bệnh nhân uống thuốc loãng đờm.', 'Đặt bệnh nhân nằm ngửa hoàn toàn.', 'Yêu cầu bệnh nhân tự ho mà không hỗ trợ.', 'Đặt tay lên ngực và ấn mạnh xuống khi bệnh nhân ho.'], correct: "D", topic: "1" },
+{ id: 162, text: "Bệnh nhân chấn thương cột sống cổ có nguy cơ bị biến nhiệt theo nhiệt độ môi trường do nguyên nhân nào?", answers: ['Do mất khả năng vã mồ hôi bên dưới mức tổn thương.', 'Do tình trạng nhiễm trùng đường tiết niệu gây sốt.', 'Do bệnh nhân không được uống đủ nước.', 'Do tình trạng loét da làm thoát nhiệt'], correct: "A", topic: "1" },
+{ id: 163, text: "Tư thế nằm tốt nhất để ngăn ngừa loét do đè ép cho bệnh nhân chấn thương cột sống là:", answers: ['Nằm ngửa liên tục trên đệm cứng.', 'Nằm sấp.', 'Nằm nghiêng về bên liệt.', 'Ngồi trên ghế có đệm mềm.'], correct: "C", topic: "1" },
+{ id: 164, text: "Bệnh nhân tổn thương tủy sống từ mức Thắt lưng 1 (L1) trở xuống thường bị mất cảm giác ở vùng nào?", answers: ['Toàn bộ vùng bụng và hai chi dưới.', 'Vùng tầng sinh môn và hai chi dưới.', 'Chỉ mất cảm giác ở hai bàn chân.', 'Mất cảm giác từ ngang rốn trở xuống.'], correct: "B", topic: "1" },
+{ id: 165, text: "Mục đích của việc tập vận động thụ động các khớp cho bệnh nhân liệt tủy ngay từ tuần đầu là gì?", answers: ['Để phục hồi sức cơ cho bệnh nhân.', 'Để đề phòng co rút cơ và cứng khớp.', 'Để giúp bệnh nhân có thể đi lại được ngay.', 'Để kích thích sự phát triển của xương.'], correct: "B", topic: "1" },
+{ id: 166, text: "Khi lập kế hoạch giáo dục hướng nghiệp, nghề nào phù hợp với bệnh nhân liệt hai chân nhưng tay và trí tuệ bình thường?", answers: ['Công nhân xây dựng.', 'Nhân viên văn phòng, kế toán.', 'Cảnh sát giao thông đường bộ.', 'Vận động viên điền kinh chuyên nghiệp.'], correct: "B", topic: "1" },
+{ id: 167, text: "Tình trạng hạ huyết áp tư thế đứng ở bệnh nhân chấn thương tủy có thể được phòng ngừa bằng cách nào?", answers: ['Cho bệnh nhân ngồi dậy thật nhanh.', 'Cho bệnh nhân cử động từ từ và thay đổi tư thế dần dần.', 'Cho bệnh nhân uống thuốc tăng huyết áp liên tục.', 'Băng kín hai chân bệnh nhân thật chặt.'], correct: "B", topic: "1" },
+{ id: 168, text: "Tại sao điều dưỡng cần nghe âm ruột tối thiểu 4 giờ/lần cho bệnh nhân chấn thương tủy?", answers: ['Để phát hiện sớm tình trạng xuất huyết tiêu hóa.', 'Để xác định thời điểm bệnh nhân có thể bắt đầu ăn qua đường miệng.', 'Để kiểm tra xem ống thông dạ dày có đúng vị trí không.', 'Để đánh giá hiệu quả của thuốc giảm đau.'], correct: "B", topic: "1" },
+{ id: 169, text: "Hành động nào là quan trọng nhất để giúp bệnh nhân liệt tứ chi vượt qua mặc cảm và tự ti?", answers: ['Nói dối rằng bệnh nhân sẽ sớm đi lại được như bình thường.', 'Cách ly bệnh nhân để họ không phải nhìn thấy người bình thường.', 'Khuyến khích bệnh nhân tự làm các công việc chăm sóc cá nhân càng nhiều càng tốt.', 'Làm thay tất cả mọi việc để bệnh nhân không phải vận động.'], correct: "C", topic: "1" },
+{ id: 170, text: "Bệnh nhân chấn thương cột sống cổ có huyết áp trung bình là 70 mmHg. Hành động ưu tiên của điều dưỡng là:", answers: ['Chờ đợi và theo dõi tiếp trong 2 giờ sau.', 'Báo bác sĩ để thực hiện y lệnh thuốc vận mạch.', 'Cho bệnh nhân uống trà gừng để tăng huyết áp.', 'Chỉ thực hiện vỗ rung ngực để bệnh nhân tỉnh táo hơn.'], correct: "B", topic: "1" },
+{ id: 171, text: "Một bệnh nhân liệt tủy có nồng độ Creatinine máu tăng cao rõ rệt. Điều dưỡng nên nghĩ đến nguy cơ gì?", answers: ['Bệnh nhân bị thiếu hụt protein trầm trọng.', 'Chức năng thận bị ảnh hưởng do nhiễm trùng hoặc ứ đọng nước tiểu lâu ngày.', 'Bệnh nhân đang hồi phục cơ bắp rất tốt.', 'Đây là dấu hiệu của việc liệt ruột đã kết thúc.'], correct: "B", topic: "1" },
+{ id: 172, text: "Trong giáo dục sức khỏe, tại sao điều dưỡng cần nhắc gia đình không nên nói dối về khả năng hồi phục của bệnh nhân?", answers: ['Vì nói dối sẽ làm gia tăng chi phí điều trị.', 'Để bệnh nhân có thể từng bước chấp nhận thực tế và tập thích nghi với khuyết tật.', 'Vì nói dối là vi phạm đạo đức ngành y của người nhà.', 'Để bệnh nhân tự tìm cách chữa trị ở những nơi khác.'], correct: "B", topic: "1" },
+{ id: 173, text: "Phát hiện vết đỏ trên vùng da xương cùng của bệnh nhân liệt tủy, hành động nào sau đây là ĐÚNG?", answers: ['Tiếp tục cho nằm ngửa và xoa bóp mạnh vào vết đỏ.', 'Thay đổi tư thế ngay lập tức và giữ cho vùng da đó không bị tỳ đè thêm.', 'Bôi thật nhiều mỡ kháng sinh lên vết đỏ và băng kín.', 'Chườm đá lạnh để làm giảm vết đỏ.'], correct: "B", topic: "1" },
+{ id: 174, text: "Mở khí quản cấp cứu được chỉ định trong trường hợp nào sau đây, NGOẠI TRỪ:", answers: ['Tắc nghẽn đường hô hấp trên do dị vật', 'Chấn thương gây dập nát, phù nề ở cổ và thanh quản', 'Khó thở do viêm phổi', 'Bỏng đường thở'], correct: "C", topic: "1" },
+{ id: 175, text: "Những biến chứng muộn ngay sau khi mở khí quản thường gặp, NGOẠI TRỪ:", answers: ['Hẹp khí quản', 'Tắc nghẽn ống do cục máu đông', 'Nhiễm trùng da xung quanh ống', 'Dò khí quản – thực quản.'], correct: "B", topic: "1" },
+{ id: 176, text: "Áp lực trong bóng chèn mở khí quản không vượt quá:", answers: ['10 cmH2O.', '20 cmH2O.', '30 cmH2O.', '40 cmH2O.'], correct: "C", topic: "1" },
+{ id: 177, text: "Xử trí khi có tai biến sút ống mở khí quản, điều dưỡng nên làm:", answers: ['Theo dõi sát tình trạng hô hấp người bệnh', 'Rửa sach vết thương, đặt lại canule mở khí quản', 'Dùng kìm banh rộng vết thương nơi mở khí quản, cho thở oxy và kêu người đến trợ giúp', 'Báo Bác sĩ tình trạng của người bệnh'], correct: "C", topic: "1" },
+{ id: 178, text: "Vị trí thường mở khí quản là ở vòng sụn khí quản số:", answers: ['1, 2', '2, 3, 4', '5, 6, 7', '7, 8'], correct: "B", topic: "1" },
+{ id: 179, text: "Canule mở khí quản hiện nay thường được sử dụng là:", answers: ['Ống kim loại không bóng chèn', 'Ống nhựa có tráng silicon và bóng chèn', 'Ống thông tiểu Foley', 'Ống Nelaton mềm'], correct: "B", topic: "1" },
+{ id: 180, text: "Khi cố định dây mở khí quản cần tránh:", answers: ['Cột quá lỏng', 'Cột ở gáy người bệnh', 'Cột trên đường đi động mạch cảnh', 'Cột bằng dây sạch'], correct: "B", topic: "1" },
+{ id: 181, text: "Câu 3. Một chỉ định mở khí quản trong tắc nghẽn hô hấp là:", answers: ['Viêm dạ dày', 'Thở máy dài ngày >7–10 ngày', 'Tăng huyết áp', 'Suy thận'], correct: "B", topic: "1" },
+{ id: 182, text: "Một lợi ích quan trọng của mở khí quản là:", answers: ['Tăng áp lực nội sọ', 'Tăng nhịp tim', 'Tăng đau ngực', 'Giảm khoảng chết hô hấp'], correct: "D", topic: "1" },
+{ id: 183, text: "Trong thực hành hiện nay, loại canule thường dùng là:", answers: ['Nhựa có tráng silicon có bóng chèn', 'Thủy tinh', 'Kim loại cứng', 'Cao su'], correct: "A", topic: "1" },
+{ id: 184, text: "Biến chứng sớm sau mở khí quản là:", answers: ['Hẹp khí quản', 'Xơ phổi', 'Viêm phổi mạn', 'Chảy máu chân mở khí quản'], correct: "D", topic: "1" },
+{ id: 185, text: "Điều dưỡng phát hiện vùng da quanh cổ người bệnh sưng to, khi ấn vào có tiếng nổ lép bép. Đây là dấu hiệu của biến chứng nào?", answers: ['Nhiễm trùng vết mổ.', 'Tràn khí dưới da.', 'Phù nề do dị ứng dây cố định.', 'Tụ máu chân mở khí quản.'], correct: "B", topic: "1" },
+{ id: 186, text: "Tại sao trong quy trình thay dây cố định, phải buộc dây mới xong mới được cắt dây cũ?", answers: ['Để đảm bảo canun luôn được giữ cố định, tránh sút ống khi NB ho.', 'Để tiết kiệm thời gian làm việc.', 'Để tránh việc canun bị xoay làm tổn thương niêm mạc.', 'Để người bệnh cảm thấy an tâm hơn.'], correct: "A", topic: "1" },
+{ id: 187, text: "Thứ tự rửa canun và vùng da xung quanh nào sau đây là đúng nguyên tắc vô khuẩn?", answers: ['Rửa da vùng xa -> rửa da vùng gần -> rửa mặt ngoài canun.', 'Rửa miệng ống canun -> rửa mặt ngoài canun -> rửa vùng da xung quanh.', 'Rửa vùng da dưới canun trước vì đây là nơi bẩn nhất.', 'Rửa dây cố định trước khi rửa da.'], correct: "B", topic: "1" },
+{ id: 188, text: "Khi thay dây cố định, kiểm tra độ chặt của dây như thế nào là đạt yêu cầu?", answers: ['Dây phải thật chặt không thể luồn gì vào.', 'Luồn được hai ngón tay thoải mái.', 'Luồn vừa khít một ngón tay (ngón số 2) dưới dây.', 'Dây lỏng để canun có thể xoay tròn.'], correct: "C", topic: "1" },
+{ id: 189, text: "Tại sao phải cung cấp oxy ẩm và ấm cho người bệnh mở khí quản?", answers: ['Để người bệnh dễ chịu.', 'Tránh khô niêm mạc, xẹp phổi và đờm đặc đóng bánh.', 'Để diệt khuẩn trong bình oxy.', 'Để giữ áp lực bóng chèn ổn định.'], correct: "B", topic: "1" },
+{ id: 190, text: "Khi NB ăn qua ống thông dạ dày, tại sao cần xả bóng chèn (cuff) sau khi ăn 15-30 phút?", answers: ['Để NB tập nói.', 'Giảm áp lực liên tục lên thành khí quản, phòng hoại tử.', 'Giúp tiêu hóa thức ăn nhanh hơn.', 'Để tránh NB bị nôn.'], correct: "B", topic: "1" },
+{ id: 191, text: "Một vết thương bụng được gọi là "vết thương thấu bụng" khi:", answers: ['Vết thương làm rách da bụng sâu.', 'Vết thương gây chảy máu nhiều ở thành bụng.', 'Vết thương xuyên thủng phúc mạc vào ổ bụng.', 'Vết thương làm bầm tím các cơ thành bụng.'], correct: "C", topic: "1" },
+{ id: 192, text: "Phương pháp cận lâm sàng nào có giá trị cao nhất, nhanh chóng và an toàn để chẩn đoán dịch và tổn thương tạng đặc tại phòng cấp cứu?", answers: ['Siêu âm ổ bụng.', 'X-quang bụng đứng không chuẩn bị.', 'Chọc dò túi cùng Douglas.', 'CT Scanner.'], correct: "D", topic: "1" },
+{ id: 193, text: "Xử trí điều dưỡng đối với vết thương thấu bụng có lòi ruột ra ngoài miệng vết thương:", answers: ['Nhanh chóng đẩy ruột vào và băng kín.', 'Rửa sạch ruột bằng cồn 70 độ.', 'Dùng gạc vô khuẩn thấm nước muối sinh lý ấm đắp lên ruột và dùng bát úp bảo vệ.', 'Để hở hoàn toàn cho thông thoáng.'], correct: "C", topic: "1" },
+{ id: 194, text: "Những hành động nào sau đây thuộc kế hoạch chống sốc cho bệnh nhân, NGOẠI TRỪ:", answers: ['Ủ ấm và cho bệnh nhân nằm nơi yên tĩnh.', 'Thực hiện y lệnh truyền dịch, truyền máu.', 'Cho bệnh nhân uống nước đường ấm để tăng năng lượng.', 'Tiêm thuốc trợ tim, trợ lực theo y lệnh.'], correct: "C", topic: "1" },
+{ id: 195, text: "Sau mổ chấn thương bụng, việc chăm sóc ống dẫn lưu ổ bụng cần lưu ý điều gì?", answers: ['Rút ống ngay sau 12 giờ đầu.', 'Theo dõi màu sắc, tính chất và số lượng dịch hàng ngày.', 'Luôn kẹp ống dẫn lưu để tránh mất dịch', 'Không cần thay băng chân ống dẫn lưu'], correct: "B", topic: "1" },
+{ id: 196, text: "Mục đích chính của việc đặt sonde dạ dày và hút dịch sau mổ là:", answers: ['Để bơm thức ăn nhanh hơn.', 'Giảm áp lực trong lòng ống tiêu hóa, giúp các đường khâu nối mau lành.', 'Để lấy mẫu dịch dạ dày đi cấy khuẩn hằng ngày.', 'Để bệnh nhân không bị nấc.'], correct: "B", topic: "1" },
+{ id: 197, text: "Khi nhận định bệnh nhân sau mổ, dấu hiệu nào cho thấy hệ tiêu hóa bắt đầu hồi phục?", answers: ['Bệnh nhân cảm thấy khát nước.', 'Vết mổ khô, không chảy dịch.', 'Bệnh nhân có trung tiện (đánh hơi) được.', 'Hết sốt.'], correct: "C", topic: "1" },
+{ id: 198, text: "Để phòng ngừa nhiễm trùng sau mổ cho bệnh nhân chấn thương bụng, điều dưỡng cần:", answers: ['Thực hiện y lệnh kháng sinh đúng và đủ.', 'Thay băng vết mổ đảm bảo vô khuẩn.', 'Hướng dẫn bệnh nhân vệ sinh răng miệng và vận động sớm.', 'Tất cả các hành động trên.'], correct: "D", topic: "1" },
+{ id: 199, text: "Biến chứng viêm phúc mạc do hoại tử ruột chậm thường liên quan đến:", answers: ['Bệnh nhân ăn quá sớm sau mổ.', 'Tổn thương mạch máu mạc treo gây thiếu máu nuôi dưỡng một đoạn ruột.', 'Do dùng thuốc giảm đau quá liều.', 'Do rách cơ thành bụng.'], correct: "B", topic: "1" },
+{ id: 200, text: "Dấu hiệu Kehr (đau lan lên vai trái) thường gợi ý tổn thương ở tạng nào sau đây?", answers: ['Gan.', 'Lách.', 'Dạ dày.', 'Tụy.'], correct: "B", topic: "1" },
+{ id: 201, text: "Tại sao chấn thương bụng kín thường gây khó khăn cho việc chẩn đoán ban đầu?", answers: ['Do nạn nhân thường trong tình trạng sốc hoặc hôn mê.', 'Do các tổn thương kết hợp ở sọ não, cột sống, tứ chi che lấp triệu chứng.', 'Do triệu chứng tạng rỗng thường biểu hiện muộn sau 6-12 giờ.', 'Tất cả các ý trên'], correct: "D", topic: "1" },
+{ id: 202, text: "Chọc dò ổ bụng thấy máu không đông (80% trường hợp) có ý nghĩa:", answers: ['Bệnh nhân có tiền sử máu khó đông.', 'Có chảy máu trong ổ bụng.', 'Bệnh nhân bị thiếu máu nặng.', 'Kỹ thuật chọc dò bị sai.'], correct: "B", topic: "1" },
+{ id: 203, text: "Chẩn đoán điều dưỡng ưu tiên đối với bệnh nhân vỡ tạng đặc gây chảy máu trong là:", answers: ['Nguy cơ nhiễm trùng liên quan đến vết thương.', 'Thiếu hụt dinh dưỡng liên quan đến nôn ói.', 'Giảm khối lượng tuần hoàn liên quan đến mất máu cấp.', 'Lo âu liên quan đến tình trạng bệnh.'], correct: "C", topic: "1" },
+{ id: 204, text: "Biến chứng "Chảy máu thì hai" trong tổn thương gan, lách thường do:", answers: ['Khối máu tụ dưới bao tạng bị vỡ sau vài ngày.', 'Bệnh nhân vận động quá mạnh sau mổ.', 'Do nhiễm trùng vết mổ.', 'Do thuốc kháng sinh gây loãng máu.'], correct: "A", topic: "1" },
+{ id: 205, text: "Bệnh nhân nam bị đâm vào bụng bằng dao nhọn, dao hiện vẫn còn cắm ở thành bụng. Điều dưỡng xử trí tại chỗ như thế nào?", answers: ['Rút dao ra ngay và băng ép cầm máu.', 'Ấn dao sâu thêm để nút chặt vết thương.', 'Giữ nguyên dị vật, dùng gạc và băng cố định dị vật rồi chuyển đi mổ cấp cứu.', 'Đổ oxy già vào xung quanh dị vật.'], correct: "C", topic: "1" },
+{ id: 206, text: "Một bệnh nhân sau mổ chấn thương bụng xuất hiện tình trạng nấc liên tục, đau hạ sườn phải, sốt cao. Điều dưỡng nghi ngờ biến chứng:", answers: ['Tắc ruột sau mổ.', 'Viêm dạ dày cấp.', 'Áp xe dưới cơ hoành.', 'Chảy máu vết mổ'], correct: "C", topic: "1" },
+{ id: 207, text: "Tại sao trong chấn thương bụng kín, cần phải theo dõi tối thiểu từ 5 – 7 ngày?", answers: ['Để bệnh nhân đóng đủ viện phí.', 'Vì có những tổn thương diễn biến chậm như vỡ tạng thì hai hoặc thủng ruột do thiếu máu.', 'Vì quy định của bệnh viện.', 'Để chờ kết quả xét nghiệm máu.'], correct: "B", topic: "1" },
+{ id: 208, text: "Các can thiệp điều dưỡng để giữ thân nhiệt ổn định cho người bệnh bỏng diện rộng bao gồm các nội dung sau, NGOẠI TRỪ:", answers: ['Kiểm soát nhiệt độ môi trường và giữ ấm người bệnh.', 'Giới hạn việc bộc lộ vết bỏng khi thay băng.', 'Duy trì đủ calo trong ngày để tạo năng lượng giữ ấm.', 'Tắm nước mát hàng ngày để giữ vệ sinh cơ thể sạch sẽ'], correct: "D", topic: "1" },
+{ id: 209, text: "Áp lực bơm hơi ổ bụng thường đạt khoảng:", answers: ['2 – 4 mmHg', '5 – 7 mmHg', '12 – 14 mmHg', '25 – 30 mmHg'], correct: "C", topic: "1" },
+{ id: 210, text: "Trocar đầu tiên trong mổ nội soi ổ bụng thường có kích thước:", answers: ['3 mm', '5 mm', '8 mm', '10 mm'], correct: "D", topic: "1" },
+{ id: 211, text: "Phương pháp vô cảm thường dùng trong mổ nội soi ổ bụng là:", answers: ['Gây tê tại chỗ', 'Gây tê tủy sống', 'Gây mê nội khí quản', 'Tiền mê đơn thuần'], correct: "C", topic: "1" },
+{ id: 212, text: "Một biến chứng hô hấp có thể gặp sau mổ nội soi ổ bụng là:", answers: ['Phù thanh quản do dị ứng', 'Tràn khí màng phổi', 'Lao phổi', 'Viêm thanh quản cấp'], correct: "B", topic: "1" },
+{ id: 213, text: "Biến chứng tim mạch thường gặp nhất trong mổ nội soi là:", answers: ['Nhịp chậm', 'Block tim hoàn toàn', 'Ngừng tim', 'Rung thất'], correct: "A", topic: "1" },
+{ id: 214, text: "Một nguyên nhân gây thiểu niệu khi bơm hơi ổ bụng là:", answers: ['Giảm ADH', 'Tăng lưu lượng máu thận', 'Tăng lọc cầu thận', 'Chèn ép nhu mô thận'], correct: "D", topic: "1" },
+{ id: 215, text: "Trong mổ nội soi, tăng PaCO₂ có thể gây:", answers: ['Co mạch cầu thận', 'Tăng lượng nước tiểu', 'Tăng pH máu', 'Giảm nhịp tim sinh lý'], correct: "A", topic: "1" },
+{ id: 216, text: "Áp xe tồn lưu sau mổ có thể do:", answers: ['Lau hút dịch không sạch', 'Ăn uống sớm', 'Đi lại sớm', 'Thở oxy kéo dài'], correct: "A", topic: "1" },
+{ id: 217, text: "Biện pháp giúp hạn chế tắc mạch khí khi bơm CO₂ là:", answers: ['Bơm nhanh', 'Kiểm tra kim Veress', 'Bơm 1 lít/phút', 'Tăng áp lực tối .'], correct: "B", topic: "1" },
+{ id: 218, text: "Người bệnh sau nội soi đau bụng tăng, sốt, bí trung đại tiện trở lại cần nghĩ:", answers: ['Liệt ruột sinh lý', 'Viêm phúc mạc sau mổ', 'Viêm ruột cấp', 'Hội chứng ruột kích thích'], correct: "B", topic: "1" },
+{ id: 219, text: "Theo dõi nước tiểu sau mổ nội soi giúp đánh giá:", answers: ['Chức năng thận', 'Chức năng thận và tuần hoàn', 'Lưu lượng dịch bù', 'Chức năng tuyến thượng thận'], correct: "B", topic: "1" },
+{ id: 220, text: "Trong nội soi ổ bụng, tư thế đầu thấp có thể:", answers: ['Giảm máu về tim', 'Tăng máu trở về tim', 'Giảm áp lực tĩnh mạch trung tâm', 'Giảm áp lực nội sọ'], correct: "B", topic: "1" },
+{ id: 221, text: "Người bệnh có COPD trước mổ nội soi cần chú ý nhất biến chứng:", answers: ['Tăng huyết áp', 'Toan hô hấp', 'Táo bón', 'Hạ đường huyết'], correct: "B", topic: "1" },
+{ id: 222, text: "Dấu hiệu ECG có thể gặp khi tắc mạch khí là:", answers: ['ST chênh xuống đơn thuần', 'Giãn rộng phức hợp QRS', 'Sóng P mất hoàn toàn', 'Block AV độ I'], correct: "B", topic: "1" },
+{ id: 223, text: "Khi áp lực ổ bụng quá cao, hậu quả huyết động quan trọng là:", answers: ['Tăng cung lượng tim', 'Giảm sức cản mạch máu', 'Giảm hồi lưu tĩnh mạch', 'Tăng tưới máu thận'], correct: "C", topic: "1" },
+{ id: 224, text: "Người bệnh đang nội soi ổ bụng đột ngột tụt huyết áp, tím tái, end-tidal CO₂ giảm nhanh. Biến chứng nghĩ nhiều nhất là:", answers: ['Nhồi máu cơ tim', 'Tắc mạch khí', 'Xuất huyết tiêu hóa', 'Co thắt phế quản đơn thuần'], correct: "B", topic: "1" },
+{ id: 225, text: "Khi áp lực ổ bụng tăng trên 20 mmHg kéo dài, hậu quả nào nguy hiểm nhất?", answers: ['Tăng nhu động ruột', 'Giảm chức năng thất trái', 'Tăng lọc cầu thận', 'Tăng lưu lượng tim'], correct: "B", topic: "1" },
+{ id: 226, text: "Người bệnh sau mổ nội soi xuất hiện thiểu niệu, creatinin tăng. Cơ chế phù hợp nhất là:", answers: ['Tăng lưu lượng máu thận', 'Giảm ADH', 'Chèn ép nhu mô thận do tăng áp lực ổ bụng', 'Tăng lọc cầu thận'], correct: "C", topic: "1" },
+{ id: 227, text: "Người bệnh nam, 35 tuổi, nhập viện sau tai nạn lao động do vật nặng va đập vào ngực phải. Ghi nhận lúc vào viện: người bệnh tỉnh, kích thích, thở nhanh nông 32 lần/phút, mạch 112 lần/phút, huyết áp 95/60 mmHg. Quan sát thấy có một vùng thành ngực kích thước khoảng 10x12 cm bên phải lõm vào khi hít vào và phồng ra khi thở ra. Hành động sơ cứu khẩn cấp tại chỗ của điều dưỡng là gì?", answers: ['Tiến hành chọc hút khí màng phổi cấp cứu bằng kim lớn.', 'Đặt một đệm gạc dày lên vùng thành ngực di động và băng ép cố định bằng băng dính.', 'Chuẩn bị dụng cụ và phụ giúp bác sĩ đặt ống dẫn lưu màng phổi ngay.', 'Cho người bệnh thở oxy liều cao qua mặt nạ có túi dự trữ 10 lít/phút.'], correct: "B", topic: "1" },
+{ id: 228, text: "Một người bệnh bị vết thương ngực hở do dao đâm, nghe có tiếng phì phò của không khí đi qua vết thương theo nhịp thở. Lúc này, áp lực trong khoang màng phổi của bên tổn thương có xu hướng biến đổi sinh lý bệnh như thế nào?", answers: ['Trở nên âm hơn rất nhiều so với áp lực khí quyển bên ngoài.', 'Bằng với áp lực của khí quyển bên ngoài (mất hoàn toàn áp lực âm sinh lý).', 'Duy trì ở mức ổn định như trạng thái bình thường của cơ thể.', 'Luôn duy trì ở mức áp lực dương cao liên tục trong cả hai thì hô hấp.'], correct: "B", topic: "1" },
+{ id: 229, text: "Tại sao trong chăm sóc người bệnh gãy xương sườn lớn hoặc mảng sườn di động, điều dưỡng tuyệt đối không được sử dụng kỹ thuật băng nẹp cố định vòng tròn quanh toàn bộ lồng ngực?", answers: ['Vì kỹ thuật này rất khó thực hiện và dễ gây tuột băng khi người bệnh xoay trở.', 'Vì gây đau chói nhiều tại vị trí các đầu xương sườn bị gãy tổn thương.', 'Vì làm hạn chế tối đa biên độ hô hấp của cả hai bên phổi, gây xẹp phổi và suy hô hấp nặng hơn.', 'Vì cản trở trực tiếp đến việc thăm khám và nghe tim phổi hàng ngày của bác sĩ.'], correct: "C", topic: "1" },
+{ id: 230, text: "Một người bệnh sau phẫu thuật lấy khối máu tụ nội sọ ngày thứ hai, hiện đang tỉnh táo hoàn toàn nhưng đột ngột xuất hiện mạch chậm dần từ 75 lần/phút xuống 52 lần/phút, huyết áp tăng từ 120/80 mmHg lên 165/90 mmHg, kèm theo thở chậm, sâu và không đều. Điều dưỡng cần nhận định người bệnh đang có nguy cơ bị biến chứng cấp tính nào?", answers: ['Tình trạng sốc nhiễm khuẩn giai đoạn đầu do nhiễm trùng vết mổ.', 'Hội chứng tăng áp lực nội sọ tiến triển cấp tính (Tam chứng Cushing).', 'Biến chứng nhồi máu cơ tim cấp tính do stress sau phẫu thuật lớn.', 'Tình trạng thiếu thể tích tuần hoàn do mất máu ẩn dòng sau mổ.'], correct: "B", topic: "1" },
+{ id: 231, text: "Khi theo dõi một người bệnh chấn thương sọ não có đặt ống dẫn lưu não thất ra hệ thống bình chứa bên ngoài, nguyên tắc đặt vị trí của bình hứng dịch dẫn lưu so với mốc giải phẫu tai ngoài của người bệnh là:", answers: ['Luôn đặt bình chứa thấp hơn hẳn vị trí tai ngoài từ 30 đến 40 cm để dịch thoát ra nhanh.', 'Luôn đặt bình chứa cao hơn hẳn đỉnh đầu của người bệnh từ 20 đến 30 cm để ngăn dịch thoát.', 'Đặt bình hứng dịch ở mức chiều cao chính xác theo y lệnh bác sĩ (thường cao hơn mốc tai ngoài khoảng 10-15 cm).', 'Vị trí đặt bình chứa hoàn toàn tự do, không ảnh hưởng đến áp lực nội sọ.'], correct: "C", topic: "1" },
+{ id: 232, text: "Tại sao tình trạng hạ huyết áp động mạch (Huyết áp tâm thu < 90 mmHg) lại được xem là một "kẻ thù lớn" gây tổn thương não thứ phát nghiêm trọng nhất ở bệnh nhân chấn thương sọ não nặng?", answers: ['Vì hạ huyết áp kích thích gây ra các cơn co giật và động kinh liên tục.', 'Vì hạ huyết áp làm gia tăng tốc độ hình thành các khối máu tụ ngoài màng cứng.', 'Vì làm sụt giảm nghiêm trọng áp lực tưới máu não (CPP), dẫn đến thiếu máu cục bộ và hoại tử tế bào não.', 'Vì hạ huyết áp làm tăng nguy cơ bục rách các mạch máu tại vết mổ sọ não.'], correct: "C", topic: "1" },
+{ id: 233, text: "Một người bệnh chấn thương sọ não đang trong trạng thái lơ mơ, đột ngột xuất hiện dấu hiệu đồng tử mắt bên phải dãn to (kích thước khoảng 5mm) và mất hoàn toàn phản xạ với ánh sáng, trong khi đồng tử mắt bên trái bình thường (2mm). Dấu hiệu thần kinh khu trú này cảnh báo nguy cơ nguy hiểm nào?", answers: ['Người bệnh bị tổn thương chọn lọc dây thần kinh thị giác (dây II) bên trái.', 'Hiện tượng thoát vị não (thoát vị móc hải mã) chèn ép vào dây thần kinh vận nhãn (dây III) bên phải.', 'Xuất hiện tình trạng xuất huyết võng mạc diện rộng ở cả hai bên mắt.', 'Diễn tiến lành tính bình thường của chấn thương sọ não giai đoạn hồi phục.'], correct: "B", topic: "1" },
+{ id: 234, text: "Tại sao việc duy trì nồng độ khí Carbon dioxide trong máu động mạch (PaCO2) ở mốc giới hạn thấp (khoảng 30–35 mmHg) bằng cách điều chỉnh thông khí thích hợp lại có vai trò quan trọng trong điều trị tăng áp lực nội sọ nặng?", answers: ['Khí CO2 ở mức thấp giúp tăng cường tưới máu đến các vùng não bị tổn thương.', 'Vì PaCO2 giảm nhẹ gây co mạch máu não sinh lý, từ đó làm giảm thể tích máu trong hộp sọ và giảm áp lực nội sọ.', 'Khí CO2 giảm giúp kích thích người bệnh nhanh chóng phục hồi tri giác.', 'Khí CO2 thấp làm tăng tính thấm của hàng rào máu não đối với thuốc điều trị.'], correct: "B", topic: "1" },
+{ id: 235, text: "Khi chăm sóc bệnh nhân chấn thương cột sống cổ cao đang được cố định bằng hệ thống khung kéo Halo (Halo vest), hành động chăm sóc nào sau đây của điều dưỡng là SAI nguyên tắc an toàn?", answers: ['Thực hiện vệ sinh và sát khuẩn chân đinh cố định hàng ngày bằng dung dịch sát khuẩn phù hợp.', 'Kiểm tra độ chặt của các khóa vít trên khung cố định định kỳ và báo bác sĩ khi có lỏng.', 'Sử dụng các thanh giằng dọc của khung Halo làm điểm tựa lực để kéo, nâng hoặc xoay trở người bệnh.', 'Lót thêm đệm mềm ở các vị trí cạnh khung tiếp xúc với da để phòng ngừa loét tì đè.'], correct: "C", topic: "1" },
+{ id: 236, text: "Bệnh nhân chấn thương tủy sống ngực cao (từ đoạn D6 trở lên) sau giai đoạn sốc tủy đột ngột xuất hiện: Huyết áp tăng vọt kịch phát (180/110 mmHg), nhịp tim chậm (48 lần/phút), đau đầu dữ dội, vã mồ hôi và đỏ bừng da vùng trên mức tổn thương tủy. Điều dưỡng cần nhận định ngay đây là tình trạng cấp cứu nguy kịch nào?", answers: ['Hội chứng Cushing do tăng áp lực nội sọ tiến triển cấp tính.', 'Hội chứng phản xạ tự trị bất thường (Autonomic Dysreflexia) do kích thích giao cảm quá mức bên dưới tổn thương.', 'Tình trạng nhiễm khuẩn huyết giai đoạn sốc nhiễm trùng nặng.', 'Biểu hiện của cơn đột quỵ nhồi máu cơ tim cấp tính diện rộng.'], correct: "B", topic: "1" },
+{ id: 237, text: "Khi phát hiện bệnh nhân chấn thương tủy sống ngực có biểu hiện của Hội chứng phản xạ tự trị bất thường (Autonomic Dysreflexia), can thiệp điều dưỡng khẩn cấp đầu tiên cần thực hiện ngay lập tức là:", answers: ['Đặt bệnh nhân nằm ngửa bằng phẳng tuyệt đối và kê cao hai chân để tăng tuần hoàn về tim.', 'Cho bệnh nhân ngồi dậy cao (nếu cột sống ổn định) và kiểm tra xả rỗng bàng quang (thông tiểu) hoặc tháo phân kẹt.', 'Thực hiện truyền tĩnh mạch liều cao dung dịch ưu trương Mannitol 20% theo phác đồ.', 'Tiến hành chườm lạnh toàn thân để hạ huyết áp kịch phát cho bệnh nhân.'], correct: "B", topic: "1" },
+{ id: 238, text: "Tại sao bệnh nhân liệt tủy cao nằm lâu ngày lại có nguy cơ rất cao hình thành cục máu đông gây tắc mạch huyết khối tĩnh mạch sâu (DVT) ở hai chi dưới?", answers: ['Do tình trạng tăng canxi máu từ xương giải phóng ra làm tăng đông máu.', 'Do bệnh nhân không được cung cấp đầy đủ các chất dinh dưỡng và nước uống.', 'Do mất phân bố thần kinh vận mạch gây ứ trệ tuần hoàn tĩnh mạch vùng thấp kết hợp bất động kéo dài.', 'Do tác dụng phụ đặc hiệu của các thuốc giảm đau kháng viêm sử dụng dài ngày.'], correct: "C", topic: "1" },
+{ id: 239, text: "Để phòng ngừa hiệu quả biến chứng nhiễm trùng đường tiết niệu ngược dòng ở bệnh nhân liệt tủy phải đặt ống thông tiểu lưu tục dài ngày, can thiệp điều dưỡng nào sau đây là quan trọng nhất?", answers: ['Định kỳ bơm rửa bàng quang bằng dung dịch kháng sinh phổ rộng hàng ngày.', 'Cho bệnh nhân uống thuốc kháng sinh dự phòng liều thấp liên tục suốt quá trình đặt ống.', 'Duy trì hệ thống dẫn lưu nước tiểu kín, vô khuẩn và giữ túi chứa luôn thấp hơn mức bàng quang.', 'Thay ống thông tiểu mới định kỳ mỗi 2 ngày một lần để đảm bảo vô khuẩn.'], correct: "C", topic: "1" },
+{ id: 240, text: "Trong giai đoạn hậu phẫu muộn sau mổ mở khí quản, nếu điều dưỡng thực hiện kỹ thuật hút đờm bằng ống hút thô bạo, áp lực hút quá cao và thời gian hút quá lâu (>15 giây) liên tục thì có nguy cơ trực tiếp gây ra tổn thương nguy hiểm nào cho đường thở?", answers: ['Làm rách bục hoàn toàn đường khâu cố định ống canule mở khí quản.', 'Gây thiếu oxy cấp, kích thích phế vị làm ngừng tim và hoại tử, loét sẹo hẹp niêm mạc khí quản.', 'Làm tăng sinh quá mức các tổ chức tuyến tiết nhầy ở tiểu phế quản.', 'Khiến ống canule bị đẩy sâu vào bên trong lòng phế quản gốc bên phải.'], correct: "B", topic: "1" },
+{ id: 241, text: "Khi hút đờm qua ống mở khí quản cho người bệnh đang thở máy, điều dưỡng cần tuân thủ nguyên tắc luồn ống hút vào đường thở như thế nào để tránh làm tổn thương niêm mạc khí quản?", answers: ['Vừa mở áp lực hút tối đa vừa đẩy nhanh ống hút vào sâu trong lòng khí quản.', 'Khóa áp lực hút (không hút), nhẹ nhàng luồn ống vào đến khi gặp lực cản nhẹ thì rút ra 1-2 cm rồi mới mở hút.', 'Luồn ống hút vào thật sâu, xoay tròn mạnh ống hút liên tục trong suốt quá trình đẩy vào.', 'Chỉ luồn ống hút nằm hoàn toàn bên trong lòng của canule mở khí quản, không đi ra ngoài.'], correct: "B", topic: "1" },
+{ id: 242, text: "Một người bệnh mở khí quản có bóng chèn (cuff) đang được thở máy tại phòng hồi sức. Điều dưỡng nghe thấy tiếng khí xì phì phò vùng cổ người bệnh theo chu kỳ của máy thở, đồng thời máy báo động áp lực đỉnh đường thở sụt giảm (Low Pressure). Nguyên nhân lâm sàng cần nghĩ đến đầu tiên là:", answers: ['Ống canule mở khí quản đã bị bít tắc hoàn toàn do đờm đặc đóng bánh.', 'Áp lực trong bóng chèn (cuff) bị sụt giảm hoặc bóng chèn đã bị rách/vỡ gây thoát khí.', 'Người bệnh đang có cơn co thắt phế quản cấp tính rất nặng.', 'Hệ thống dây mạch của máy thở bị bẻ cong hoặc bị tắc nghẽn nước lắng đọng.'], correct: "B", topic: "1" },
+{ id: 243, text: "Khi tiến hành rút ống canule mở khí quản (cai quản mở khí quản) cho người bệnh giai đoạn hồi phục, quy trình thực hiện thử nghiệm tập thở qua đường tự nhiên thường được tiến hành theo các bước tiến trình nào?", answers: ['Rút ống canule ra ngay lập tức và khâu kín lỗ mở khí quản bằng chỉ không tan.', 'Thay ống bằng loại nhỏ hơn, tiến hành kẹp ống một phần rồi kẹp hoàn toàn trong 24-48 giờ dưới sự theo dõi sát.', 'Cho người bệnh uống thuốc ức chế hô hấp để giảm nhu cầu oxy trước khi rút ống.', 'Chỉ cần xả hết hơi trong bóng chèn (cuff) và yêu cầu người bệnh tự hít thở qua mũi.'], correct: "B", topic: "1" },
+{ id: 244, text: "Tại sao trong chấn thương bụng kín, tổn thương vỡ tạng đặc (gan, lách) mức độ nặng lại thường dẫn đến tình trạng sốc giảm thể tích diễn tiến nhanh chóng và nguy kịch hơn tổn thương vỡ tạng rỗng?", answers: ['Vì tạng đặc chứa nhiều vi khuẩn gây ra tình trạng nhiễm trùng nhiễm độc toàn thân sớm.', 'Vì tạng đặc có cấu trúc mạch máu phong phú, lượng máu nuôi tuần hoàn lớn và không có khả năng tự co mạch cầm máu.', 'Vì khi vỡ tạng đặc sẽ giải phóng ra các enzyme tiêu hóa làm phá hủy mạch máu xung quanh.', 'Vì vỡ tạng đặc luôn đi kèm với tổn thương rách các mạch máu lớn như động mạch chủ bụng.'], correct: "B", topic: "1" },
+{ id: 245, text: "Người bệnh bị chấn thương bụng kín đang được theo dõi nội khoa tại phòng bệnh. Triệu chứng lâm sàng và cận lâm sàng nào sau đây khẳng định tình trạng chảy máu trong ổ bụng vẫn tiếp diễn hoạt động và cần chỉ định mổ cấp cứu khẩn cấp?", answers: ['Người bệnh tỉnh táo, than phiền đau bụng âm ỉ, mạch 80 lần/phút ổn định.', 'Mạch tăng dần, huyết áp tụt kẹt, chỉ số Hemoglobin (Hb) sụt giảm liên tục sau các lần truyền máu.', 'Nhu động ruột nghe thấy giảm nhẹ, bụng chướng nhẹ và người bệnh chưa trung tiện được.', 'Kết quả siêu âm bụng thấy có một lượng dịch tự do rất ít ở túi cùng Douglas.'], correct: "B", topic: "1" },
+{ id: 246, text: "Sau phẫu thuật chấn thương bụng vỡ ruột non gây viêm phúc mạc, ngày thứ 4 hậu phẫu người bệnh xuất hiện: bụng chướng căng đều, đau tức hông âm ỉ, không có phản ứng thành bụng, nghe không thấy âm ruột (nhu động ruột mất hoàn toàn), bí trung đại tiện hoàn toàn. Biến chứng điều dưỡng cần nhận định ở đây là:", answers: ['Tắc ruột cơ học do các dây chằng sẹo dính sau mổ chèn ép lòng ruột.', 'Tình trạng liệt ruột cơ năng hậu phẫu do viêm phúc mạc và rối loạn điện giải (hạ Kali máu).', 'Biến chứng bục rách miệng nối ruột gây rò rỉ dịch tiêu hóa vào ổ bụng.', 'Xuất huyết tiêu hóa thứ phát do loét dạ dày cấp tính do stress.'], correct: "B", topic: "1" },
+{ id: 247, text: "Khi thực hiện y lệnh truyền máu khẩn cấp cho người bệnh sốc mất máu nặng do vỡ gan trong chấn thương bụng, tai biến truyền máu cấp tính nguy hiểm đe dọa tính mạng người bệnh cần được điều dưỡng giám sát chặt chẽ nhất trong 15 phút đầu là:", answers: ['Tình trạng lây nhiễm các bệnh đường truyền máu như viêm gan B, HIV.', 'Phản ứng tán huyết cấp do bất đồng nhóm máu hệ ABO (gây sốc, suy thận cấp, tử vong).', 'Tình trạng quá tải thể tích tuần hoàn gây phù phổi cấp muộn.', 'Phản ứng dị ứng nổi mề đay và ngứa da thông thường.'], correct: "B", topic: "1" },
+{ id: 248, text: "Một người bệnh bỏng lửa xăng diện rộng 40% diện tích cơ thể, nặng 60kg, nhập viện giờ thứ hai. Áp dụng công thức Parkland để tính toán tổng lượng dịch truyền (Lactated Ringer) cần thiết cho người bệnh này trong 24 giờ đầu tiên là:", answers: ['4.800 ml.', '7.200 ml.', '9.600 ml (gồm 4.800 ml truyền trong 8 giờ đầu và 4.800 ml truyền trong 16 giờ tiếp theo).', '12.000 ml.'], correct: "C", topic: "1" },
+{ id: 249, text: "Người bệnh sau phẫu thuật nội soi ruột thừa ngày thứ 3 xuất hiện triệu chứng: đau chói tăng dần tại vị trí lỗ chọc trocar vùng dưới rốn, da xung quanh chân sưng nề, đỏ, có dịch mủ đặc chảy ra qua kẽ chỉ khâu. Điều dưỡng cần nhận định người bệnh đang mắc phải biến chứng hậu phẫu nào?", answers: ['Biến chứng thoát vị nghẹt thành bụng qua vị trí chọc lỗ trocar.', 'Tình trạng nhiễm trùng vết mổ sâu hoặc nhiễm trùng chân trocar.', 'Biến chứng xuất huyết nội thứ phát do tuột nơ buộc mạch máu.', 'Biến chứng tắc ruột cơ học do dây chằng xơ dính sau phẫu thuật.'], correct: "B", topic: "1" },
+{ id: 250, text: "Trong phẫu thuật nội soi ổ bụng, sự phối hợp giữa yếu tố nào sau đây sẽ làm sụt giảm nghiêm trọng nhất dung tích cặn chức năng (FRC) của phổi, gây khó khăn cho công tác thông khí của điều dưỡng gây mê?", answers: ['Đặt người bệnh ở tư thế đầu cao (Anti-Trendelenburg) kết hợp duy trì áp lực ổ bụng thấp.', 'Đặt người bệnh ở tư thế đầu thấp (Trendelenburg) kết hợp với quá trình bơm hơi khí áp lực cao vào ổ bụng.', 'Hướng dẫn người bệnh chủ động ngồi dậy sớm ngay tại giường bệnh phòng hậu phẫu.', 'Đặt người bệnh nằm nghiêng hoàn toàn sang phía bên phải trong suốt cuộc mổ hở.'], correct: "B", topic: "1" },
+{ id: 251, text: "Theo dõi số lượng nước tiểu của người bệnh sau phẫu thuật nội soi ổ bụng nhằm mục đích đánh giá tốt nhất tình trạng gì?", answers: ['Tình trạng nhiễm trùng hệ tiết niệu sau mổ.', 'Tình trạng tưới máu thận và ảnh hưởng của áp lực ổ bụng lên chức năng thận.', 'Tốc độ đào thải thuốc mê qua đường thận.', 'Khả năng co bóp của cơ bàng quang sau gây mê.'], correct: "B", topic: "1" },
+{ id: 252, text: "Người bệnh CTSN sau mổ có ống dẫn lưu. Khi thay băng chân dẫn lưu, điều dưỡng cần đặc biệt chú ý:", answers: ['Rút ống dẫn lưu ngay 12 giờ sau mổ', 'Bơm rửa ống dẫn lưu hàng giờ bằng nước cất', 'Theo dõi số lượng, tính chất dịch và đảm bảo vô khuẩn tuyệt đối', 'Cố định ống thật chặt vào da đầu bằng băng dính kín tránh tuột'], correct: "C", topic: "1" },
+{ id: 253, text: "Nguyên nhân nào sau đây được phân loại là nguyên nhân gián tiếp gây chấn thương cột sống?", answers: ['Cây đổ hoặc gỗ đè trực tiếp vào lưng.', 'Ngã ngồi từ trên cao xuống gây lún đốt sống.', 'Cơn co cứng mạnh trong bệnh uốn ván.', 'Tường đổ đè vào vùng cột sống thắt lưng.'], correct: "B", topic: "1" },
+{ id: 254, text: "Trong gãy cột sống không liệt tủy, triệu chứng biến dạng nào thường được quan sát thấy?", answers: ['Khoảng cách giữa hai mấu gai bị thu hẹp lại.', 'Mấu gai gồ ra phía sau gây tình trạng gù lưng.', 'Cột sống bị vẹo sang một bên rõ rệt.', 'Không có biến dạng nào có thể quan sát bằng mắt thường.'], correct: "B", topic: "1" },
+{ id: 255, text: "Rối loạn hô hấp nặng thường xảy ra trong chấn thương cột sống cổ ở đoạn nào?", answers: ['Từ đốt sống cổ C1 đến C5.', 'Từ đốt sống cổ C6 đến C7.', 'Tại các đốt sống lưng D1 đến D5.', 'Tại đoạn thắt lưng L1 đến L5.'], correct: "A", topic: "1" },
+{ id: 256, text: "Lợi ích của mở khí quản là:", answers: ['Làm tăng khoảng chết hô hấp', 'Giúp người bệnh nói chuyện dễ hơn ngay sau mở', 'Giúp hút đờm nhớt dễ dàng', 'Làm giảm nhu động ruột'], correct: "C", topic: "1" },
+{ id: 257, text: "Bỏng là tổn thương gây nên bởi:", answers: ['Chỉ do sức nhiệt', 'Chỉ do hóa chất', 'Sức nhiệt, hóa chất, điện năng và bức xạ', 'Chỉ do tia xạ'], correct: "C", topic: "1" },
+{ id: 258, text: "Bỏng do xăng, dầu, củi gỗ cháy thuộc loại:", answers: ['Bỏng do sức nóng ướt', 'Bỏng do sức nóng khô', 'Bỏng do hóa chất', 'Bỏng do lạnh'], correct: "B", topic: "1" },
+{ id: 259, text: "Da chỉ chịu đựng được nhiệt độ tối đa khoảng:", answers: ['30°C', '37°C', '43°C', '60°C'], correct: "C", topic: "1" },
+{ id: 260, text: "Dịch nốt phỏng hình thành do:", answers: ['Tăng sinh mô hạt', 'Thoát dịch huyết tương ra gian bào', 'Tăng tiết bã nhờn', 'Hoại tử cơ', 'Tổn thương biểu bì và lớp đáy, tự khỏi không để sẹo', 'Tổn thương toàn bộ lớp da', 'Chỉ viêm đỏ da', 'Tổn thương xuống xương'], correct: "A", topic: "1" },
+{ id: 261, text: "Theo luật 9 của Wallace, hai chi dưới chiếm:", answers: ['18%', '27%', '36%', '45%'], correct: "C", topic: "1" },
+{ id: 262, text: "Sốc bỏng thường xuất hiện trong:", answers: ['6 giờ đầu', '12 giờ đầu', '24 giờ đầu', '48 giờ đầu'], correct: "D", topic: "1" },
+{ id: 263, text: "Cơ quan bị ảnh hưởng nặng nhất trong sốc bỏng là:", answers: ['Tim', 'Gan', 'Phổi', 'Thận'], correct: "D", topic: "1" },
+{ id: 264, text: "Giai đoạn nhiễm độc cấp tính trong bỏng thường bắt đầu từ:", answers: ['Ngày thứ 3', 'Ngày thứ 5', 'Sau 1 tuần', 'Sau 1 tháng'], correct: "A", topic: "1" },
+{ id: 265, text: "Vi khuẩn thường gặp trong nhiễm trùng bỏng là:", answers: ['Tụ cầu vàng', 'Não mô cầu', 'Phế cầu', 'Vibrio cholerae'], correct: "A", topic: "1" },
+{ id: 266, text: "Nguyên nhân tử vong cao trong giai đoạn nhiễm trùng bỏng là:", answers: ['Tăng huyết áp', 'Mất ngủ kéo dài', 'Nhiễm khuẩn huyết', 'Gãy xương kín'], correct: "C", topic: "1" },
+{ id: 267, text: "Mảnh da ghép bình thường có màu:", answers: ['Tím đen', 'Xanh tái', 'Trắng bệch', 'Hồng hơn da thường'], correct: "D", topic: "1" },
+{ id: 268, text: "Sau ghép da, nếu màu sắc da trở lại quá chậm (>2–3 giây) sau khi ấn là dấu hiệu:", answers: ['Tăng lưu lượng máu', 'Giảm lưu lượng máu', 'Bình thường', 'Không liên quan tuần hoàn'], correct: "B", topic: "1" },
+{ id: 269, text: "Dấu hiệu nào gợi ý tắc nghẽn mạch máu ở vùng da ghép?", answers: ['Da đỏ tím, quá căng, có nốt phồng', 'Da trắng bệch', 'Da hồng nhạt', 'Mất cảm giác đau tại vị trí ghép'], correct: "A", topic: "1" },
+{ id: 270, text: "Người bệnh bỏng cần tập vận động nhằm mục đích chính", answers: ['Giảm đau', 'Ngăn ngừa teo cơ và cứng khớp', 'Làm bong tế bào hoại tử, mau liền sẹo', 'Dịch mủ thoát ra tốt, lưu thông tuần hoàn tốt hơn'], correct: "B", topic: "1" },
+{ id: 271, text: "Dấu hiệu nào sau đây cho thấy người bệnh có nguy cơ tổn thương đường thở do bỏng?", answers: ['Người bệnh kêu đau nhiều tại vùng ngực.', 'Mạch tăng, huyết áp giảm, tiểu ít.', 'Cháy xém lông mũi, đàm sẫm màu, ho, tím tái.', 'Vết bỏng ở chi dưới có dấu hiệu tiết dịch nhiều.'], correct: "C", topic: "1" },
+{ id: 272, text: "Trong giai đoạn phòng chống sốc, chỉ số nào cần được điều dưỡng theo dõi hàng giờ để đánh giá tưới máu thận?", answers: ['Chỉ số huyết áp tâm thu.', 'Số lượng và màu sắc nước tiểu qua ống thông tiểu.', 'Nồng độ Potassium (Kali) trong máu.', 'Áp lực tĩnh mạch trung tâm (CVP).'], correct: "B", topic: "1" }
+      ];
+
+     let currentTopic = null;
+    let shuffleQuestions = true;
+    let shuffleAnswers = true;
+    let currentQuestions = [];
+    let userSelections = {};
+    let answersMapping = new Map();
+    
+    const questionsContainer = document.getElementById("questionsContainer");
+    const scoreContainer = document.getElementById("scoreContainer");
+    const shuffleQuestionsToggle = document.getElementById("shuffleQuestionsToggle");
+    const shuffleAnswersToggle = document.getElementById("shuffleAnswersToggle");
+    const liveScoreSpan = document.getElementById("liveScore");
+    
+    function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+    
+    function getFilteredQuestions() {
+        if (!currentTopic) return [];
+        let filtered = QUESTION_SET.filter(q => currentTopic === "all" || q.topic === currentTopic);
+        let result = [...filtered];
+        if (shuffleQuestions) result = shuffleArray(result);
+        return result;
+    }
+    
+    function buildAnswerMapping(question) {
+        const originalAnswers = question.answers;
+        const correctIndex = question.correct.charCodeAt(0) - 65;
+        const correctText = originalAnswers[correctIndex];
+        
+        if (!shuffleAnswers) {
+            return {
+                displayList: [
+                    { letter: "A", text: originalAnswers[0] },
+                    { letter: "B", text: originalAnswers[1] },
+                    { letter: "C", text: originalAnswers[2] },
+                    { letter: "D", text: originalAnswers[3] }
+                ],
+                correctLetterDisplay: question.correct
+            };
+        } else {
+            let items = originalAnswers.map((text, idx) => ({ text }));
+            items = shuffleArray([...items]);
+            const displayList = items.map((item, newIdx) => ({ letter: String.fromCharCode(65+newIdx), text: item.text }));
+            const found = displayList.find(item => item.text === correctText);
+            return {
+                displayList,
+                correctLetterDisplay: found ? found.letter : "A"
+            };
+        }
+    }
+    
+    function updateAllUI() {
+        if (!currentQuestions.length) {
+            liveScoreSpan.innerText = `0 / 0`;
+            return;
+        }
+        let correctCount = 0;
+        
+        for (let q of currentQuestions) {
+            const mapping = answersMapping.get(q.id);
+            if (!mapping) continue;
+            const selectedLetter = userSelections[q.id];
+            const isCorrect = (selectedLetter && selectedLetter === mapping.correctLetterDisplay);
+            if (isCorrect) correctCount++;
+            
+            const cardDiv = document.querySelector(`.question-card[data-qid='${q.id}']`);
+            if (!cardDiv) continue;
+            
+            const iconSpan = cardDiv.querySelector('.status-icon');
+            if (iconSpan) {
+                if (!selectedLetter) {
+                    iconSpan.innerHTML = "⚪ Chưa làm";
+                    iconSpan.className = "status-icon status-none";
+                } else if (isCorrect) {
+                    iconSpan.innerHTML = "✓ Đúng";
+                    iconSpan.className = "status-icon status-correct";
+                } else {
+                    iconSpan.innerHTML = "✗ Sai";
+                    iconSpan.className = "status-icon status-wrong";
+                }
+            }
+            
+            const answerDivs = cardDiv.querySelectorAll('.answer-option');
+            for (let ansDiv of answerDivs) {
+                const letter = ansDiv.dataset.letter;
+                const isSelected = (selectedLetter === letter);
+                
+                ansDiv.classList.remove('correct-highlight', 'wrong-highlight');
+                
+                if (isSelected) {
+                    if (isCorrect) {
+                        ansDiv.classList.add('correct-highlight');
+                    } else {
+                        ansDiv.classList.add('wrong-highlight');
+                    }
+                }
+                
+                let statusSpan = ansDiv.querySelector('.answer-status');
+                if (!statusSpan) {
+                    statusSpan = document.createElement('span');
+                    statusSpan.className = 'answer-status';
+                    ansDiv.appendChild(statusSpan);
+                }
+                
+                if (isSelected && isCorrect) {
+                    statusSpan.innerHTML = '✓';
+                    statusSpan.className = 'answer-status check-mark';
+                } else if (isSelected && !isCorrect) {
+                    statusSpan.innerHTML = '✗';
+                    statusSpan.className = 'answer-status cross-mark';
+                } else {
+                    statusSpan.innerHTML = '';
+                }
+            }
+        }
+        liveScoreSpan.innerText = `${correctCount} / ${currentQuestions.length}`;
+    }
+    
+    function onAnswerClick(questionId, selectedLetter) {
+        userSelections[questionId] = selectedLetter;
+        
+        const questionCard = document.querySelector(`.question-card[data-qid='${questionId}']`);
+        if (questionCard) {
+            const allOptions = questionCard.querySelectorAll('.answer-option');
+            allOptions.forEach(opt => {
+                const letter = opt.dataset.letter;
+                if (letter === selectedLetter) {
+                    opt.classList.add('selected');
+                } else {
+                    opt.classList.remove('selected');
+                }
+            });
+        }
+        updateAllUI();
+    }
+    
+    // Hàm cuộn xuống câu hỏi đầu tiên
+    function scrollToFirstQuestion() {
+        setTimeout(() => {
+            const firstQuestion = document.querySelector('.question-card');
+            if (firstQuestion) {
+                firstQuestion.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }, 100);
+    }
+    
+    function renderFullQuiz() {
+        if (!currentTopic) {
+            scoreContainer.style.display = "none";
+            questionsContainer.innerHTML = `
+                <div class="welcome-message">
+                    👋 Chào bạn!<br>
+                    Hãy chọn một chủ đề bên trên để bắt đầu làm bài trắc nghiệm.
+                </div>
+            `;
+            return;
+        }
+        
+        currentQuestions = getFilteredQuestions();
+        answersMapping.clear();
+        for (let q of currentQuestions) {
+            answersMapping.set(q.id, buildAnswerMapping(q));
+        }
+        userSelections = {};
+        
+        if (currentQuestions.length === 0) {
+            scoreContainer.style.display = "block";
+            questionsContainer.innerHTML = `<div class="card" style="text-align:center">⚠️ Không có câu hỏi cho chủ đề này.</div>`;
+            liveScoreSpan.innerText = `0 / 0`;
+            return;
+        }
+        
+        let html = '';
+        currentQuestions.forEach((q, idx) => {
+            const mapping = answersMapping.get(q.id);
+            if (!mapping) return;
+            const { displayList } = mapping;
+            let answersHtml = '';
+            for (let ans of displayList) {
+                answersHtml += `
+                    <div class="answer-option" data-qid="${q.id}" data-letter="${ans.letter}">
+                        <span class="answer-letter">${ans.letter}</span>
+                        <span class="answer-text">${escapeHtml(ans.text)}</span>
+                        <span class="answer-status"></span>
+                    </div>
+                `;
+            }
+            html += `
+                <div class="question-card" data-qid="${q.id}">
+                    <div class="question-text">
+                        <span><strong>${idx+1}.</strong> ${escapeHtml(q.text)}</span>
+                        <span class="status-icon status-none">⚪ Chưa làm</span>
+                    </div>
+                    <div class="answers">
+                        ${answersHtml}
+                    </div>
+                </div>
+            `;
+        });
+        
+        questionsContainer.innerHTML = html;
+        scoreContainer.style.display = "flex";
+        
+        document.querySelectorAll('.answer-option').forEach(el => {
+            el.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const qid = parseInt(el.dataset.qid);
+                const letter = el.dataset.letter;
+                if (!isNaN(qid) && letter) {
+                    onAnswerClick(qid, letter);
+                }
+            });
+        });
+        
+        updateAllUI();
+        
+        // Tự động cuộn xuống câu hỏi đầu tiên
+        scrollToFirstQuestion();
+    }
+    
+function escapeHtml(str) {
+    if (!str) return "";
+    return str.replace(/[&<>"']/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+    });
+}
+    
+    function refreshQuiz() {
+        renderFullQuiz();
+    }
+    
+    function initEventListeners() {
+        const topicBtns = document.querySelectorAll('.topic-btn');
+        topicBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const topic = btn.dataset.topic;
+                if (!topic) return;
+                currentTopic = topic;
+                topicBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                refreshQuiz();
+            });
+        });
+        
+        shuffleQuestionsToggle.addEventListener('change', (e) => {
+            shuffleQuestions = e.target.checked;
+            if (currentTopic) refreshQuiz();
+        });
+        
+        shuffleAnswersToggle.addEventListener('change', (e) => {
+            shuffleAnswers = e.target.checked;
+            if (currentTopic) refreshQuiz();
+        });
+    }
+    
+    function init() {
+        shuffleQuestions = shuffleQuestionsToggle.checked;
+        shuffleAnswers = shuffleAnswersToggle.checked;
+        initEventListeners();
+        currentTopic = null;
+        renderFullQuiz();
+    }
+    
+    init();
+</script>
+</body>
+</html>
