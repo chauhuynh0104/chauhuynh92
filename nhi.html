@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Trắc nghiệm Chăm sóc sức khoẻ tre em nâng cao - Chauhuynh0104</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: #f0f4f8;
+            font-family: system-ui, 'Segoe UI', 'Roboto', 'Noto Sans', sans-serif;
+            padding: 16px 12px 80px;
+            color: #0f172a;
+        }
+
+        .app-container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 28px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            padding: 20px 18px;
+            margin-bottom: 20px;
+        }
+
+        .quiz-header {
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 12px;
+            margin-bottom: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .quiz-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1e3c72, #2b4c7c);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .badge {
+            background: #eef2ff;
+            padding: 6px 12px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #1e3c72;
+        }
+
+        .topic-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .topic-btn {
+            background: #eef2ff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.2s;
+            color: #1e293b;
+            flex: 1 0 auto;
+            text-align: center;
+        }
+
+        .topic-btn.active {
+            background: #1e3c72;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .toggle-row {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            background: #f8fafc;
+            padding: 12px 16px;
+            border-radius: 60px;
+            margin-bottom: 20px;
+        }
+
+        .toggle-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e1;
+            transition: 0.3s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #2d6a4f;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+
+        .question-card {
+            background: white;
+            border-radius: 24px;
+            margin-bottom: 20px;
+            padding: 18px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+            scroll-margin-top: 20px;
+        }
+
+        .question-text {
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 16px;
+            line-height: 1.4;
+            background: #fefce8;
+            padding: 12px;
+            border-radius: 20px;
+            border-left: 5px solid #eab308;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .status-icon {
+            font-size: 0.85rem;
+            font-weight: bold;
+            background: white;
+            border-radius: 40px;
+            padding: 4px 12px;
+            min-width: 95px;
+            text-align: center;
+        }
+
+        .status-correct {
+            color: #15803d;
+            background: #dcfce7;
+            border: 1px solid #86efac;
+        }
+
+        .status-wrong {
+            color: #b91c1c;
+            background: #fee2e2;
+            border: 1px solid #fca5a5;
+        }
+
+        .status-none {
+            color: #64748b;
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+        }
+
+        .answers {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .answer-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            background: #f9f9ff;
+            border-radius: 60px;
+            border: 2px solid #e2edff;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+
+        .answer-option:hover {
+            background: #eef2ff;
+        }
+
+        .answer-option.correct-highlight {
+            border: 3px solid #15803d;
+            background: #e8f5e9;
+        }
+
+        .answer-option.wrong-highlight {
+            border: 3px solid #dc2626;
+            background: #fee2e2;
+        }
+
+        .answer-option.selected {
+            background: #e0f2fe;
+            border-color: #0284c7;
+        }
+
+        .answer-letter {
+            font-weight: 800;
+            background: #e2e8f0;
+            width: 36px;
+            height: 36px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 60px;
+            font-size: 0.9rem;
+        }
+
+        .answer-text {
+            flex: 1;
+            font-size: 0.92rem;
+        }
+
+        .answer-status {
+            font-size: 1.2rem;
+            font-weight: bold;
+            min-width: 44px;
+            text-align: center;
+        }
+
+        .check-mark {
+            color: #15803d;
+        }
+
+        .cross-mark {
+            color: #dc2626;
+        }
+
+        .score-bar {
+            background: #e6f7ed;
+            padding: 14px 18px;
+            border-radius: 60px;
+            text-align: center;
+            font-weight: bold;
+            margin: 8px 0 16px;
+            font-size: 1rem;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .progress-text {
+            background: #1e3c72;
+            color: white;
+            border-radius: 30px;
+            padding: 4px 16px;
+        }
+
+        .welcome-message {
+            text-align: center;
+            padding: 40px 20px;
+            background: #fef9e3;
+            border-radius: 28px;
+            color: #b45309;
+            font-weight: 500;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 32px;
+            padding: 20px 10px;
+            font-size: 0.75rem;
+            color: #475569;
+            border-top: 1px solid #cbd5e1;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="card">
+        <div class="quiz-header">
+            <h2>📚 Trắc nghiệm Chăm sóc sức khoẻ trẻ em nâng cao</h2>
+      
+        </div>
+
+
+        <div class="topic-buttons" id="topicButtons">
+            <button data-topic="all" class="topic-btn">📖 Bắt đầu</button>
+				  
+
+        </div>
+
+      <div class="toggle-row">
+            <div class="toggle-item">
+                <span>🔄 Xáo trộn câu hỏi</span>
+                <label class="switch">
+                    <input type="checkbox" id="shuffleQuestionsToggle" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="toggle-item">
+                <span>🎲 Xáo trộn đáp án</span>
+                <label class="switch">
+                    <input type="checkbox" id="shuffleAnswersToggle" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div id="scoreContainer" class="score-bar" style="display: none;">
+        <span>🏆 Kết quả hiện tại</span>
+        <span id="liveScore" class="progress-text">0 / 0</span>
+    </div>
+
+    <div id="questionsContainer">
+        <div class="welcome-message">
+            👋 Chào bạn!<br>
+            Hãy chọn một chủ đề bên trên để bắt đầu làm bài trắc nghiệm.
+        </div>
+    </div>
+    
+    <footer>© 2014-2026 Dr.Châu</footer>
+</div>
+
+<script>
+    // ---------- DỮ LIỆU CÂU HỎI ----------
+    const QUESTION_SET = [
+
+{ id: 1, text: "Sốc giảm thể tích ở trẻ em là tình trạng gì?", answers: ['Tăng thể tích tuần hoàn', 'Giảm thể tích tuần hoàn hiệu quả', 'Tăng huyết áp đột ngột', 'Giảm thân nhiệt đơn thuần'], correct: "B", topic: "1" },
+{ id: 2, text: "Nguyên nhân thường gặp gây sốc giảm thể tích ở trẻ em là:", answers: ['Tiêu chảy cấp mất nước', 'Viêm họng', 'Viêm da', 'Viêm kết mạc'], correct: "A", topic: "1" },
+{ id: 3, text: "Dấu hiệu sớm của sốc giảm thể tích ở trẻ là:", answers: ['Mạch nhanh', 'Hạ huyết áp nặng', 'Hôn mê', 'Ngừng thở'], correct: "A", topic: "1" },
+{ id: 4, text: "Dấu hiệu nào cho thấy trẻ bị giảm tưới máu ngoại vi?", answers: ['Da hồng ấm', 'CRT > 2 giây', 'Tăng tiết mồ hôi ít', 'Đồng tử co nhỏ'], correct: "B", topic: "1" },
+{ id: 5, text: "Khi chăm sóc trẻ sốc giảm thể tích, ưu tiên hàng đầu là:", answers: ['Theo dõi cân nặng', 'Đảm bảo đường thở và tuần hoàn', 'Tắm cho trẻ', 'Cho trẻ ăn'], correct: "B", topic: "1" },
+{ id: 6, text: "Tư thế thích hợp cho trẻ sốc giảm thể tích là:", answers: ['Nằm đầu cao', 'Nằm đầu thấp nhẹ, giữ ấm', 'Ngồi xổm', 'Nằm nghiêng trái'], correct: "B", topic: "1" },
+{ id: 7, text: "Dấu hiệu nào thường gặp ở trẻ sốc giảm thể tích nặng?", answers: ['Mạch chậm', 'Da lạnh, tím tái', 'Huyết áp tăng', 'Tiểu nhiều'], correct: "B", topic: "1" },
+{ id: 8, text: "Mục tiêu chính của bù dịch trong sốc giảm thể tích là:", answers: ['Tăng cân nhanh', 'Khôi phục tuần hoàn hiệu quả', 'Giảm sốt', 'Giảm đau'], correct: "B", topic: "1" },
+{ id: 9, text: "Loại dịch thường được ưu tiên truyền ban đầu trong sốc giảm thể tích là:", answers: ['Glucose 30%', 'NaCl 0,9%', 'Albumin', 'Dung dịch ưu trương'], correct: "B", topic: "1" },
+{ id: 10, text: "Điều dưỡng cần theo dõi dấu hiệu nào để đánh giá đáp ứng bù dịch?", answers: ['Màu tóc', 'Mạch, huyết áp, nước tiểu', 'Chiều cao', 'Thị lực'], correct: "B", topic: "1" },
+{ id: 11, text: "Một trong những dấu hiệu mất nước nặng ở trẻ là:", answers: ['Mắt trũng', 'Tăng tiết nước bọt', 'Da hồng', 'Tiểu nhiều'], correct: "A", topic: "1" },
+{ id: 12, text: "Khi trẻ có biểu hiện khó thở trong sốc giảm thể tích, điều dưỡng cần:", answers: ['Cho uống nước', 'Hỗ trợ thở oxy', 'Ngừng theo dõi', 'Để trẻ tự nghỉ'], correct: "B", topic: "1" },
+{ id: 13, text: "Chỉ số CRT là viết tắt của:", answers: ['Capillary refill time', 'Cardiac rhythm test', 'Central respiratory therapy', 'Clinical recovery time'], correct: "A", topic: "1" },
+{ id: 14, text: "Dấu hiệu nào sau đây KHÔNG phù hợp với sốc giảm thể tích?", answers: ['Mạch nhanh', 'Da lạnh', 'Tiểu ít', 'Tăng huyết áp kéo dài'], correct: "D", topic: "1" },
+{ id: 15, text: "Trong chăm sóc trẻ sốc giảm thể tích, điều dưỡng cần giữ ấm trẻ nhằm mục đích:", answers: ['Giảm mất nhiệt', 'Làm trẻ ngủ ngon', 'Tăng tiết mồ hôi', 'Hạ huyết áp'], correct: "A", topic: "1" },
+{ id: 16, text: "Lượng nước tiểu giảm phản ánh điều gì ở trẻ sốc giảm thể tích?", answers: ['Tưới máu thận giảm', 'Chức năng gan tăng', 'Trẻ ăn ít', 'Tăng tuần hoàn'], correct: "A", topic: "1" },
+{ id: 17, text: "Biện pháp phòng ngừa sốc giảm thể tích ở trẻ tiêu chảy là:", answers: ['Nhịn uống', 'Bù nước oresol đúng cách', 'Hạn chế ăn', 'Chỉ dùng kháng sinh'], correct: "B", topic: "1" },
+{ id: 18, text: "Trong sốc giảm thể tích, huyết áp tụt là dấu hiệu:", answers: ['Giai đoạn sớm', 'Giai đoạn muộn', 'Dấu hiệu hồi phục', 'Không liên quan'], correct: "B", topic: "1" },
+{ id: 19, text: "Điều dưỡng cần theo dõi tri giác trẻ nhằm mục đích:", answers: ['Đánh giá tưới máu não', 'Kiểm tra thị lực', 'Theo dõi tiêu hóa', 'Đánh giá chiều cao'], correct: "A", topic: "1" },
+{ id: 20, text: "Trẻ sốc giảm thể tích thường có biểu hiện ở da là:", answers: ['Da ấm đỏ', 'Da lạnh, nổi bông', 'Da vàng', 'Da tím toàn thân ngay lập tức'], correct: "B", topic: "1" },
+{ id: 21, text: "Khi truyền dịch nhanh cho trẻ, điều dưỡng cần đặc biệt chú ý:", answers: ['Tình trạng quá tải dịch', 'Màu tóc trẻ', 'Thời gian ngủ', 'Tình trạng mọc răng'], correct: "A", topic: "1" },
+{ id: 22, text: "Biến chứng nguy hiểm của sốc giảm thể tích không điều trị kịp thời là:", answers: ['Suy đa cơ quan', 'Viêm da', 'Viêm lợi', 'Cong vẹo cột sống'], correct: "A", topic: "1" },
+{ id: 23, text: "Chăm sóc tinh thần cho trẻ sốc giảm thể tích nhằm mục đích:", answers: ['Giảm lo lắng, kích thích', 'Tăng thân nhiệt', 'Tăng đau', 'Làm trẻ khóc'], correct: "A", topic: "1" },
+{ id: 24, text: "Trong quá trình chăm sóc, điều dưỡng cần ghi nhận lượng dịch vào – ra để:", answers: ['Đánh giá cân bằng dịch', 'Đánh giá giấc ngủ', 'Đánh giá thị lực', 'Đánh giá vận động'], correct: "A", topic: "1" },
+{ id: 25, text: "Dấu hiệu cải thiện sau điều trị sốc giảm thể tích là:", answers: ['Mạch rõ hơn, da ấm', 'Da lạnh hơn', 'CRT kéo dài hơn', 'Tiểu ít hơn'], correct: "A", topic: "1" },
+{ id: 26, text: "Trẻ sốc giảm thể tích do tiêu chảy cần ưu tiên phòng ngừa:", answers: ['Mất nước tái diễn', 'Viêm da', 'Viêm tai', 'Suy giảm thị lực'], correct: "A", topic: "1" },
+{ id: 27, text: "Khi trẻ nôn nhiều và không uống được oresol, điều dưỡng cần:", answers: ['Ngừng bù dịch', 'Báo bác sĩ để truyền dịch', 'Cho uống nhiều hơn', 'Để trẻ tự hồi phục'], correct: "B", topic: "1" },
+{ id: 28, text: "Theo dõi mạch ngoại vi giúp đánh giá:", answers: ['Tuần hoàn ngoại vi', 'Chức năng tiêu hóa', 'Chức năng gan', 'Khả năng nghe'], correct: "A", topic: "1" },
+{ id: 29, text: "Nội dung quan trọng trong giáo dục gia đình trẻ sốc giảm thể tích là:", answers: ['Nhận biết dấu hiệu mất nước', 'Chọn màu quần áo', 'Cho trẻ ăn bánh kẹo', 'Hạn chế vận động hoàn toàn'], correct: "A", topic: "1" },
+{ id: 30, text: "Vai trò của điều dưỡng trong chăm sóc trẻ sốc giảm thể tích là:", answers: ['Theo dõi, chăm sóc và hỗ trợ điều trị', 'Chỉ phát thuốc', 'Chỉ đo nhiệt độ', 'Không cần theo dõi liên tục'], correct: "A", topic: "1" },
+{ id: 31, text: "Hôn mê ở trẻ em là tình trạng:", answers: ['Mất hoàn toàn ý thức và đáp ứng', 'Ngủ sinh lý', 'Co giật nhẹ', 'Sốt cao kéo dài'], correct: "A", topic: "1" },
+{ id: 32, text: "Trung tâm thần kinh chủ yếu liên quan đến tình trạng hôn mê là:", answers: ['Vỏ não và hệ lưới thân não', 'Tiểu não', 'Tủy sống', 'Hạch giao cảm'], correct: "A", topic: "1" },
+{ id: 33, text: "Nguyên nhân thường gặp gây hôn mê ở trẻ em là:", answers: ['Hạ đường huyết', 'Viêm da', 'Viêm kết mạc', 'Viêm tai giữa'], correct: "A", topic: "1" },
+{ id: 34, text: "Dấu hiệu quan trọng để đánh giá mức độ tri giác ở trẻ hôn mê là:", answers: ['Thang điểm Glasgow', 'Đo chiều cao', 'Đo vòng đầu', 'Đếm nhịp thở'], correct: "A", topic: "1" },
+{ id: 35, text: "Mục tiêu ưu tiên hàng đầu khi chăm sóc trẻ hôn mê là:", answers: ['Đảm bảo đường thở', 'Cho trẻ ăn', 'Tắm cho trẻ', 'Đo cân nặng'], correct: "A", topic: "1" },
+{ id: 36, text: "Tư thế thích hợp cho trẻ hôn mê nhằm phòng sặc là:", answers: ['Nằm ngửa đầu thấp', 'Nằm nghiêng an toàn', 'Ngồi thẳng', 'Nằm sấp'], correct: "B", topic: "1" },
+{ id: 37, text: "Một trong những nguyên nhân chuyển hóa gây hôn mê ở trẻ là:", answers: ['Hạ đường huyết', 'Viêm phổi', 'Gãy xương', 'Viêm da cơ địa'], correct: "A", topic: "1" },
+{ id: 38, text: "Hôn mê do tổn thương thực thể thần kinh có thể gặp trong:", answers: ['Xuất huyết não', 'Tiêu chảy cấp', 'Viêm da', 'Sâu răng'], correct: "A", topic: "1" },
+{ id: 39, text: "Điều dưỡng cần theo dõi dấu hiệu nào thường xuyên ở trẻ hôn mê?", answers: ['Dấu hiệu sinh tồn', 'Màu tóc', 'Chiều cao', 'Cân nặng hàng giờ'], correct: "A", topic: "1" },
+{ id: 40, text: "Trẻ hôn mê có nguy cơ cao bị biến chứng nào sau đây?", answers: ['Sặc phổi', 'Cận thị', 'Cong vẹo cột sống', 'Viêm lợi'], correct: "A", topic: "1" },
+{ id: 41, text: "Đồng tử giãn, phản xạ ánh sáng kém là dấu hiệu gợi ý:", answers: ['Tổn thương thần kinh nặng', 'Hồi phục tốt', 'Tăng tiêu hóa', 'Mất nước nhẹ'], correct: "A", topic: "1" },
+{ id: 42, text: "Khi trẻ hôn mê có co giật, điều dưỡng cần ưu tiên:", answers: ['Đảm bảo an toàn và thông thoáng đường thở', 'Cho uống nước', 'Đo chiều cao', 'Tắm trẻ'], correct: "A", topic: "1" },
+{ id: 43, text: "Mục đích của việc hút đờm dãi ở trẻ hôn mê là:", answers: ['Giữ thông thoáng đường thở', 'Làm trẻ tỉnh', 'Giảm đau bụng', 'Tăng huyết áp'], correct: "A", topic: "1" },
+{ id: 44, text: "Nguyên nhân nhiễm trùng gây hôn mê ở trẻ thường gặp là:", answers: ['Viêm não – màng não', 'Viêm da', 'Viêm lợi', 'Viêm kết mạc'], correct: "A", topic: "1" },
+{ id: 45, text: "Chế độ dinh dưỡng cho trẻ hôn mê thường được thực hiện bằng:", answers: ['Sonde dạ dày', 'Ăn đường miệng tự do', 'Nhịn ăn hoàn toàn', 'Chỉ uống nước'], correct: "A", topic: "1" },
+{ id: 46, text: "Dấu hiệu nào sau đây phản ánh tăng áp lực nội sọ ở trẻ hôn mê?", answers: ['Nôn vọt', 'Tiểu nhiều', 'Da hồng', 'Mạch nhanh nhẹ'], correct: "A", topic: "1" },
+{ id: 47, text: "Khi chăm sóc trẻ hôn mê lâu ngày, điều dưỡng cần thay đổi tư thế nhằm:", answers: ['Phòng loét tỳ đè', 'Giảm sốt', 'Tăng ăn ngon', 'Giảm ho'], correct: "A", topic: "1" },
+{ id: 48, text: "Hôn mê do ngộ độc thuộc nhóm nguyên nhân:", answers: ['Ngoại sinh', 'Nội sinh', 'Di truyền', 'Cơ học'], correct: "A", topic: "1" },
+{ id: 49, text: "Điều dưỡng cần theo dõi lượng nước tiểu ở trẻ hôn mê để đánh giá:", answers: ['Chức năng tuần hoàn và thận', 'Thị lực', 'Khả năng nghe', 'Chức năng tiêu hóa'], correct: "A", topic: "1" },
+{ id: 50, text: "Dấu hiệu nguy hiểm cần báo bác sĩ ngay ở trẻ hôn mê là:", answers: ['Ngừng thở', 'Ngủ yên', 'Da ấm', 'Ăn ít'], correct: "A", topic: "1" },
+{ id: 51, text: "Trẻ hôn mê cần được chăm sóc mắt nhằm mục đích:", answers: ['Phòng khô giác mạc', 'Tăng thị lực', 'Giảm đau đầu', 'Điều trị cận thị'], correct: "A", topic: "1" },
+{ id: 52, text: "Thang điểm Glasgow đánh giá các yếu tố nào?", answers: ['Mở mắt, lời nói, vận động', 'Hô hấp, tiêu hóa, tuần hoàn', 'Thị lực, thính lực, xúc giác', 'Ăn, ngủ, vận động'], correct: "A", topic: "1" },
+{ id: 53, text: "Hạ đường huyết kéo dài có thể gây hậu quả gì ở trẻ?", answers: ['Tổn thương não', 'Viêm da', 'Viêm họng', 'Gãy xương'], correct: "A", topic: "1" },
+{ id: 54, text: "Điều dưỡng cần giữ vệ sinh răng miệng cho trẻ hôn mê nhằm:", answers: ['Phòng nhiễm khuẩn', 'Làm trẻ tỉnh nhanh', 'Giảm đau chân', 'Tăng huyết áp'], correct: "A", topic: "1" },
+{ id: 55, text: "Trẻ hôn mê có nguy cơ suy hô hấp do:", answers: ['Giảm phản xạ bảo vệ đường thở', 'Tăng ăn uống', 'Tăng vận động', 'Giảm tiết đờm'], correct: "A", topic: "1" },
+{ id: 56, text: "Khi chăm sóc trẻ hôn mê, điều dưỡng cần hạn chế:", answers: ['Kích thích mạnh không cần thiết', 'Theo dõi sinh hiệu', 'Hút đờm đúng kỹ thuật', 'Giữ vệ sinh'], correct: "A", topic: "1" },
+{ id: 57, text: "Biện pháp giúp phòng cứng khớp ở trẻ hôn mê là:", answers: ['Vận động thụ động', 'Hạn chế xoay trở', 'Cho nằm bất động', 'Không thay đổi tư thế'], correct: "A", topic: "1" },
+{ id: 58, text: "Dấu hiệu phục hồi tri giác ở trẻ hôn mê là:", answers: ['Đáp ứng với gọi hỏi', 'Da lạnh hơn', 'CRT kéo dài', 'Tiểu ít hơn'], correct: "A", topic: "1" },
+{ id: 59, text: "Vai trò của gia đình trong chăm sóc trẻ hôn mê là:", answers: ['Phối hợp chăm sóc và theo dõi', 'Tự ý dùng thuốc', 'Hạn chế tiếp xúc', 'Không cần hỗ trợ'], correct: "A", topic: "1" },
+{ id: 60, text: "Vai trò quan trọng nhất của điều dưỡng trong chăm sóc trẻ hôn mê là:", answers: ['Theo dõi sát và chăm sóc toàn diện', 'Chỉ phát thuốc', 'Chỉ đo nhiệt độ', 'Chỉ hỗ trợ ăn uống'], correct: "A", topic: "1" },
+{ id: 61, text: "Nuôi dưỡng qua đường đặc biệt ở trẻ em là:", answers: ['Cung cấp dinh dưỡng không qua ăn uống thông thường', 'Cho trẻ ăn tự do', 'Chỉ truyền nước', 'Chỉ dùng thuốc bổ'], correct: "A", topic: "1" },
+{ id: 62, text: "Mục đích chính của nuôi dưỡng qua đường đặc biệt là:", answers: ['Đảm bảo nhu cầu dinh dưỡng cho trẻ', 'Giảm cân nhanh', 'Điều trị sốt', 'Tăng vận động'], correct: "A", topic: "1" },
+{ id: 63, text: "Nuôi dưỡng qua sonde dạ dày được chỉ định khi trẻ:", answers: ['Không tự bú hoặc ăn được', 'Ăn khỏe', 'Không sốt', 'Tăng cân tốt'], correct: "A", topic: "1" },
+{ id: 64, text: "Chống chỉ định tương đối của nuôi ăn qua sonde dạ dày là:", answers: ['Tắc ruột', 'Viêm da', 'Ho nhẹ', 'Viêm họng'], correct: "A", topic: "1" },
+{ id: 65, text: "Nuôi dưỡng tĩnh mạch là phương pháp:", answers: ['Đưa chất dinh dưỡng trực tiếp vào máu', 'Cho ăn qua miệng', 'Nuôi ăn bằng thìa', 'Cho trẻ uống sữa'], correct: "A", topic: "1" },
+{ id: 66, text: "Chỉ định nuôi dưỡng tĩnh mạch khi:", answers: ['Đường tiêu hóa không sử dụng được', 'Trẻ ăn ngon', 'Trẻ sốt nhẹ', 'Trẻ ngủ nhiều'], correct: "A", topic: "1" },
+{ id: 67, text: "Tai biến nguy hiểm khi nuôi dưỡng qua sonde dạ dày là:", answers: ['Sặc phổi', 'Viêm da', 'Đau chân', 'Chảy máu cam'], correct: "A", topic: "1" },
+{ id: 68, text: "Điều dưỡng cần kiểm tra vị trí sonde trước khi cho ăn nhằm:", answers: ['Đảm bảo sonde đúng vị trí dạ dày', 'Làm trẻ dễ chịu', 'Giảm đau bụng', 'Tăng hấp thu thuốc'], correct: "A", topic: "1" },
+{ id: 69, text: "Dấu hiệu gợi ý sonde vào đường hô hấp là:", answers: ['Trẻ ho, tím tái', 'Trẻ ngủ yên', 'Trẻ ăn ngon', 'Trẻ tiểu nhiều'], correct: "A", topic: "1" },
+{ id: 70, text: "Khi cho ăn qua sonde dạ dày, tư thế phù hợp là:", answers: ['Nâng đầu cao 30–45 độ', 'Nằm đầu thấp', 'Nằm sấp', 'Ngồi xổm'], correct: "A", topic: "1" },
+{ id: 71, text: "Mục đích của việc nâng cao đầu khi cho ăn qua sonde là:", answers: ['Phòng sặc', 'Giảm sốt', 'Tăng ngủ ngon', 'Hạ huyết áp'], correct: "A", topic: "1" },
+{ id: 72, text: "Biến chứng thường gặp của nuôi dưỡng tĩnh mạch kéo dài là:", answers: ['Nhiễm khuẩn', 'Gãy xương', 'Viêm họng', 'Viêm tai'], correct: "A", topic: "1" },
+{ id: 73, text: "Dấu hiệu quá tải dịch khi nuôi dưỡng tĩnh mạch là:", answers: ['Phù, khó thở', 'Da khô', 'Tiểu ít nhẹ', 'Da lạnh'], correct: "A", topic: "1" },
+{ id: 74, text: "Điều dưỡng cần theo dõi lượng dịch vào – ra nhằm:", answers: ['Đánh giá cân bằng dịch', 'Đánh giá giấc ngủ', 'Đánh giá chiều cao', 'Đánh giá thính lực'], correct: "A", topic: "1" },
+{ id: 75, text: "Khi bơm thức ăn qua sonde dạ dày cần thực hiện:", answers: ['Chậm, đều', 'Thật nhanh', 'Bơm mạnh tay', 'Không cần theo dõi'], correct: "A", topic: "1" },
+{ id: 76, text: "Chất dinh dưỡng sử dụng trong nuôi dưỡng tĩnh mạch gồm:", answers: ['Glucose, acid amin, lipid', 'Chỉ nước lọc', 'Chỉ vitamin C', 'Chỉ oresol'], correct: "A", topic: "1" },
+{ id: 77, text: "Một trong các nguyên tắc vô khuẩn khi nuôi dưỡng tĩnh mạch là:", answers: ['Sát khuẩn vị trí truyền', 'Không cần rửa tay', 'Dùng lại dây truyền cũ', 'Không thay băng'], correct: "A", topic: "1" },
+{ id: 78, text: "Điều dưỡng cần thay đổi vị trí cố định sonde nhằm:", answers: ['Phòng loét niêm mạc', 'Giảm sốt', 'Tăng ăn ngon', 'Giảm tiêu chảy'], correct: "A", topic: "1" },
+{ id: 79, text: "Dấu hiệu trẻ dung nạp tốt nuôi ăn qua sonde là:", answers: ['Không nôn, bụng mềm', 'Chướng bụng nhiều', 'Tiêu chảy nặng', 'Tím tái'], correct: "A", topic: "1" },
+{ id: 80, text: "Trước khi cho ăn qua sonde, điều dưỡng cần kiểm tra:", answers: ['Dịch tồn dư dạ dày', 'Màu tóc trẻ', 'Chiều cao', 'Nhịp đi'], correct: "A", topic: "1" },
+{ id: 81, text: "Chống chỉ định nuôi ăn qua đường tiêu hóa khi trẻ bị:", answers: ['Xuất huyết tiêu hóa nặng', 'Viêm họng', 'Sốt nhẹ', 'Viêm da'], correct: "A", topic: "1" },
+{ id: 82, text: "Trong nuôi dưỡng tĩnh mạch, điều dưỡng cần theo dõi đường huyết nhằm:", answers: ['Phát hiện tăng hoặc hạ đường huyết', 'Đánh giá chiều cao', 'Theo dõi thính giác', 'Đánh giá giấc ngủ'], correct: "A", topic: "1" },
+{ id: 83, text: "Mục tiêu chăm sóc trẻ nuôi dưỡng đặc biệt là:", answers: ['Đảm bảo dinh dưỡng và hạn chế biến chứng', 'Giảm cân', 'Tăng vận động', 'Hạn chế ngủ'], correct: "A", topic: "1" },
+{ id: 84, text: "Khi trẻ có dấu hiệu sặc trong lúc ăn qua sonde, điều dưỡng cần:", answers: ['Ngừng cho ăn ngay', 'Tiếp tục cho ăn', 'Cho ăn nhanh hơn', 'Đặt trẻ nằm đầu thấp'], correct: "A", topic: "1" },
+{ id: 85, text: "Điều dưỡng cần vệ sinh sonde sau khi cho ăn nhằm:", answers: ['Tránh tắc sonde', 'Làm trẻ dễ ngủ', 'Giảm sốt', 'Tăng huyết áp'], correct: "A", topic: "1" },
+{ id: 86, text: "Biểu hiện tắc sonde dạ dày là:", answers: ['Khó bơm thức ăn', 'Trẻ ngủ ngon', 'Da hồng', 'Tiểu nhiều'], correct: "A", topic: "1" },
+{ id: 87, text: "Vai trò của điều dưỡng trong nuôi dưỡng đặc biệt là:", answers: ['Theo dõi, chăm sóc và thực hiện kỹ thuật an toàn', 'Chỉ phát thuốc', 'Chỉ ghi hồ sơ', 'Không cần theo dõi'], correct: "A", topic: "1" },
+{ id: 88, text: "Nuôi dưỡng tĩnh mạch toàn phần thường áp dụng khi:", answers: ['Không sử dụng được đường tiêu hóa kéo dài', 'Trẻ ăn khỏe', 'Trẻ sốt nhẹ', 'Trẻ viêm họng'], correct: "A", topic: "1" },
+{ id: 89, text: "Khi chăm sóc trẻ có sonde dạ dày, điều dưỡng cần chú ý:", answers: ['Cố định sonde chắc chắn', 'Để sonde tự do', 'Rút sonde nhiều lần', 'Không cần kiểm tra'], correct: "A", topic: "1" },
+{ id: 90, text: "Giáo dục gia đình trẻ nuôi dưỡng đặc biệt cần hướng dẫn:", answers: ['Theo dõi dấu hiệu bất thường và phối hợp chăm sóc', 'Tự ý thay đổi chế độ nuôi ăn', 'Ngừng theo dõi tại nhà', 'Tự ý rút sonde'], correct: "A", topic: "1" },
+{ id: 91, text: "Vai trò quan trọng nhất của dinh dưỡng đối với trẻ bệnh là:", answers: ['Hỗ trợ hồi phục sức khỏe', 'Làm trẻ tăng chiều cao nhanh', 'Giảm hoàn toàn bệnh', 'Thay thế thuốc điều trị'], correct: "A", topic: "1" },
+{ id: 92, text: "Nguyên tắc dinh dưỡng cho trẻ bệnh là:", answers: ['Đảm bảo đủ năng lượng và phù hợp bệnh lý', 'Cho trẻ ăn thật nhiều', 'Kiêng hoàn toàn chất béo', 'Chỉ uống sữa'], correct: "A", topic: "1" },
+{ id: 93, text: "Chế độ ăn mềm thường áp dụng cho trẻ:", answers: ['Sau phẫu thuật hoặc khó nhai nuốt', 'Trẻ khỏe mạnh', 'Trẻ béo phì', 'Trẻ không bệnh'], correct: "A", topic: "1" },
+{ id: 94, text: "Trẻ tiêu chảy cấp nên ưu tiên chế độ ăn:", answers: ['Dễ tiêu, đủ nước', 'Nhiều dầu mỡ', 'Nhiều gia vị cay', 'Nhịn ăn hoàn toàn'], correct: "A", topic: "1" },
+{ id: 95, text: "Khi trẻ bị sốt cao, nhu cầu nước của cơ thể thường:", answers: ['Tăng lên', 'Giảm xuống', 'Không thay đổi', 'Mất hoàn toàn'], correct: "A", topic: "1" },
+{ id: 96, text: "Trẻ suy dinh dưỡng cần chế độ ăn:", answers: ['Giàu năng lượng và protein', 'Ít đạm', 'Chỉ ăn cháo loãng', 'Hạn chế vitamin'], correct: "A", topic: "1" },
+{ id: 97, text: "Mục đích của chế độ ăn lỏng là:", answers: ['Dễ tiêu hóa và hấp thu', 'Tăng vận động ruột mạnh', 'Giảm hoàn toàn tiêu hóa', 'Điều trị nhiễm khuẩn'], correct: "A", topic: "1" },
+{ id: 98, text: "Một trong các nguyên tắc khi chế biến thức ăn cho trẻ bệnh là:", answers: ['Đảm bảo vệ sinh an toàn thực phẩm', 'Dùng nhiều gia vị', 'Cho ăn thức ăn nguội', 'Hạn chế nước uống'], correct: "A", topic: "1" },
+{ id: 99, text: "Trẻ mắc bệnh thận thường cần hạn chế:", answers: ['Muối', 'Vitamin', 'Nước hoàn toàn', 'Tinh bột'], correct: "A", topic: "1" },
+{ id: 100, text: "Dấu hiệu cho thấy trẻ có thể bị mất nước là:", answers: ['Khát nước, môi khô', 'Tăng tiết nước bọt', 'Da hồng ấm', 'Tiểu nhiều'], correct: "A", topic: "1" },
+{ id: 101, text: "Trẻ béo phì nên được khuyến khích:", answers: ['Ăn cân đối và tăng vận động', 'Nhịn ăn kéo dài', 'Chỉ ăn thịt', 'Không ăn rau'], correct: "A", topic: "1" },
+{ id: 102, text: "Chế độ ăn giàu vitamin C giúp:", answers: ['Tăng sức đề kháng', 'Tăng cholesterol', 'Giảm hấp thu sắt', 'Gây mất nước'], correct: "A", topic: "1" },
+{ id: 103, text: "Trẻ thiếu máu thiếu sắt cần tăng cường thực phẩm:", answers: ['Giàu sắt', 'Nhiều đường', 'Nhiều dầu mỡ', 'Ít đạm'], correct: "A", topic: "1" },
+{ id: 104, text: "Khi tư vấn dinh dưỡng cho gia đình trẻ bệnh, điều dưỡng cần:", answers: ['Hướng dẫn phù hợp tình trạng bệnh', 'Chỉ hướng dẫn dùng thuốc', 'Hạn chế giải thích', 'Không cần theo dõi'], correct: "A", topic: "1" },
+{ id: 105, text: "Chế độ ăn của trẻ bệnh cần chia thành nhiều bữa nhỏ nhằm:", answers: ['Giúp trẻ dễ tiêu hóa', 'Làm trẻ tăng cân nhanh', 'Giảm hấp thu dinh dưỡng', 'Gây chán ăn'], correct: "A", topic: "1" },
+{ id: 106, text: "Trẻ tiêu chảy cần bổ sung dung dịch nào để phòng mất nước?", answers: ['Oresol', 'Nước ngọt có gas', 'Nước đá lạnh', 'Cà phê'], correct: "A", topic: "1" },
+{ id: 107, text: "Protein có vai trò chính trong cơ thể trẻ bệnh là:", answers: ['Xây dựng và phục hồi mô', 'Chỉ cung cấp nước', 'Giảm hấp thu vitami n', 'Làm giảm miễn dịch'], correct: "A", topic: "1" },
+{ id: 108, text: "Trẻ mắc bệnh gan nên hạn chế thức ăn:", answers: ['Nhiều dầu mỡ', 'Rau xanh', 'Trái cây', 'Cháo loãng'], correct: "A", topic: "1" },
+{ id: 109, text: "Chế độ ăn hợp lý cho trẻ bệnh cần đảm bảo:", answers: ['Đủ 4 nhóm chất dinh dưỡng', 'Chỉ có tinh bột', 'Chỉ có chất béo', 'Chỉ có vitamin'], correct: "A", topic: "1" },
+{ id: 110, text: "Trẻ sau phẫu thuật nên ưu tiên thức ăn:", answers: ['Mềm, dễ tiêu', 'Cay nóng', 'Khô cứng', 'Nhiều dầu mỡ'], correct: "A", topic: "1" },
+{ id: 111, text: "Khi trẻ biếng ăn, điều dưỡng nên tư vấn:", answers: ['Đa dạng món ăn và chia nhỏ bữa', 'Ép trẻ ăn nhiều', 'Nhịn ăn', 'Chỉ uống sữa'], correct: "A", topic: "1" },
+{ id: 112, text: "Vitamin D có vai trò quan trọng trong:", answers: ['Hấp thu canxi', 'Giảm hấp thu đạm', 'Tăng đường huyết', 'Giảm miễn dịch'], correct: "A", topic: "1" },
+{ id: 113, text: "Trẻ dị ứng thực phẩm cần:", answers: ['Tránh thực phẩm gây dị ứng', 'Kiêng toàn bộ thức ăn', 'Chỉ uống nước', 'Ăn nhiều hơn thực phẩm dị ứng'], correct: "A", topic: "1" },
+{ id: 114, text: "Dấu hiệu cải thiện dinh dưỡng ở trẻ bệnh là:", answers: ['Ăn ngon, tăng cân', 'Da tím tái', 'Tiểu ít', 'Nôn nhiều'], correct: "A", topic: "1" },
+{ id: 115, text: "Chế độ ăn giảm muối thường áp dụng cho trẻ:", answers: ['Bệnh tim hoặc bệnh thận', 'Viêm họng', 'Gãy xương', 'Viêm da'], correct: "A", topic: "1" },
+{ id: 116, text: "Vai trò của carbohydrate trong cơ thể là:", answers: ['Cung cấp năng lượng', 'Tạo kháng thể', 'Đông máu', 'Điều hòa thân nhiệt'], correct: "A", topic: "1" },
+{ id: 117, text: "Trẻ suy dinh dưỡng nặng cần được theo dõi:", answers: ['Cân nặng và lượng ăn', 'Chiều dài tóc', 'Màu mắt', 'Số lần ngủ'], correct: "A", topic: "1" },
+{ id: 118, text: "Một trong các nguyên nhân gây suy dinh dưỡng ở trẻ là:", answers: ['Chế độ ăn không hợp lý', 'Uống đủ nước', 'Ăn đa dạng thực phẩm', 'Vận động hợp lý'], correct: "A", topic: "1" },
+{ id: 119, text: "Điều dưỡng cần khuyến khích gia đình trẻ bệnh:", answers: ['Duy trì chế độ ăn phù hợp và tái khám', 'Tự ý ngưng điều trị', 'Kiêng ăn quá mức', 'Không theo dõi cân nặng'], correct: "A", topic: "1" },
+{ id: 120, text: "Vai trò của điều dưỡng trong chăm sóc dinh dưỡng trẻ bệnh là:", answers: ['Theo dõi, tư vấn và hỗ trợ dinh dưỡng', 'Chỉ phát thuốc', 'Chỉ cân trẻ', 'Không cần hướng dẫn gia đình'], correct: "A", topic: "1" },
+{ id: 121, text: "Thở máy ở trẻ em là phương pháp:", answers: ['Hỗ trợ hoặc thay thế hô hấp bằng máy', 'Điều trị bằng thuốc', 'Nuôi ăn đặc biệt', 'Theo dõi tim mạch'], correct: "A", topic: "1" },
+{ id: 122, text: "Mục đích chính của thở máy là:", answers: ['Đảm bảo trao đổi khí', 'Tăng tiêu hóa', 'Giảm đau bụng', 'Điều trị tiêu chảy'], correct: "A", topic: "1" },
+{ id: 123, text: "Chỉ định thường gặp của thở máy ở trẻ em là:", answers: ['Suy hô hấp nặng', 'Viêm dia', 'Thiếu máu nhẹ', 'Gãy xương tay'], correct: "A", topic: "1" },
+{ id: 124, text: "Dấu hiệu nào gợi ý trẻ suy hô hấp cần thở máy?", answers: ['Tím tái, SpO₂ giảm', 'Da hồng', 'Ăn ngon', 'Tiểu nhiều'], correct: "A", topic: "1" },
+{ id: 125, text: "Điều dưỡng cần ưu tiên đầu tiên khi chăm sóc trẻ thở máy là:", answers: ['Đảm bảo thông thoáng đường thở', 'Cho trẻ ăn', 'Tắm trẻ', 'Đo chiều cao'], correct: "A", topic: "1" },
+{ id: 126, text: "Biến chứng thường gặp nhất ở trẻ thở máy là:", answers: ['Viêm phổi liên quan thở máy', 'Viêm da', 'Cong vẹo cột sống', 'Thiếu máu nhẹ'], correct: "A", topic: "1" },
+{ id: 127, text: "Mục đích của hút đờm cho trẻ thở máy là:", answers: ['Làm thông thoáng đường thở', 'Giảm sốt', 'Tăng ăn ngon', 'Giảm đau bụng'], correct: "A", topic: "1" },
+{ id: 128, text: "Khi hút đờm cho trẻ thở máy, điều dưỡng cần thực hiện nguyên tắc:", answers: ['Vô khuẩn', 'Nhanh không cần sạch', 'Không cần găng', 'Hút liên tục kéo dài'], correct: "A", topic: "1" },
+{ id: 129, text: "Dấu hiệu trẻ bị thiếu oxy khi thở máy là:", answers: ['Tím tái, SpO₂ giảm', 'Da hồng', 'Ngủ ngon', 'Tiểu nhiều'], correct: "A", topic: "1" },
+{ id: 130, text: "Điều dưỡng cần theo dõi SpO₂ nhằm mục đích:", answers: ['Đánh giá oxy hóa máu', 'Đánh giá tiêu hóa', 'Đánh giá vận động', 'Đánh giá chiều cao'], correct: "A", topic: "1" },
+{ id: 131, text: "Tư thế phù hợp cho trẻ thở máy là:", answers: ['Nằm đầu cao 30–45°', 'Nằm đầu thấp', 'Nằm sấp hoàn toàn', 'Ngồi xổm'], correct: "A", topic: "1" },
+{ id: 132, text: "Mục đích của việc nâng đầu giường ở trẻ thở máy là:", answers: ['Giảm nguy cơ hít sặc và viêm phổi', 'Giảm đau chân', 'Tăng huyết áp', 'Giảm bài tiết nước tiểu'], correct: "A", topic: "1" },
+{ id: 133, text: "Khi chăm sóc trẻ thở máy, điều dưỡng cần theo dõi:", answers: ['Dấu hiệu sinh tồn', 'Màu tóc', 'Kích thước bàn chân', 'Màu móng tay'], correct: "A", topic: "1" },
+{ id: 134, text: "Một trong các dấu hiệu nguy hiểm ở trẻ thở máy là:", answers: ['Máy báo áp lực cao', 'Trẻ ngủ yên', 'Da ấm', 'Mạch đều'], correct: "A", topic: "1" },
+{ id: 135, text: "Nguyên nhân thường gây báo động áp lực cao trên máy thở là:", answers: ['Tắc đờm đường thở', 'Thiếu dịch truyền', 'Hạ thân nhiệt', 'Tăng nước tiểu'], correct: "A", topic: "1" },
+{ id: 136, text: "Điều dưỡng cần làm gì khi trẻ tuột nội khí quản?", answers: ['Báo bác sĩ và hỗ trợ cấp cứu ngay', 'Tiếp tục theo dõi', 'Cho trẻ ăn', 'Tắt máy thở'], correct: "A", topic: "1" },
+{ id: 137, text: "Dấu hiệu cải thiện hô hấp ở trẻ thở máy là:", answers: ['SpO₂ ổn định', 'Tím tái tăng', 'Co kéo cơ hô hấp tăng', 'Mạch nhanh hơn'], correct: "A", topic: "1" },
+{ id: 138, text: "Biện pháp phòng loét tỳ đè ở trẻ thở máy là:", answers: ['Thay đổi tư thế định kỳ', 'Để nằm yên liên tục', 'Hạn chế vệ sinh', 'Không xoay trở'], correct: "A", topic: "1" },
+{ id: 139, text: "Khi hút đờm qua nội khí quản, thời gian hút mỗi lần nên:", answers: ['Dưới 15 giây', '1 phút', '2 phút', '5 phút'], correct: "A", topic: "1" },
+{ id: 140, text: "Trẻ thở máy có nguy cơ nhiễm khuẩn cao do:", answers: ['Xâm nhập đường thở nhân tạo', 'Ăn ít', 'Thiếu vitamin', 'Uống ít nước'], correct: "A", topic: "1" },
+{ id: 141, text: "Điều dưỡng cần cố định nội khí quản chắc chắn nhằm:", answers: ['Tránh tuột ống', 'Làm trẻ dễ ngủ', 'Giảm sốt', 'Tăng ăn ngon'], correct: "A", topic: "1" },
+{ id: 142, text: "Một dấu hiệu cho thấy trẻ không đồng bộ với máy thở là:", answers: ['Kích thích, co kéo hô hấp', 'Ngủ yên', 'Da hồng', 'Mạch đều'], correct: "A", topic: "1" },
+{ id: 143, text: "Chăm sóc răng miệng cho trẻ thở máy nhằm:", answers: ['Giảm nguy cơ viêm phổi', 'Giảm đau bụng', 'Tăng huyết áp', 'Điều trị thiếu máu'], correct: "A", topic: "1" },
+{ id: 144, text: "Điều dưỡng cần theo dõi khí máu động mạch nhằm:", answers: ['Đánh giá hiệu quả thông khí', 'Đánh giá tiêu hóa', 'Theo dõi chiều cao', 'Đánh giá chức năng gan'], correct: "A", topic: "1" },
+{ id: 145, text: "Khi máy thở mất nguồn điện, điều dưỡng cần:", answers: ['Bóp bóng Ambu hỗ trợ ngay', 'Để trẻ tự thở', 'Tắt hoàn toàn máy', 'Cho trẻ uống nước'], correct: "A", topic: "1" },
+{ id: 146, text: "Một nguyên tắc quan trọng khi chăm sóc trẻ thở máy là:", answers: ['Tuân thủ vô khuẩn', 'Hạn chế theo dõi', 'Không cần hút đờm', 'Không cần ghi hồ sơ'], correct: "A", topic: "1" },
+{ id: 147, text: "Trẻ thở máy kéo dài cần được hỗ trợ dinh dưỡng nhằm:", answers: ['Đảm bảo hồi phục và tăng sức đề kháng', 'Giảm hô hấp', 'Tăng tiết đờm', 'Gây tăng huyết áp'], correct: "A", topic: "1" },
+{ id: 148, text: "Khi trẻ thở máy có bụng chướng, điều dưỡng cần nghĩ đến:", answers: ['Nuốt khí hoặc biến chứng hô hấp', 'Trẻ đói', 'Thiếu vitamin', 'Tăng vận động'], correct: "A", topic: "1" },
+{ id: 149, text: "Vai trò của điều dưỡng trong chăm sóc trẻ thở máy là:", answers: ['Theo dõi sát và xử trí kịp thời', 'Chỉ phát thuốc', 'Chỉ ghi hồ sơ', 'Không cần đánh giá'], correct: "A", topic: "1" },
+{ id: 150, text: "Giáo dục gia đình trẻ thở máy cần:", answers: ['Giải thích tình trạng và phối hợp chăm sóc', 'Tự ý chỉnh máy thở', 'Không cần thăm trẻ', 'Tự rút nội khí quản'], correct: "A", topic: "1" },
+{ id: 151, text: "Mục tiêu quan trọng nhất của dinh dưỡng hợp lí cho trẻ là:", answers: ['Đảm bảo tăng trưởng và phát triển toàn diện', 'Làm trẻ tăng cân nhanh', 'Giảm hoàn toàn bệnh tật', 'Thay thế điều trị y tế'], correct: "A", topic: "1" },
+{ id: 152, text: "Thức ăn tốt nhất cho trẻ dưới 6 tháng tuổi là:", answers: ['Sữa mẹ hoàn toàn', 'Sữa bò', 'Cháo loãng', 'Nước cơm'], correct: "A", topic: "1" },
+{ id: 153, text: "Theo khuyến cáo, trẻ nên được bú mẹ hoàn toàn trong thời gian:", answers: ['6 tháng đầu', '1 tháng đầu', '12 tháng đầu', '24 tháng đầu'], correct: "A", topic: "1" },
+{ id: 154, text: "Khi tư vấn dinh dưỡng cho bà mẹ, điều dưỡng cần ưu tiên:", answers: ['Phù hợp lứa tuổi và tình trạng trẻ', 'Theo sở thích điều dưỡng', 'Chỉ dùng thực phẩm đắt tiền', 'Kiêng hoàn toàn chất béo'], correct: "A", topic: "1" },
+{ id: 155, text: "Trẻ từ 6 tháng tuổi cần được:", answers: ['Ăn bổ sung hợp lý kết hợp bú mẹ', 'Cai sữa hoàn toàn', 'Chỉ uống nước trái cây', 'Ăn như người lớn'], correct: "A", topic: "1" },
+{ id: 156, text: "Nguyên tắc ăn dặm đúng cho trẻ là:", answers: ['Từ ít đến nhiều, từ loãng đến đặc', 'Ăn thật nhiều ngay từ đầu', 'Chỉ ăn tinh bột', 'Không cần bú mẹ'], correct: "A", topic: "1" },
+{ id: 157, text: "Một trong các dấu hiệu trẻ bú mẹ đủ là:", answers: ['Tăng cân tốt', 'Quấy khóc liên tục', 'Tiểu ít', 'Sụt cân'], correct: "A", topic: "1" },
+{ id: 158, text: "Trẻ suy dinh dưỡng cần được tư vấn chế độ ăn:", answers: ['Giàu năng lượng và protein', 'Hạn chế đạm', 'Chỉ ăn cháo loãng', 'Kiêng dầu mỡ hoàn toàn'], correct: "A", topic: "1" },
+{ id: 159, text: "Thực phẩm giàu vitamin A giúp phòng ngừa:", answers: ['Khô mắt', 'Thiếu máu', 'Còi xương', 'Béo phì'], correct: "A", topic: "1" },
+{ id: 160, text: "Điều dưỡng cần hướng dẫn bà mẹ rửa tay trước khi chế biến thức ăn nhằm:", answers: ['Phòng nhiễm khuẩn', 'Tăng hấp thu thức ăn', 'Giảm tiêu hóa', 'Tăng cân nhanh'], correct: "A", topic: "1" },
+{ id: 161, text: "Chế độ ăn hợp lí cho trẻ cần đảm bảo:", answers: ['Đủ 4 nhóm chất dinh dưỡng', 'Chỉ nhiều đạm', 'Chỉ nhiều tinh bột', 'Chỉ nhiều vitamin'], correct: "A", topic: "1" },
+{ id: 162, text: "Trẻ tiêu chảy cần tiếp tục:", answers: ['Ăn uống và bú mẹ đầy đủ', 'Nhịn ăn hoàn toàn', 'Chỉ uống nước lọc', 'Ngừng bú mẹ'], correct: "A", topic: "1" },
+{ id: 163, text: "Dấu hiệu thiếu vitamin D ở trẻ là:", answers: ['Còi xương', 'Phù toàn thân', 'Vàng da', 'Xuất huyết'], correct: "A", topic: "1" },
+{ id: 164, text: "Một trong các nguyên nhân gây suy dinh dưỡng trẻ em là:", answers: ['Chế độ ăn không hợp lí', 'Uống đủ nước', 'Tiêm chủng đầy đủ', 'Vận động phù hợp'], correct: "A", topic: "1" },
+{ id: 165, text: "Điều dưỡng cần khuyến khích bà mẹ cho trẻ ăn đa dạng nhằm:", answers: ['Đảm bảo đủ dưỡng chất', 'Làm trẻ ăn nhiều hơn', 'Giảm hấp thu thức ăn', 'Giảm miễn dịch'], correct: "A", topic: "1" },
+{ id: 166, text: "Trẻ từ 1–3 tuổi cần số bữa ăn chính mỗi ngày khoảng:", answers: ['3 bữa chính và 1–2 bữa phụ', '1 bữa', '6 bữa chính', 'Không cần ăn phụ'], correct: "A", topic: "1" },
+{ id: 167, text: "Trẻ béo phì nên được khuyến khích:", answers: ['Tăng vận động thể lực', 'Nhịn ăn kéo dài', 'Chỉ ăn thịt', 'Không uống nước'], correct: "A", topic: "1" },
+{ id: 168, text: "Một nguyên tắc quan trọng trong giáo dục dinh dưỡng là:", answers: ['Tư vấn dễ hiểu, phù hợp đối tượng', 'Dùng thuật ngữ phức tạp', 'Chỉ phát tài liệu', 'Không cần giải thích'], correct: "A", topic: "1" },
+{ id: 169, text: "Khi trẻ biếng ăn, bà mẹ nên:", answers: ['Chia nhỏ bữa ăn', 'Ép trẻ ăn nhiều', 'Cho trẻ nhịn đói', 'Chỉ uống sữa'], correct: "A", topic: "1" },
+{ id: 170, text: "Trẻ thiếu sắt thường có biểu hiện:", answers: ['Da xanh, niêm nhạt', 'Da đỏ', 'Tăng cân nhanh', 'Phù nhẹ'], correct: "A", topic: "1" },
+{ id: 171, text: "Một trong các dấu hiệu ngộ độc thực phẩm ở trẻ là:", answers: ['Nôn và tiêu chảy cấp', 'Tăng chiều cao', 'Ngủ ngon', 'Ăn khỏe'], correct: "A", topic: "1" },
+{ id: 172, text: "Điều dưỡng cần hướng dẫn bà mẹ đọc hạn sử dụng thực phẩm nhằm:", answers: ['Đảm bảo an toàn cho trẻ', 'Tăng vị ngon', 'Giảm chi phí', 'Giảm hấp thu thức ăn'], correct: "A", topic: "1" },
+{ id: 173, text: "Trẻ mắc bệnh tim bẩm sinh thường cần chế độ ăn:", answers: ['Giàu năng lượng, dễ tiêu', 'Ít năng lượng', 'Chỉ uống nước', 'Hạn chế hoàn toàn đạm'], correct: "A", topic: "1" },
+{ id: 174, text: "Một sai lầm thường gặp khi nuôi trẻ bệnh là:", answers: ['Kiêng ăn quá mức', 'Cho ăn đa dạng', 'Tiếp tục bú mẹ', 'Chia nhỏ bữa ăn'], correct: "A", topic: "1" },
+{ id: 175, text: "Trẻ sốt cao cần được bổ sung thêm:", answers: ['Nước và điện giải', 'Chất béo bão hòa', 'Muối nhiều', 'Nước ngọt có gas'], correct: "A", topic: "1" },
+{ id: 176, text: "Khi tư vấn nuôi con bằng sữa mẹ, điều dưỡng cần nhấn mạnh:", answers: ['Cho bú đúng tư thế và đúng cách', 'Cai sữa sớm', 'Chỉ bú ban ngày', 'Không cần bú đêm'], correct: "A", topic: "1" },
+{ id: 177, text: "Dấu hiệu trẻ ăn dặm không phù hợp có thể là:", answers: ['Rối loạn tiêu hóa', 'Tăng cân hợp lý', 'Ăn ngon miệng', 'Da hồng hào'], correct: "A", topic: "1" },
+{ id: 178, text: "Vai trò của điều dưỡng trong tham vấn dinh dưỡng là:", answers: ['Hướng dẫn và hỗ trợ bà mẹ chăm sóc trẻ', 'Chỉ cân trẻ', 'Chỉ phát thuốc', 'Không cần theo dõi'], correct: "A", topic: "1" },
+{ id: 179, text: "Một trong các biện pháp phòng suy dinh dưỡng ở trẻ là:", answers: ['Theo dõi biểu đồ tăng trưởng định kỳ', 'Kiêng ăn kéo dài', 'Hạn chế bú mẹ', 'Không tiêm chủng'], correct: "A", topic: "1" },
+{ id: 180, text: "Khi giáo dục dinh dưỡng cho bà mẹ, điều dưỡng cần đánh giá:", answers: ['Mức độ hiểu và khả năng thực hiện của bà mẹ', 'Màu tóc của trẻ', 'Thời gian ngủ của trẻ', 'Kích thước quần áo'], correct: "A", topic: "1" },
+{ id: 181, text: "Mục tiêu quan trọng nhất của dinh dưỡng hợp lí cho trẻ là:", answers: ['Đảm bảo tăng trưởng và phát triển toàn diện', 'Làm trẻ tăng cân nhanh', 'Giảm hoàn toàn bệnh tật', 'Thay thế điều trị y tế'], correct: "A", topic: "1" },
+{ id: 182, text: "Thức ăn tốt nhất cho trẻ dưới 6 tháng tuổi là:", answers: ['Sữa mẹ hoàn toàn', 'Sữa bò', 'Cháo loãng', 'Nước cơm'], correct: "A", topic: "1" },
+{ id: 183, text: "Theo khuyến cáo, trẻ nên được bú mẹ hoàn toàn trong thời gian:", answers: ['6 tháng đầu', '1 tháng đầu', '12 tháng đầu', '24 tháng đầu'], correct: "A", topic: "1" },
+{ id: 184, text: "Khi tư vấn dinh dưỡng cho bà mẹ, điều dưỡng cần ưu tiên:", answers: ['Phù hợp lứa tuổi và tình trạng trẻ', 'Theo sở thích điều dưỡng', 'Chỉ dùng thực phẩm đắt tiền', 'Kiêng hoàn toàn chất béo'], correct: "A", topic: "1" },
+{ id: 185, text: "Trẻ từ 6 tháng tuổi cần được:", answers: ['Ăn bổ sung hợp lý kết hợp bú mẹ', 'Cai sữa hoàn toàn', 'Chỉ uống nước trái cây', 'Ăn như người lớn'], correct: "A", topic: "1" },
+{ id: 186, text: "Nguyên tắc ăn dặm đúng cho trẻ là:", answers: ['Từ ít đến nhiều, từ loãng đến đặc', 'Ăn thật nhiều ngay từ đầu', 'Chỉ ăn tinh bột', 'Không cần bú mẹ'], correct: "A", topic: "1" },
+{ id: 187, text: "Một trong các dấu hiệu trẻ bú mẹ đủ là:", answers: ['Tăng cân tốt', 'Quấy khóc liên tục', 'Tiểu ít', 'Sụt cân'], correct: "A", topic: "1" },
+{ id: 188, text: "Trẻ suy dinh dưỡng cần được tư vấn chế độ ăn:", answers: ['Giàu năng lượng và protein', 'Hạn chế đạm', 'Chỉ ăn cháo loãng', 'Kiêng dầu mỡ hoàn toàn'], correct: "A", topic: "1" },
+{ id: 189, text: "Thực phẩm giàu vitamin A giúp phòng ngừa:", answers: ['Khô mắt', 'Thiếu máu', 'Còi xương', 'Béo phì'], correct: "A", topic: "1" },
+{ id: 190, text: "Điều dưỡng cần hướng dẫn bà mẹ rửa tay trước khi chế biến thức ăn nhằm:", answers: ['Phòng nhiễm khuẩn', 'Tăng hấp thu thức ăn', 'Giảm tiêu hóa', 'Tăng cân nhanh'], correct: "A", topic: "1" },
+{ id: 191, text: "Chế độ ăn hợp lí cho trẻ cần đảm bảo:", answers: ['Đủ 4 nhóm chất dinh dưỡng', 'Chỉ nhiều đạm', 'Chỉ nhiều tinh bột', 'Chỉ nhiều vitamin'], correct: "A", topic: "1" },
+{ id: 192, text: "Trẻ tiêu chảy cần tiếp tục:", answers: ['Ăn uống và bú mẹ đầy đủ', 'Nhịn ăn hoàn toàn', 'Chỉ uống nước lọc', 'Ngừng bú mẹ'], correct: "A", topic: "1" },
+{ id: 193, text: "Dấu hiệu thiếu vitamin D ở trẻ là:", answers: ['Còi xương', 'Phù toàn thân', 'Vàng da', 'Xuất huyết'], correct: "A", topic: "1" },
+{ id: 194, text: "Một trong các nguyên nhân gây suy dinh dưỡng trẻ em là:", answers: ['Chế độ ăn không hợp lí', 'Uống đủ nước', 'Tiêm chủng đầy đủ', 'Vận động phù hợp'], correct: "A", topic: "1" },
+{ id: 195, text: "Điều dưỡng cần khuyến khích bà mẹ cho trẻ ăn đa dạng nhằm:", answers: ['Đảm bảo đủ dưỡng chất', 'Làm trẻ ăn nhiều hơn', 'Giảm hấp thu thức ăn', 'Giảm miễn dịch'], correct: "A", topic: "1" },
+{ id: 196, text: "Nguyên nhân vàng da do tắc mật là thuộc nhóm:", answers: ['Tăng bilirubin trực tiếp', 'Gián tiếp sinh lý', 'Thiếu máu', 'Hạ đường huyết'], correct: "A", topic: "1" },
+{ id: 197, text: "Một trong những dấu hiệu nguy hiểm của vàng da nhân não là:", answers: ['Co giật', 'Ăn tốt', 'Da hồng', 'Tiểu nhiều'], correct: "A", topic: "1" },
+{ id: 198, text: "Khi bilirubin tăng cao cần làm gì đầu tiên?", answers: ['Đánh giá mức độ vàng da và chỉ định chiếu đèn', 'Cho uống nước', 'Tắm nắng lâu', 'Cho ăn ít lại'], correct: "A", topic: "1" },
+{ id: 199, text: "Tư thế đúng khi chiếu đèn giúp:", answers: ['Tăng diện tích chiếu ánh sáng', 'Giảm hấp thu thuốc', 'Tăng ngủ sâu', 'Giảm hô hấp'], correct: "A", topic: "1" },
+{ id: 200, text: "Mất nước khi chiếu đèn cần phòng bằng cách:", answers: ['Tăng bú mẹ hoặc truyền dịch nếu cần', 'Hạn chế uống', 'Nhịn ăn', 'Không theo dõi'], correct: "A", topic: "1" },
+{ id: 201, text: "Nguyên nhân vàng da do tan máu có thể gặp trong:", answers: ['Bất đồng Rh', 'Thiếu vitamin D', 'Viêm da', 'Suy dinh dưỡng'], correct: "A", topic: "1" },
+{ id: 202, text: "Theo dõi bilirubin giúp đánh giá:", answers: ['Mức độ vàng da', 'Chiều cao', 'Cân nặng', 'Nhịp tim'], correct: "A", topic: "1" },
+{ id: 203, text: "Khi trẻ vàng da li bì, bú kém cần nghĩ đến:", answers: ['Nguy cơ vàng da nặng', 'Trẻ khỏe mạnh', 'Thiếu ngủ', 'Tăng miễn dịch'], correct: "A", topic: "1" },
+{ id: 204, text: "Phòng vàng da sơ sinh quan trọng nhất là:", answers: ['Cho bú sớm sau sinh', 'Tắm nắng lâu', 'Nhịn ăn', 'Hạn chế bú mẹ'], correct: "A", topic: "1" },
+{ id: 205, text: "Vai trò của ánh sáng trong chiếu đèn là:", answers: ['Chuyển bilirubin thành dạng tan trong nước', 'Tăng tạo hồng cầu', 'Giảm hấp thu oxy', 'Tăng đường huyết'], correct: "A", topic: "1" },
+{ id: 206, text: "Điều dưỡng cần thay đổi tư thế trẻ chiếu đèn nhằm:", answers: ['Tăng hiệu quả chiếu', 'Giảm ăn', 'Tăng ngủ', 'Giảm bài tiết'], correct: "A", topic: "1" },
+{ id: 207, text: "Dấu hiệu quá mức chiếu đèn có thể gây:", answers: ['Tăng thân nhiệt', 'Tăng cân', 'Tăng huyết áp', 'Tăng đường huyết'], correct: "A", topic: "1" },
+{ id: 208, text: "Khi trẻ vàng da lan xuống bàn chân thường gợi ý:", answers: ['Mức độ nặng hơn', 'Bình thường', 'Đã khỏi bệnh', 'Không liên quan'], correct: "A", topic: "1" },
+{ id: 209, text: "Vai trò điều dưỡng trong chăm sóc vàng da sơ sinh là:", answers: ['Theo dõi, chiếu đèn, giáo dục gia đình', 'Chỉ phát thuốc', 'Chỉ theo dõi cân nặng', 'Không cần can thiệp'], correct: "A", topic: "1" },
+{ id: 210, text: "Giáo dục bà mẹ phòng vàng da sơ sinh cần nhấn mạnh:", answers: ['Cho trẻ bú sớm và theo dõi vàng da', 'Nhịn bú 3 ngày', 'Tắm nắng quá lâu', 'Không theo dõi trẻ'], correct: "A", topic: "1" },
+{ id: 211, text: "Sứt môi – hở hàm ếch là dị tật:", answers: ['Bẩm sinh vùng mặt', 'Mắc phải sau sinh', 'Do nhiễm trùng da', 'Do thiếu dinh dưỡng sau sinh'], correct: "A", topic: "1" },
+{ id: 212, text: "Dấu hiệu đặc trưng của sứt môi là:", answers: ['Có khe hở môi trên', 'Bụng chướng', 'Vàng da', 'Co giật'], correct: "A", topic: "1" },
+{ id: 213, text: "Biến chứng thường gặp ở trẻ sứt môi – hở hàm ếch là:", answers: ['Sặc khi bú', 'Táo bón', 'Viêm da', 'Thiếu máu'], correct: "A", topic: "1" },
+{ id: 214, text: "Nguyên tắc cho trẻ sứt môi bú là:", answers: ['Tư thế đầu cao, chống sặc', 'Nằm đầu thấp', 'Nằm sấp', 'Cho bú nhanh'], correct: "A", topic: "1" },
+{ id: 215, text: "Tim bẩm sinh là:", answers: ['Bất thường cấu trúc tim từ khi sinh', 'Viêm tim cấp', 'Suy tim do nhiễm trùng', 'Rối loạn nhịp đơn thuần'], correct: "A", topic: "1" },
+{ id: 216, text: "Dấu hiệu gợi ý tim bẩm sinh ở trẻ sơ sinh là:", answers: ['Tím tái khi bú', 'Ho nhẹ', 'Vàng da sinh lý', 'Tiểu nhiều'], correct: "A", topic: "1" },
+{ id: 217, text: "Thoát vị hoành là:", answers: ['Tạng bụng lên lồng ngực qua lỗ cơ hoành', 'Viêm phổi nặng', 'Tắc ruột đơn thuần', 'Viêm phế quản'], correct: "A", topic: "1" },
+{ id: 218, text: "Dấu hiệu đặc trưng của thoát vị hoành là:", answers: ['Khó thở sớm sau sinh', 'Sốt cao', 'Vàng da', 'Tiêu chảy'], correct: "A", topic: "1" },
+{ id: 219, text: "Thoát vị rốn là:", answers: ['Tạng bụng thoát ra qua rốn', 'Thoát vị đĩa đệm', 'Viêm rốn', 'Nhiễm trùng da'], correct: "A", topic: "1" },
+{ id: 220, text: "Dấu hiệu thoát vị rốn là:", answers: ['Khối phồng vùng rốn', 'Khó thở', 'Co giật', 'Sốt cao'], correct: "A", topic: "1" },
+{ id: 221, text: "Lỗ tiểu thấp là:", answers: ['Lỗ tiểu lệch thấp mặt dưới dương vật', 'Hẹp hậu môn', 'Tắc ruột', 'Viêm niệu đạo'], correct: "A", topic: "1" },
+{ id: 222, text: "Bi biểu hiện thường gặp của lỗ tiểu thấp là:", answers: ['Tiểu lệch dòng', 'Tiểu ra máu', 'Bí tiểu hoàn toàn', 'Tiểu nhiều'], correct: "A", topic: "1" },
+{ id: 223, text: "Hẹp phì đại môn vị thường gây:", answers: ['Nôn vọt sau ăn', 'Tiêu chảy', 'Táo bón nhẹ', 'Ho'], correct: "A", topic: "1" },
+{ id: 224, text: "Dấu hiệu mất nước ở trẻ hẹp phì đại môn vị là:", answers: ['Mắt trũng, da khô', 'Da hồng', 'Tăng cân', 'Ăn ngon'], correct: "A", topic: "1" },
+{ id: 225, text: "Chẩn đoán sớm bất thường bẩm sinh chủ yếu dựa vào:", answers: ['Khám lâm sàng sau sinh', 'Xét nghiệm máu định kỳ', 'Đo chiều cao', 'Đo cân nặng'], correct: "A", topic: "1" },
+{ id: 226, text: "Khi phát hiện dị tật bẩm sinh, điều dưỡng cần:", answers: ['Báo bác sĩ và theo dõi sát', 'Cho xuất viện ngay', 'Tự điều trị', 'Không cần can thiệp'], correct: "A", topic: "1" },
+{ id: 227, text: "Nguyên tắc chuyển viện an toàn là:", answers: ['Ổn định trước khi chuyển', 'Chuyển ngay không theo dõi', 'Không cần oxy', 'Không cần hồ sơ'], correct: "A", topic: "1" },
+{ id: 228, text: "Trẻ tim bẩm sinh tím khi bú cần:", answers: ['Ngừng bú và hỗ trợ oxy', 'Cho bú tiếp', 'Cho uống nước', 'Tắm nước lạnh'], correct: "A", topic: "1" },
+{ id: 229, text: "Biến chứng nguy hiểm của thoát vị hoành là:", answers: ['Suy hô hấp nặng', 'Thiếu máu nhẹ', 'Viêm da', 'Táo bón'], correct: "A", topic: "1" },
+{ id: 230, text: "Khi chăm sóc trẻ sứt môi, điều dưỡng cần:", answers: ['Hướng dẫn dụng cụ bú phù hợp', 'Cho bú bình thường', 'Không cần hỗ trợ', 'Ngừng ăn'], correct: "A", topic: "1" },
+{ id: 231, text: "Trẻ hở hàm ếch dễ bị:", answers: ['Viêm tai giữa', 'Viêm da', 'Viêm gan', 'Còi xương'], correct: "A", topic: "1" },
+{ id: 232, text: "Một dấu hiệu quan trọng của tim bẩm sinh là:", answers: ['Chậm tăng cân', 'Tăng cân nhanh', 'Da hồng', 'Ngủ nhiều'], correct: "A", topic: "1" },
+{ id: 233, text: "Thoát vị rốn thường cần xử trí:", answers: ['Theo dõi và bảo vệ khối thoát vị', 'Phẫu thuật ngay mọi trường hợp', 'Không cần theo dõi', 'Dùng thuốc kháng sinh'], correct: "A", topic: "1" },
+{ id: 234, text: "Khi nghi ngờ hẹp phì đại môn vị, cần theo dõi:", answers: ['Nôn vọt và cân nặng', 'Nhịp tim', 'Thị lực', 'Huyết áp người mẹ'], correct: "A", topic: "1" },
+{ id: 235, text: "Yếu tố nguy cơ dị tật bẩm sinh là:", answers: ['Di truyền và môi trường', 'Uống đủ nước', 'Dinh dưỡng tốt', 'Tiêm chủng đầy đủ'], correct: "A", topic: "1" },
+{ id: 236, text: "Khi chuyển viện trẻ dị tật bẩm sinh cần:", answers: ['Giữ ấm và đảm bảo đường thở', 'Cho ăn nhiều', 'Không theo dõi', 'Bỏ qua sinh hiệu'], correct: "A", topic: "1" },
+{ id: 237, text: "Dấu hiệu suy hô hấp ở trẻ thoát vị hoành là:", answers: ['Co kéo cơ hô hấp', 'Da hồng', 'Ngủ ngon', 'Tiểu nhiều'], correct: "A", topic: "1" },
+{ id: 238, text: "Trẻ tim bẩm sinh nặng cần theo dõi:", answers: ['SpO₂ liên tục', 'Cân nặng mỗi tháng', 'Chiều cao', 'Thị lực'], correct: "A", topic: "1" },
+{ id: 239, text: "Vai trò điều dưỡng trong chăm sóc dị tật bẩm sinh là:", answers: ['Theo dõi, chăm sóc, tư vấn chuyển viện', 'Chỉ ghi hồ sơ', 'Chỉ phát thuốc', 'Không cần theo dõi'], correct: "A", topic: "1" },
+{ id: 240, text: "Giáo dục gia đình trẻ dị tật bẩm sinh cần nhấn mạnh:", answers: ['Tuân thủ điều trị và tái khám', 'Tự ý điều trị', 'Bỏ theo dõi', 'Không cần đến viện'], correct: "A", topic: "1" },
+{ id: 241, text: "Dấu hiệu nguy hiểm nhất ở trẻ tim bẩm sinh là:", answers: ['Tím toàn thân và ngừng thở', 'Ho nhẹ', 'Sốt nhẹ', 'Ăn tốt'], correct: "A", topic: "1" },
+{ id: 242, text: "Khi trẻ thoát vị hoành, chống chỉ định quan trọng là:", answers: ['Cho bú qua miệng', 'Theo dõi SpO₂', 'Đặt sonde dạ dày', 'Hỗ trợ thở'], correct: "A", topic: "1" },
+{ id: 243, text: "Nguyên tắc quan trọng khi vận chuyển trẻ dị tật là:", answers: ['Ổn định hô hấp – tuần hoàn trước chuyển', 'Chuyển ngay không ổn định', 'Không cần oxy', 'Không cần theo dõi'], correct: "A", topic: "1" },
+{ id: 244, text: "Hẹp phì đại môn vị gây mất cân bằng gì chủ yếu?", answers: ['Nước và điện giải', 'Canxi', 'Sắt', 'Vitamin A'], correct: "A", topic: "1" },
+{ id: 245, text: "Biến chứng lâu dài không điều trị sứt môi – hở hàm ếch là:", answers: ['Chậm phát triển ngôn ngữ', 'Tăng chiều cao', 'Tăng cân nhanh', 'Tăng thị lực'], correct: "A", topic: "1" }
+      ];
+
+     let currentTopic = null;
+    let shuffleQuestions = true;
+    let shuffleAnswers = true;
+    let currentQuestions = [];
+    let userSelections = {};
+    let answersMapping = new Map();
+    
+    const questionsContainer = document.getElementById("questionsContainer");
+    const scoreContainer = document.getElementById("scoreContainer");
+    const shuffleQuestionsToggle = document.getElementById("shuffleQuestionsToggle");
+    const shuffleAnswersToggle = document.getElementById("shuffleAnswersToggle");
+    const liveScoreSpan = document.getElementById("liveScore");
+    
+    function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+    
+    function getFilteredQuestions() {
+        if (!currentTopic) return [];
+        let filtered = QUESTION_SET.filter(q => currentTopic === "all" || q.topic === currentTopic);
+        let result = [...filtered];
+        if (shuffleQuestions) result = shuffleArray(result);
+        return result;
+    }
+    
+    function buildAnswerMapping(question) {
+        const originalAnswers = question.answers;
+        const correctIndex = question.correct.charCodeAt(0) - 65;
+        const correctText = originalAnswers[correctIndex];
+        
+        if (!shuffleAnswers) {
+            return {
+                displayList: [
+                    { letter: "A", text: originalAnswers[0] },
+                    { letter: "B", text: originalAnswers[1] },
+                    { letter: "C", text: originalAnswers[2] },
+                    { letter: "D", text: originalAnswers[3] }
+                ],
+                correctLetterDisplay: question.correct
+            };
+        } else {
+            let items = originalAnswers.map((text, idx) => ({ text }));
+            items = shuffleArray([...items]);
+            const displayList = items.map((item, newIdx) => ({ letter: String.fromCharCode(65+newIdx), text: item.text }));
+            const found = displayList.find(item => item.text === correctText);
+            return {
+                displayList,
+                correctLetterDisplay: found ? found.letter : "A"
+            };
+        }
+    }
+    
+    function updateAllUI() {
+        if (!currentQuestions.length) {
+            liveScoreSpan.innerText = `0 / 0`;
+            return;
+        }
+        let correctCount = 0;
+        
+        for (let q of currentQuestions) {
+            const mapping = answersMapping.get(q.id);
+            if (!mapping) continue;
+            const selectedLetter = userSelections[q.id];
+            const isCorrect = (selectedLetter && selectedLetter === mapping.correctLetterDisplay);
+            if (isCorrect) correctCount++;
+            
+            const cardDiv = document.querySelector(`.question-card[data-qid='${q.id}']`);
+            if (!cardDiv) continue;
+            
+            const iconSpan = cardDiv.querySelector('.status-icon');
+            if (iconSpan) {
+                if (!selectedLetter) {
+                    iconSpan.innerHTML = "⚪ Chưa làm";
+                    iconSpan.className = "status-icon status-none";
+                } else if (isCorrect) {
+                    iconSpan.innerHTML = "✓ Đúng";
+                    iconSpan.className = "status-icon status-correct";
+                } else {
+                    iconSpan.innerHTML = "✗ Sai";
+                    iconSpan.className = "status-icon status-wrong";
+                }
+            }
+            
+            const answerDivs = cardDiv.querySelectorAll('.answer-option');
+            for (let ansDiv of answerDivs) {
+                const letter = ansDiv.dataset.letter;
+                const isSelected = (selectedLetter === letter);
+                
+                ansDiv.classList.remove('correct-highlight', 'wrong-highlight');
+                
+                if (isSelected) {
+                    if (isCorrect) {
+                        ansDiv.classList.add('correct-highlight');
+                    } else {
+                        ansDiv.classList.add('wrong-highlight');
+                    }
+                }
+                
+                let statusSpan = ansDiv.querySelector('.answer-status');
+                if (!statusSpan) {
+                    statusSpan = document.createElement('span');
+                    statusSpan.className = 'answer-status';
+                    ansDiv.appendChild(statusSpan);
+                }
+                
+                if (isSelected && isCorrect) {
+                    statusSpan.innerHTML = '✓';
+                    statusSpan.className = 'answer-status check-mark';
+                } else if (isSelected && !isCorrect) {
+                    statusSpan.innerHTML = '✗';
+                    statusSpan.className = 'answer-status cross-mark';
+                } else {
+                    statusSpan.innerHTML = '';
+                }
+            }
+        }
+        liveScoreSpan.innerText = `${correctCount} / ${currentQuestions.length}`;
+    }
+    
+    function onAnswerClick(questionId, selectedLetter) {
+        userSelections[questionId] = selectedLetter;
+        
+        const questionCard = document.querySelector(`.question-card[data-qid='${questionId}']`);
+        if (questionCard) {
+            const allOptions = questionCard.querySelectorAll('.answer-option');
+            allOptions.forEach(opt => {
+                const letter = opt.dataset.letter;
+                if (letter === selectedLetter) {
+                    opt.classList.add('selected');
+                } else {
+                    opt.classList.remove('selected');
+                }
+            });
+        }
+        updateAllUI();
+    }
+    
+    // Hàm cuộn xuống câu hỏi đầu tiên
+    function scrollToFirstQuestion() {
+        setTimeout(() => {
+            const firstQuestion = document.querySelector('.question-card');
+            if (firstQuestion) {
+                firstQuestion.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }, 100);
+    }
+    
+    function renderFullQuiz() {
+        if (!currentTopic) {
+            scoreContainer.style.display = "none";
+            questionsContainer.innerHTML = `
+                <div class="welcome-message">
+                    👋 Chào bạn!<br>
+                    Hãy chọn một chủ đề bên trên để bắt đầu làm bài trắc nghiệm.
+                </div>
+            `;
+            return;
+        }
+        
+        currentQuestions = getFilteredQuestions();
+        answersMapping.clear();
+        for (let q of currentQuestions) {
+            answersMapping.set(q.id, buildAnswerMapping(q));
+        }
+        userSelections = {};
+        
+        if (currentQuestions.length === 0) {
+            scoreContainer.style.display = "block";
+            questionsContainer.innerHTML = `<div class="card" style="text-align:center">⚠️ Không có câu hỏi cho chủ đề này.</div>`;
+            liveScoreSpan.innerText = `0 / 0`;
+            return;
+        }
+        
+        let html = '';
+        currentQuestions.forEach((q, idx) => {
+            const mapping = answersMapping.get(q.id);
+            if (!mapping) return;
+            const { displayList } = mapping;
+            let answersHtml = '';
+            for (let ans of displayList) {
+                answersHtml += `
+                    <div class="answer-option" data-qid="${q.id}" data-letter="${ans.letter}">
+                        <span class="answer-letter">${ans.letter}</span>
+                        <span class="answer-text">${escapeHtml(ans.text)}</span>
+                        <span class="answer-status"></span>
+                    </div>
+                `;
+            }
+            html += `
+                <div class="question-card" data-qid="${q.id}">
+                    <div class="question-text">
+                        <span><strong>${idx+1}.</strong> ${escapeHtml(q.text)}</span>
+                        <span class="status-icon status-none">⚪ Chưa làm</span>
+                    </div>
+                    <div class="answers">
+                        ${answersHtml}
+                    </div>
+                </div>
+            `;
+        });
+        
+        questionsContainer.innerHTML = html;
+        scoreContainer.style.display = "flex";
+        
+        document.querySelectorAll('.answer-option').forEach(el => {
+            el.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const qid = parseInt(el.dataset.qid);
+                const letter = el.dataset.letter;
+                if (!isNaN(qid) && letter) {
+                    onAnswerClick(qid, letter);
+                }
+            });
+        });
+        
+        updateAllUI();
+        
+        // Tự động cuộn xuống câu hỏi đầu tiên
+        scrollToFirstQuestion();
+    }
+    
+function escapeHtml(str) {
+    if (!str) return "";
+    return str.replace(/[&<>"']/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+    });
+}
+    
+    function refreshQuiz() {
+        renderFullQuiz();
+    }
+    
+    function initEventListeners() {
+        const topicBtns = document.querySelectorAll('.topic-btn');
+        topicBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const topic = btn.dataset.topic;
+                if (!topic) return;
+                currentTopic = topic;
+                topicBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                refreshQuiz();
+            });
+        });
+        
+        shuffleQuestionsToggle.addEventListener('change', (e) => {
+            shuffleQuestions = e.target.checked;
+            if (currentTopic) refreshQuiz();
+        });
+        
+        shuffleAnswersToggle.addEventListener('change', (e) => {
+            shuffleAnswers = e.target.checked;
+            if (currentTopic) refreshQuiz();
+        });
+    }
+    
+    function init() {
+        shuffleQuestions = shuffleQuestionsToggle.checked;
+        shuffleAnswers = shuffleAnswersToggle.checked;
+        initEventListeners();
+        currentTopic = null;
+        renderFullQuiz();
+    }
+    
+    init();
+</script>
+</body>
+</html>
