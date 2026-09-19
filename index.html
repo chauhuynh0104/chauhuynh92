@@ -266,56 +266,6 @@ footer{
     </footer>
 
 </div>
-<div id="newSubjectPopup" class="popup-overlay">
-    <div class="popup-content">
-        <div class="popup-header">
-            <span class="new-badge">MỚI!</span>
-            <button id="closePopupBtn" class="close-x">&times;</button>
-        </div>
-        <div class="popup-body">
-            <div class="popup-icon">📚</div>
-            <h3>Môn học mới đã cập nhật!</h3>
-            <strong>Chăm sóc người lớn có bệnh ngoại khoa nâng cao</strong> <br>
-                <strong>Chăm sóc sức khoẻ trẻ em nâng cao</strong>
-        </div>
-        <div class="popup-footer">
-            <button id="gotItBtn" class="btn-confirm">Tôi đã hiểu</button>
-        </div>
-    </div>
-</div>
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    const popup = document.getElementById('newSubjectPopup');
-    const closeBtn = document.getElementById('closePopupBtn');
-    const gotItBtn = document.getElementById('gotItBtn');
-    
-    // Tên khóa trong LocalStorage để kiểm tra
-    const storageKey = 'hasSeenNewSubject_NgoaiKhoaNCzzz';
 
-    // Kiểm tra nếu chưa từng xem popup này
-    if (!localStorage.getItem(storageKey)) {
-        setTimeout(() => {
-            popup.style.display = 'flex';
-        }, 100); // Hiện sau 1 giây cho mượt
-    }
-
-    // Hàm đóng popup và lưu vào LocalStorage
-    function closePopup() {
-        popup.style.opacity = '0';
-        setTimeout(() => {
-            popup.style.display = 'none';
-            localStorage.setItem(storageKey, 'true');
-        }, 300);
-    }
-
-    closeBtn.addEventListener('click', closePopup);
-    gotItBtn.addEventListener('click', closePopup);
-
-    // Đóng khi click ra ngoài vùng nội dung
-    popup.addEventListener('click', function(e) {
-        if (e.target === popup) closePopup();
-    });
-});
-</script>
 </body>
 </html>
