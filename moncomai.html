@@ -1,0 +1,2937 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trắc Nghiệm Viêm Gan B</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+
+        #quiz-container {
+            margin-top: 20px;
+        }
+
+        .question-card {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-btn {
+            background-color: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            padding: 12px 15px;
+            text-align: left;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .option-btn:hover {
+            background-color: #e2e6ea;
+            border-color: #dae0e5;
+        }
+
+        .option-btn.correct {
+            background-color: #d4edda !important;
+            border-color: #c3e6cb !important;
+            color: #155724 !important;
+            font-weight: bold;
+        }
+
+        .option-btn.wrong {
+            background-color: #f8d7da !important;
+            border-color: #f5c6cb !important;
+            color: #721c24 !important;
+        }
+
+        .feedback {
+            margin-top: 10px;
+            font-weight: bold;
+            font-size: 0.95rem;
+        }
+
+        .score-board {
+        
+            top: 10px;
+            background-color: #007bff;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            z-index: 1000;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .reset-btn {
+            background-color: #ffc107;
+            color: #212529;
+            border: none;
+            padding: 8px 16px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .reset-btn:hover {
+            background-color: #e0a800;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Bài Trắc Nghiệm Y Khoa</h1>
+
+    <div class="score-board">
+        <span>Điểm số: <span id="score">0</span> / <span id="total-answered">0</span></span>
+        <button class="reset-btn" onclick="initQuiz()">Làm lại bài</button>
+    </div>
+
+    <div id="quiz-container"></div>
+
+    <script>
+        const rawQuestions =     [
+		
+		    {
+        q: "Câu 1. Một trong các yếu tố ảnh hưởng đến dấu hiệu sinh tồn liên quan đến chức năng hô hấp của của người bệnh là NGOẠI TRỪ",
+        options: [
+            { text: "A. Các chướng ngại đường hô hấp", isCorrect: false },
+            { text: "B. Hạn chế hoạt động của lồng ngực", isCorrect: false },
+            { text: "C. Các bệnh gây cản trở sự khuếch tán của khí trong phổi", isCorrect: false },
+            { text: "D. Người bệnh cảm thấy khó thở", isCorrect: true },
+        ]
+    },
+    {
+        q: "Câu 2. Các bệnh gây cản trở sự khuếch tán của khí trong phối ảnh hưởng đến chức năng hô hấp của người bệnh là",
+        options: [
+            { text: "A. Viêm phổi, bệnh phổi tắc nghẽn mãn tính", isCorrect: false },
+            { text: "B. Chấn thương lồng ngực: gãy xương sườn, vẹo cột sống", isCorrect: true },
+            { text: "C. Các bệnh gây tràn khí, tràn dịch màng phổi.", isCorrect: false },
+            { text: "D. Cả 3 đáp án trên", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 3. Khi thực hiện quy trình kỹ thuật lấy dấu hiệu sinh tồn cho người bệnh. Các dấu hiệu nhận biết chính xác người bệnh thiếu oxy. NGOẠI TRỪ",
+        options: [
+            { text: "A. Người bệnh kêu khó thở, nhịp thở tăng, SP02 giảm", isCorrect: true },
+            { text: "B. Người bệnh kêu khó thở", isCorrect: false },
+            { text: "C. Người bệnh biểu hiện lo âu, hoảng hốt, bồn chồn, vật vã kích thích", isCorrect: false },
+            { text: "D. Người bệnh sốt cao 39 độ C", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 4. Ở người bệnh đột quỵ. Biểu hiện sớm nhất của dấu hiệu sống là gì ?",
+        options: [
+            { text: "A. Ngừng thở", isCorrect: false },
+            { text: "B. Rối loạn ý thức đột ngột", isCorrect: true },
+            { text: "C. Mạch bẹn không bắt được", isCorrect: false },
+            { text: "D. Ngừng tim", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 5. Bệnh nhân nữ, 85 tuổi, nhập viện vì mệt mỏi, chán ăn và tiểu ít trong 2 ngày gần đây. Khám lâm sàng ghi nhận phù toàn thân (nhiều ở chân), cân nặng tăng 2kg so với tuần trước, huyết áp 180/95 mmHg, Chẩn đoán y khoa: Suy thận mạn giai đoạn IIIa Chẩn đoán điều dưỡng nào phù hợp?",
+        options: [
+            { text: "A. Phù toàn thân do Suy thận cấp", isCorrect: false },
+            { text: "B. Tiểu ít do thừa thể tích dịch", isCorrect: false },
+            { text: "C. Thừa dịch thể tích liên quan đến giảm bài tiết nước tiểu do suy thận cấp", isCorrect: true },
+            { text: "D. Huyết áp tăng do phù toàn thân", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 6. Chẩn đoán điều dưỡng phù hợp nhất khi bệnh nhân tụt huyết áp kéo dài. NGOẠI TRỪ",
+        options: [
+            { text: "A. Giảm tưới máu mô liên quan đến giảm thể tích tuần hoàn", isCorrect: true },
+            { text: "B. Nguy cơ suy thận mạn do suy tuần hoàn", isCorrect: false },
+            { text: "C. Tụt huyết áp do diễn tiến của bệnh", isCorrect: false },
+            { text: "D. Giảm thể tích tuần hoàn do bệnh lý", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 7. Bệnh nhân nam, 54 tuổi, nhập viện ngày thứ ba của bệnh vì sốt cao liên tục, mệt mỏi, nhức đầu, chán ăn. Khám lâm sàng: nhiệt độ 39.5°C, mạch 100 lần/phút, huyết áp 100/70 mmHg, niêm mạc miệng có dấu hiệu xuất huyết chân răng, da có các chấm xuất huyết nhỏ ở hai chân. Bệnh nhân được chẩn đoán: Sốt xuất huyết Dengue mức độ cảnh báo có biểu hiện xuất huyết. Kế hoach chăm sóc nào phù hợp. Ngoại Trừ",
+        options: [
+            { text: "A. Hạ sốt cho người bệnh", isCorrect: false },
+            { text: "B. Hướng dẫn người bệnh nghỉ ngơi tại giường, Ăn thức ăn mềm dễ tiêu", isCorrect: false },
+            { text: "C. Theo dõi sát dấu hiệu sình tồn và tình trạng xuất huyết của người bệnh", isCorrect: false },
+            { text: "D. Giáo dục sức khỏe cho người bệnh ra viện", isCorrect: true },
+        ]
+    },
+    {
+        q: "Câu 8. Người bệnh nam, 70 tuổi, có tiền sử tăng huyết áp, vừa đi bộ nhanh từ hành lang về giường bệnh. Điều dưỡng đo huyết áp ngay được 180/100 mmHg; người bệnh tỉnh, không đau đầu, không khó thở. Hành động phù hợp nhất của điều dưỡng là gì?",
+        options: [
+            { text: "A. Cho người bệnh uống ngay thuốc hạ huyết áp thường dùng", isCorrect: false },
+            { text: "B. Cho người bệnh nghỉ ít nhất 5 phút, kiểm tra lại tư thế, kích thước băng quấn và đo lại huyết áp ở 2 tay", isCorrect: true },
+            { text: "C. Báo động cấp cứu ngay vì người bệnh đang trong tình trạng tăng huyết áp cấp cứu", isCorrect: false },
+            { text: "D. Ghi nhận kết quả \n180/100 mmHg vào hồ sơ và không cần đo lại", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 9. Người bệnh sau phẫu thuật ổ bụng có mạch 118 lần/phút, huyết áp 88/56 mmHg, nhịp thở 28 lần/phút, da lạnh ẩm và lượng nước tiểu giảm. Nhận định nào của điều dưỡng phù hợp nhất?",
+        options: [
+            { text: "A. Người bệnh chỉ có phản ứng đau thông thường sau phẫu thuật", isCorrect: false },
+            { text: "B. Người bệnh có dấu hiệu giảm tưới máu mô, cần nghĩ đến giảm thể tích tuần hoàn và báo bác sĩ ngay", isCorrect: true },
+            { text: "C. Người bệnh bị tăng thân nhiệt nên mạch và nhịp thở tăng", isCorrect: false },
+            { text: "D. Các chỉ số trên chưa có ý nghĩa vì người bệnh vừa phẫu thuật", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 10. Người bệnh đang được thở oxy qua gọng mũi 3 lít/phút. Điều dưỡng ghi nhận SpO₂ giảm từ 96% xuống 86%, nhịp thở 32 lần/phút, người bệnh khó thở và tím môi. Hành động ưu tiên của điều dưỡng là gì?",
+        options: [
+            { text: "A. Ghi kết quả vào hồ sơ và đo lại sau 30 phút", isCorrect: false },
+            { text: "B. Đánh giá ngay đường thở, tình trạng hô hấp, vị trí gọng oxy, nguồn cung cấp oxy; hỗ trợ người bệnh và báo bác sĩ", isCorrect: true },
+            { text: "C. Cho người bệnh nằm đầu thấp để tăng lượng máu lên não", isCorrect: false },
+            { text: "D. Tháo gọng oxy để kiểm tra SpO₂ khi người bệnh tự thở", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 11. Khi đo huyết áp cho người bệnh béo phì, điều dưỡng sử dụng băng quấn nhỏ hơn kích thước cánh tay và ghi nhận huyết áp 170/100 mmHg. Sau khi thay băng quấn phù hợp, huyết áp đo được 145/85 mmHg. Giải thích nào chính xác nhất?",
+        options: [
+            { text: "A. Băng quấn quá nhỏ làm huyết áp đo được cao hơn huyết áp thực tế", isCorrect: false },
+            { text: "B. Kích thước băng quấn không phù hợp làm huyết áp đo được cao hơn huyết áp thực tế. Điều dưỡng cần kiểm tra máy đo HA trước khi thực hiện tránh tình trạng sai lệnh trên", isCorrect: true },
+            { text: "C. Kích thước băng quấn không ảnh hưởng đến kết quả đo huyết áp", isCorrect: false },
+            { text: "D. Sự chênh lệch chỉ do người bệnh thay đổi nhịp thở", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 12. Điều dưỡng bắt mạch quay của người bệnh thấy mạch không đều, lúc mạnh lúc yếu. Máy đo huyết áp tự động báo lỗi nhiều lần. Cách đánh giá tiếp theo phù hợp nhất là gì?",
+        options: [
+            { text: "A. Đếm mạch quay trong 15 giây rồi nhân với 4", isCorrect: false },
+            { text: "B. Đếm mạch quay trong \n30 giây rồi nhân với 2 để đánh giá chính xác mạch của người bệnh", isCorrect: false },
+            { text: "C. Bắt mạch quay đủ 1 phút, đánh giá tính chất mạch, đo huyết áp bằng phương pháp thủ công và báo cáo bất thường", isCorrect: true },
+            { text: "D. Chỉ đo SpO₂ vì \nSpO₂ có thể thay thế việc đánh giá mạch và huyết áp", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 13. Một điều dưỡng chuẩn bị cho người bệnh uống 3 loại thuốc đường uống cùng lúc để tiết kiệm thời gian. Theo nguyên tắc dùng thuốc, hành động nào dưới đây là đúng nhất?",
+        options: [
+            { text: "A. Cho uống cùng lúc để đảm bảo đúng giờ", isCorrect: false },
+            { text: "B. Pha tất cả thuốc vào một cốc nước cho dễ uống", isCorrect: false },
+            { text: "C. Cho uống từng thuốc cách nhau 10–15 phút", isCorrect: true },
+            { text: "D. Nghiền tất cả thuốc trộn lại cho dễ hấp thu", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 14. Trong quá trình cho thuốc qua sonde dạ dày, điều dưỡng quên bơm nước giữa các lần dùng thuốc khác nhau. Nguy cơ nào cao nhất có thể xảy ra?",
+        options: [
+            { text: "A. huốc không hấp thu do nhiệt độ nước", isCorrect: false },
+            { text: "B. Tắc sonde và tương tác thuốc", isCorrect: true },
+            { text: "C. Gây hạ huyết áp đột ngột", isCorrect: false },
+            { text: "D. Tăng đào thải thuốc qua thận", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 15. Một người bệnh đang dùng thuốc tim mạch, điều dưỡng không theo dõi dấu hiệu sinh tồn sau khi dùng thuốc. Sai sót này vi phạm nguyên tắc nào?",
+        options: [
+            { text: "A. 3 kiểm tra", isCorrect: false },
+            { text: "B. 5 đối chiếu", isCorrect: false },
+            { text: "C. Theo dõi tác dụng thuốc", isCorrect: true },
+            { text: "D. Ghi chép hồ sơ", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 16. Điều dưỡng nhận y lệnh tăng liều thuốc huyết áp bất thường so với trước. Hành động đúng nhất là:",
+        options: [
+            { text: "A. Tự giảm liều để an toàn", isCorrect: false },
+            { text: "B. Thực hiện ngay theo y lệnh", isCorrect: false },
+            { text: "C. Hỏi lại bác sĩ để xác nhận", isCorrect: true },
+            { text: "D. Bỏ qua không thực hiện", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 17. Trong các trường hợp sau, trường hợp nào bắt buộc ưu tiên đường tiêm thay vì đường uống?",
+        options: [
+            { text: "A. Người bệnh uống thuốc khó nuốt", isCorrect: false },
+            { text: "B. Người bệnh cần tác dụng nhanh trong cấp cứu", isCorrect: true },
+            { text: "C. Người bệnh muốn tiện lợi", isCorrect: false },
+            { text: "D. Người bệnh không thích uống", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 18. Bệnh nhân nam, 65 tuổi, Chẩn đoán: Suy tim, Y lệnh: Furosemide 40mg sáng; Digoxin 0.25mg sáng, Aspirin 81mg sau ăn; Điều dưỡng thực hiện: Cho uống tất cả thuốc cùng lúc vào buổi sáng, Không theo dõi dấu hiệu sinh tồn sau uống, Người bệnh sau đó chóng mặt, mệt, mạch chậm, HA tụt. Sai sót nghiêm trọng nhất của điều dưỡng là gì?",
+        options: [
+            { text: "A. Không ghi chép hồ sơ", isCorrect: false },
+            { text: "B. Không chia thời gian dùng thuốc không kiểm tra dấu hiệu sinh tồn người bệnh trước khi dùng thuốc tim mạch cho người bệnh", isCorrect: true },
+            { text: "C. Không thực hiện 5 đúng", isCorrect: false },
+            { text: "D. Không giải thích cho người bệnh", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 19. Bệnh nhân nữ 70 tuổi vào viện được chẩn đoán: Viêm phổi/Tăng HA, tình trạng hiện tại: Sốt 39độ C, HA: 160/90 mmHg, người bệnh ho nhiều, mệt. Y lệnh thuốc: Kháng sinh, kháng viêm, hạ sốt, bù nước. Điều dưỡng ngay khi nhận được y lệnh đã dùng thuốc cho người bệnh. Sau khi dùng kháng sinh khoảng 5p người bệnh nổi ban đỏ toàn thân, HA 120/70mmHg. Sai sót nghiêm trọng nhất tỏng tình huống này là:",
+        options: [
+            { text: "A. Không kiểm tra lại y lệnh trước khi thực hiện", isCorrect: false },
+            { text: "B. Dùng tất cả các loại thuốc cùng lúc", isCorrect: false },
+            { text: "C. Không hỏi tiền sử dị ứng thuốc của người bệnh", isCorrect: true },
+            { text: "D. Do người bệnh uống nhiều nước trong ngày", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 20. Người bệnh nam, 76 tuổi, điều trị suy tim, có y lệnh uống Digoxin 0,25 mg lúc 8 giờ. Trước khi dùng thuốc, điều dưỡng ghi nhận người bệnh mệt, buồn nôn, mạch không đều 52 lần/phút. Cách xử trí phù hợp nhất của điều dưỡng là gì?",
+        options: [
+            { text: "A. Cho người bệnh uống thuốc đúng giờ vì thuốc đã có trong y lệnh", isCorrect: false },
+            { text: "B. Giảm một nửa liều thuốc rồi cho người bệnh uống", isCorrect: false },
+            { text: "C. Tạm ngừng thực hiện thuốc, đánh giá lại tình trạng người bệnh và báo bác sĩ để xác nhận y lệnh", isCorrect: true },
+            { text: "D. Cho người bệnh uống thuốc sau ăn để hạn chế buồn nôn", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 21. Người bệnh nữ, 68 tuổi, đang sử dụng thuốc chống đông đường uống. Điều dưỡng phát hiện người bệnh chảy máu chân răng, xuất hiện nhiều mảng bầm tím dưới da và có phân màu đen. Người bệnh vẫn còn thuốc trong cữ sáng. Hành động ưu tiên của điều dưỡng là gì?",
+        options: [
+            { text: "A. Tiếp tục cho người bệnh uống thuốc vì các biểu hiện trên thường gặp khi dùng thuốc chống đông", isCorrect: false },
+            { text: "B. Tạm ngừng thực hiện cữ thuốc, đánh giá dấu hiệu sinh tồn, mức độ chảy máu và báo bác sĩ ngay", isCorrect: true },
+            { text: "C. Cho người bệnh uống thêm vitamin K mà không cần y lệnh", isCorrect: false },
+            { text: "D. Hướng dẫn người bệnh súc miệng và tiếp tục theo dõi đến ngày hôm sau", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 22. Người bệnh đột quỵ có rối loạn nuốt, đang được nuôi ăn qua ống thông dạ dày. Y lệnh gồm một viên thuốc giải phóng kéo dài, một viên bao tan trong ruột và một viên thuốc thông thường. Cách thực hiện nào an toàn nhất?",
+        options: [
+            { text: "A. Nghiền chung cả ba loại thuốc, hòa với thức ăn rồi bơm qua ống thông", isCorrect: false },
+            { text: "B. Nghiền riêng từng loại thuốc và bơm liên tiếp, không cần kiểm tra dạng bào chế", isCorrect: false },
+            { text: "C. Không nghiền thuốc giải phóng kéo dài và thuốc bao tan trong ruột; kiểm tra phương án thay thế với bác sĩ hoặc dược sĩ, dùng từng thuốc riêng và bơm rửa ống giữa các thuốc", isCorrect: true },
+            { text: "D. Bẻ đôi tất cả các viên thuốc để thuốc dễ đi qua ống thông", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 23. Trong giờ phát thuốc, điều dưỡng thấy hai người bệnh cùng phòng có họ tên gần giống nhau. Một người không đeo vòng nhận diện, nhưng tự khẳng định tên của mình và yêu cầu được uống thuốc ngay. Cách xử trí đúng nhất là gì?",
+        options: [
+            { text: "A. Dựa vào số giường và lời xác nhận của người bệnh để cho thuốc", isCorrect: false },
+            { text: "B. Nhờ người bệnh nằm bên cạnh xác nhận danh tính rồi cho thuốc", isCorrect: false },
+            { text: "C. Tạm thời chưa cho thuốc; sử dụng ít nhất hai thông tin định danh phù hợp và đối chiếu với hồ sơ, vòng nhận diện trước khi thực hiện", isCorrect: true },
+            { text: "D. Cho người bệnh uống thuốc nếu hình dạng thuốc giống cữ thuốc trước", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 24. Người bệnh có y lệnh dùng thuốc hạ đường huyết nhanh ngay trước bữa ăn. Điều dưỡng đã chuẩn bị thuốc nhưng được thông báo bữa ăn sẽ giao chậm khoảng 60 phút; đường huyết hiện tại của người bệnh là 4,2 mmol/L. Quyết định phù hợp nhất là gì?",
+        options: [
+            { text: "A. Cho người bệnh dùng thuốc đúng giờ, sau đó chờ bữa ăn", isCorrect: false },
+            { text: "B. Tự giảm một nửa liều thuốc để phòng hạ đường huyết", isCorrect: false },
+            { text: "C. Chưa thực hiện thuốc, đánh giá lại tình trạng người bệnh, bảo đảm thời điểm dùng thuốc phù hợp với bữa ăn và trao đổi với bác sĩ khi cần", isCorrect: true },
+            { text: "D. Cho người bệnh dùng thuốc rồi uống nhiều nước để duy trì đường huyết", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 25. Trong quy trình kỹ thuật tiêm. Vị trí tiêm bắp an toàn ở mông để tránh dây thần kinh hông to là",
+        options: [
+            { text: "A. 1/4 dưới trong", isCorrect: false },
+            { text: "B. 1/4 trên trong", isCorrect: false },
+            { text: "C. 1/4 dưới ngoài", isCorrect: false },
+            { text: "D. 1/4 trên ngoài", isCorrect: true },
+        ]
+    },
+    {
+        q: "Câu 26. Trong quy trình kỹ thuật tiêm. Góc tiêm dưới da đúng theo kỹ thuật và đảm bảo an toàn cho người bệnh là:",
+        options: [
+            { text: "A. Từ 10–15°", isCorrect: false },
+            { text: "B. Từ 15 -30°", isCorrect: false },
+            { text: "C. Từ 30° - 45°", isCorrect: true },
+            { text: "D. 90°", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 27. Trong quy trình kỹ thuật tiêm. Góc tiêm bắp đúng theo kỹ thuật đảm bảo an toàn cho người bệnh là:",
+        options: [
+            { text: "A. 10–15°", isCorrect: false },
+            { text: "B. 15–30°", isCorrect: false },
+            { text: "C. 60° - 90°", isCorrect: true },
+            { text: "D. 90°", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 28. Trong quy trình kỹ thuật tiêm. Nguyên tắc “hai nhanh một chậm” trong tiêm bắp là:",
+        options: [
+            { text: "A. Đâm nhanh – bơm nhanh – rút nhanh", isCorrect: false },
+            { text: "B. Đâm nhanh – rút nhanh – bơm chậm", isCorrect: true },
+            { text: "C. Đâm chậm – bơm nhanh – rút chậm", isCorrect: false },
+            { text: "D. Đâm nhanh – bơm nhanh – rút chậm", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 29. Trong quy trình kỹ thuật tiêm Vắc cin lao cho người bệnh. Khi tiêm trong da đúng kỹ thuật sẽ xuất hiện:",
+        options: [
+            { text: "A. Sưng đỏ lan rộng", isCorrect: false },
+            { text: "B. Phồng da như hạt ngô", isCorrect: true },
+            { text: "C. Chảy máu tại chỗ", isCorrect: false },
+            { text: "D. Không có dấu hiệu gì", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 30. Trong quy trình kỹ thuật tiêm. Khi tiêm bắp, điều dưỡng không kiểm tra hút ngược pít tông. Nguy cơ lớn nhất là:",
+        options: [
+            { text: "A. Nhiễm khuẩn", isCorrect: false },
+            { text: "B. Gãy kim", isCorrect: false },
+            { text: "C. Tiêm nhầm vào mạch máu gây tắc mạch", isCorrect: true },
+            { text: "D. Đau tại chỗ", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 31. Trong quy trình kỹ thuật tiêm. Trong tiêm tĩnh mạch, dấu hiệu xác định kim đã vào lòng mạch là:",
+        options: [
+            { text: "A. Người bệnh đau", isCorrect: false },
+            { text: "B. Máu trào vào bơm tiêm", isCorrect: true },
+            { text: "C. Da phồng lên", isCorrect: false },
+            { text: "D. Không có cảm giác", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 32. Trong quy trình kỹ thuật tiêm. Sai sót nghiêm trọng nhất khi sát khuẩn vị trí tiêm là:",
+        options: [
+            { text: "A. Sát khuẩn 1 lần", isCorrect: false },
+            { text: "B. Sát khuẩn từ ngoài vào trong", isCorrect: true },
+            { text: "C. Sát khuẩn từ trong ra ngoài", isCorrect: false },
+            { text: "D. Sát khuẩn 2 lần", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 33. Trong quy trình kỹ thuật tiêm. Trong test lẩy da, kết quả nào được xem là dương tính?",
+        options: [
+            { text: "A. Ban < 3mm", isCorrect: false },
+            { text: "B. Không có thay đổi", isCorrect: true },
+            { text: "C. Ban ≥ 2cm", isCorrect: false },
+            { text: "D. Da trắng bệch", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 34. Trong quy trình kỹ thuật tiêm. Khi tiêm dưới da, nếu không véo da mà đâm kim trực tiếp, nguy cơ là:",
+        options: [
+            { text: "A. Không vào cơ thể", isCorrect: false },
+            { text: "B. Tiêm vào cơ thay vì dưới da", isCorrect: true },
+            { text: "C. Không có tác dụng", isCorrect: false },
+            { text: "D. Gây nhiễm khuẩn", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 35. Trong quy trình kỹ thuật tiêm. Điều dưỡng tiêm mông nhưng chọn nhầm 1/4 dưới trong, Sau tiêm NB đau lan xuống chân, tê bì. Hỏi: Biến chứng gì xảy ra?",
+        options: [
+            { text: "A. Tổn thương dây thần kinh hông to", isCorrect: true },
+            { text: "B. Tổn thương vị trí tiêm", isCorrect: false },
+            { text: "C. Tổn thương tĩnh mạch bẹn", isCorrect: false },
+            { text: "D. Do điều dưỡng tiêm thuốc quá nhanh", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 36. Trong quy trình kỹ thuật tiêm. Khi tiêm tĩnh mạch, điều dưỡng không thấy máu trào nhưng vẫn bơm thuốc. Sau đó vùng tiêm sưng to. Nguyên nhân nhân là gì?",
+        options: [
+            { text: "A. Bơm thuốc quá nhanh", isCorrect: false },
+            { text: "B. Tiêm ngoài tĩnh mạch", isCorrect: true },
+            { text: "C. Không thực hiện 5 đúng", isCorrect: false },
+            { text: "D. Do tiêm thuốc quá liều", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 37. Điều dưỡng nên làm gì khi thấy máu chảy ngược vào ống tiêm khi tiêm bắp?",
+        options: [
+            { text: "A. Tiêm tiếp", isCorrect: false },
+            { text: "B. Rút kim ra và tiêm lại chỗ khác", isCorrect: true },
+            { text: "C. Tiêm chậm lại", isCorrect: false },
+            { text: "D. Không cần làm gì", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 38. Kỹ thuật nào giúp giảm đau cho bệnh nhân khi tiêm bắp?",
+        options: [
+            { text: "A. Chườm nóng trước khi tiêm", isCorrect: false },
+            { text: "B. Tiêm thật nhanh", isCorrect: false },
+            { text: "C. Xác định vị trí chính xác và tiêm nhanh, dứt khoát", isCorrect: true },
+            { text: "D. Massage mạnh sau tiêm", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 39. Người bệnh có y lệnh tiêm bắp một loại kháng sinh. Khi kiểm tra hồ sơ, điều dưỡng phát hiện người bệnh từng nổi mề đay, khó thở sau khi dùng thuốc cùng nhóm nhưng thông tin dị ứng chưa được ghi trên vòng nhận diện. Cách xử trí phù hợp nhất là gì?",
+        options: [
+            { text: "A. Tiêm thuốc theo y lệnh vì chưa có chẩn đoán xác định dị ứng", isCorrect: false },
+            { text: "B. Tiêm thử một lượng nhỏ rồi theo dõi phản ứng", isCorrect: false },
+            { text: "C. Tạm ngừng thực hiện thuốc, xác minh tiền sử dị ứng, báo bác sĩ và cập nhật thông tin cảnh báo dị ứng", isCorrect: true },
+            { text: "D. Đổi vị trí tiêm sang cơ khác để giảm nguy cơ phản ứng", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 40. Trong khi tiêm tĩnh mạch chậm, người bệnh đột ngột đau rát tại vị trí tiêm, vùng da quanh kim sưng, lạnh và dòng thuốc chảy chậm. Hành động ưu tiên của điều dưỡng là gì?",
+        options: [
+            { text: "A. Tiếp tục tiêm chậm hơn để hoàn thành liều thuốc", isCorrect: false },
+            { text: "B. Ngừng tiêm ngay, rút kim, thực hiện đánh giá mức độ thoát mạch và xử trí theo quy trình thoát mạch", isCorrect: true },
+            { text: "C. Xoa bóp mạnh vùng sưng để thuốc phân tán nhanh", isCorrect: false },
+            { text: "D. Nâng cao tốc độ tiêm để kiểm tra kim còn nằm trong tĩnh mạch hay không", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 41. Điều dưỡng chuẩn bị tiêm insulin cho người bệnh đái tháo đường. Trên khay có hai loại insulin với nồng độ khác nhau và hai loại bơm tiêm không cùng đơn vị chia. Biện pháp nào bảo đảm an toàn nhất?",
+        options: [
+            { text: "A. Chọn bơm tiêm có thể tích nhỏ nhất để dễ tiêm", isCorrect: false },
+            { text: "B. Dùng bất kỳ bơm tiêm nào, sau đó quy đổi thể tích theo kinh nghiệm", isCorrect: false },
+            { text: "C. Đối chiếu chính xác tên thuốc, nồng độ, liều y lệnh và sử dụng đúng bơm tiêm tương thích với nồng độ insulin", isCorrect: true },
+            { text: "D. Pha loãng insulin bằng nước cất để giảm sai số liều", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 42. Sau khi tiêm bắp được vài phút, người bệnh xuất hiện khó thở, khò khè, nổi ban toàn thân, mạch nhanh và huyết áp tụt. \nHành động ưu tiên nhất của điều dưỡng là gì?",
+        options: [
+            { text: "A. Cho người bệnh nằm nghỉ và theo dõi thêm 15 phút", isCorrect: false },
+            { text: "B. Báo bác sĩ sau khi hoàn thành ghi chép hồ sơ", isCorrect: false },
+            { text: "C. Ngừng thủ thuật, gọi hỗ trợ cấp cứu, đánh giá dấu hiệu sinh tồn nhanh chống và tiêm bắp 1/2 ống Adrenalin cho người bệnh ngay", isCorrect: true },
+            { text: "D. Cho người bệnh uống nước ấm và thở sâu", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 43. Người bệnh gầy, liệt lâu ngày, có khối cơ vùng mông teo rõ. Y lệnh tiêm bắp 5 ml thuốc gây kích ứng mô. Lựa chọn nào của điều dưỡng là phù hợp nhất?",
+        options: [
+            { text: "A. Tiêm toàn bộ 5 ml vào một vị trí vùng mông vì đây là vị trí thường dùng", isCorrect: false },
+            { text: "B. Chọn vị trí cơ còn phát triển phù hợp, đánh giá thể tích tối đa cho phép và trao đổi lại với bác sĩ để chia liều hoặc đổi đường dùng khi cần", isCorrect: true },
+            { text: "C. Tiêm dưới da để giảm đau cho người bệnh", isCorrect: false },
+            { text: "D. Tiêm thật nhanh để hạn chế thời gian thuốc tiếp xúc với mô", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 44. Để đảm bảo an toàn người bệnh. Khi tiêm dưới da, thao tác véo da nhằm mục đích chính là:",
+        options: [
+            { text: "A. Giảm đau", isCorrect: false },
+            { text: "B. Tránh nhiễm khuẩn", isCorrect: false },
+            { text: "C. Đảm bảo thuốc vào đúng lớp dưới da", isCorrect: true },
+            { text: "D. Giữ kim chắc hơn", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 45. Để đảm bảo an toàn người bệnh. Thời gian sát khuẩn bao lâu trước khi tiêm cho người bệnh là:",
+        options: [
+            { text: "A. Thời gian sát khuẩn trong \n5 giây để da tự khô hoàn toàn rồi mới tiêm", isCorrect: false },
+            { text: "B. Thời gian sát khuẩn trong 10 giây để da tự khô hoàn toàn rồi mới tiêm", isCorrect: false },
+            { text: "C. Thời gian sát khuẩn trong 20 giây để da tự khô hoàn toàn rồi mới tiêm", isCorrect: false },
+            { text: "D. Thời gian sát khuẩn trong 30 giây để da tự khô hoàn toàn rồi mới tiêm", isCorrect: true },
+        ]
+    },
+    {
+        q: "Câu 46. Để đảm bảo an toàn người bệnh. Trong tiêm bắp, thể tích thuốc tối đa cho mỗi lần tiêm phải:",
+        options: [
+            { text: "A. Không giới hạn", isCorrect: false },
+            { text: "B. Theo cảm giác người bệnh", isCorrect: false },
+            { text: "C. Không vượt quá mức quy định (5ml)", isCorrect: true },
+            { text: "D. Càng nhiều càng tốt", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 47. Để đảm bảo an toàn cho nhân viên y tế và cộng đồng, người điều dưỡng sau khi tiêm, xử lý kim tiêm đúng nhất là:",
+        options: [
+            { text: "A. Đậy nắp lại bằng 2 tay", isCorrect: false },
+            { text: "B. Bẻ kim bỏ vào thùng rác kháng thủng", isCorrect: false },
+            { text: "C. Bỏ ngay vào hộp kháng thủng", isCorrect: true },
+            { text: "D. Giữ lại để dùng tiếp", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 48. Để đảm bảo an toàn cho người bệnh. Nguyên tắc “một kim – một bơm – một người bệnh” nhằm mục đích:",
+        options: [
+            { text: "A. Tiết kiệm dụng cụ", isCorrect: false },
+            { text: "B. Tránh nhiễm khuẩn chéo", isCorrect: true },
+            { text: "C. Giảm đau", isCorrect: false },
+            { text: "D. Dễ thao tác", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 49. Điều dưỡng thực hiện tiêm thuốc ngay sau khi sát khuẩn mà chưa đợi da khô. Nguy cơ chính cho người bệnh là:",
+        options: [
+            { text: "A. Đau tại chỗ", isCorrect: false },
+            { text: "B. Giảm hiệu lực sát khuẩn và đua rát cho người bệnh", isCorrect: true },
+            { text: "C. Tăng hấp thu thuốc", isCorrect: false },
+            { text: "D. Không có ảnh hưởng", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 50. Trong tiêm bắp, sai sót nào gây nguy cơ tắc mạch nguy hiểm nhất?",
+        options: [
+            { text: "A. Không sát khuẩn đủ", isCorrect: false },
+            { text: "B. Đâm kim quá nhanh", isCorrect: false },
+            { text: "C. Không kiểm tra hút ngược trước khi bơm thuốc vào cho người bệnh", isCorrect: true },
+            { text: "D. Bơm thuốc quá chậm", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 51. Hành động nào VI PHẠM nghiêm trọng nguyên tắc vô khuẩn khi thực hiện quy trình kỹ thuật tiêm cho người bệnh ?",
+        options: [
+            { text: "A. Sát khuẩn 2 lần", isCorrect: false },
+            { text: "B. Để da khô trước tiêm", isCorrect: false },
+            { text: "C. Chạm tay vào vùng da đã sát khuẩn trước khi tiêm cho người bệnh", isCorrect: true },
+            { text: "D. Dùng gạc vô khuẩn", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 52. Khi đang tiêm, người bệnh đột ngột cử động mạnh. Xử trí đúng nhất là:",
+        options: [
+            { text: "A. Tiếp tục tiêm nhanh", isCorrect: false },
+            { text: "B. Giữ kim và bơm hết thuốc", isCorrect: false },
+            { text: "C. Dừng tiêm, ổn định người bệnh", isCorrect: true },
+            { text: "D. Rút kim ngay lập tức không cần xử lý", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 53. Trong kỹ thuật đặt catheter cho người bệnh. Vì sao cần cố định chắc chắn catheter sau khi đặt?",
+        options: [
+            { text: "A. Giúp người bệnh yên tâm", isCorrect: false },
+            { text: "B. Giảm nguy cơ tụt catether và nhiễm trùng", isCorrect: true },
+            { text: "C. Dễ chăm sóc chân ống dẫn lưu", isCorrect: false },
+            { text: "D. Dễ di chuyển người bệnh", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 54. Trong chăm sóc người bệnh lớn tuổi tại khoa Lão khoa. Khi thực hiện chăm sóc catheter, điều gì cần ưu tiên?",
+        options: [
+            { text: "A. Giữ sạch, khô, và thay băng đúng quy trình", isCorrect: false },
+            { text: "B. Thay băng dán và gạc khi bẩn, giữ kín, khô, sạch và cố đính chắc chắn cho người bệnh", isCorrect: true },
+            { text: "C. Không cần thay băng dán và gạc hàng ngày", isCorrect: false },
+            { text: "D. Thực hiện vệ sinh \n2 lần/ngày", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 55. Lý do cần sử dụng găng vô khuẩn khi thay băng catheter là?",
+        options: [
+            { text: "A. Để tránh lây bệnh cho nhân viên y tế", isCorrect: false },
+            { text: "B. Để tạo cảm giác chuyên nghiệp", isCorrect: false },
+            { text: "C. Để giảm nguy cơ nhiễm khuẩn cho người bệnh", isCorrect: true },
+            { text: "D. Để đỡ tốn thời gian", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 56. Người bệnh đang lưu catheter tĩnh mạch ngoại vi ngày thứ 3. Khi kiểm tra, điều dưỡng thấy vị trí đặt catheter đỏ, nóng, đau tăng khi sờ và có ít dịch mủ quanh chân catheter. Nhận định phù hợp nhất là:",
+        options: [
+            { text: "A. Thoát mạch", isCorrect: false },
+            { text: "B. Nhiễm khuẩn tại vị trí đặt catheter", isCorrect: true },
+            { text: "C. Tắc catheter", isCorrect: false },
+            { text: "D. Phản ứng dị ứng với dịch truyền", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 57. Điều dưỡng sát khuẩn vị trí tiêm, sau đó dùng tay đã mang găng sờ lại vị trí vừa sát khuẩn rồi tiến hành tiêm. Hai ngày sau, vùng tiêm sưng, nóng, đỏ và đau. Yếu tố kỹ thuật nào có khả năng liên quan nhất?",
+        options: [
+            { text: "A. Tiêm thuốc quá nhanh", isCorrect: false },
+            { text: "B. Chọn kim tiêm quá nhỏ", isCorrect: false },
+            { text: "C. Sờ lại vùng da sau sát khuẩn làm mất nguyên tắc vô khuẩn", isCorrect: true },
+            { text: "D. Người bệnh vận động sau tiêm", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 58. Điều dưỡng thực hiện tiêm bắp không hút ngược kiểm tra. \nSau tiêm: người bệnh chóng mặt, tụt huyết áp. Nguyên nhân?",
+        options: [
+            { text: "A. Tiêm nhầm vào mạch máu \n→ nguy cơ tắc mạch / phản ứng thuốc", isCorrect: true },
+            { text: "B. Do tiêm thuốc quá nhanh", isCorrect: false },
+            { text: "C. Do sát khuẩn không đủ", isCorrect: false },
+            { text: "D. Do không đảm bảo kiểm soát nhễm khuẩn", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 59. Sau tiêm, điều dưỡng dùng 2 tay đậy nắp kim. Điều dưỡng bị kim đâm vào tay phải. Nguyên nhân là?",
+        options: [
+            { text: "A. Phân loại rác không đúng quy đinh", isCorrect: false },
+            { text: "B. Không tuân thủ kỹ thuật “múc nắp một tay” → nguy cơ phơi nhiễm", isCorrect: true },
+            { text: "C. Dùng tay đậy nấp kim không cẩn thận", isCorrect: false },
+            { text: "D. Do điều dưỡng đậy nắp kim quá nhanh, không quan sát kỹ", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 60. Sau khi tiêm thuốc cho người bệnh, điều dưỡng đậy lại nắp kim bằng hai tay để mang kim đến hộp đựng vật sắc nhọn và bị kim đâm vào ngón tay. Biện pháp cải tiến nào có ý nghĩa phòng ngừa sự cố tương tự hiệu quả nhất?",
+        options: [
+            { text: "A. Nhắc điều dưỡng phải thao tác chậm và cẩn thận hơn khi đậy nắp kim", isCorrect: false },
+            { text: "B. Bố trí hộp đựng vật sắc nhọn trong tầm tay tại nơi thực hiện tiêm (trên xe tiêm), không đậy lại nắp kim và bỏ ngay kim sau sử dụng", isCorrect: true },
+            { text: "C. Yêu cầu điều dưỡng đeo hai đôi găng trong tất cả các lần tiêm", isCorrect: false },
+            { text: "D. Ngâm kim đã sử dụng trong dung dịch sát khuẩn trước khi thu gom", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 61. Qua giám sát, khoa lâm sàng ghi nhận tỷ lệ tuân thủ vệ sinh tay trước khi chuẩn bị thuốc thấp, mặc dù dung dịch sát khuẩn tay đã được cấp đầy đủ. Giải pháp nào phù hợp nhất để cải thiện bền vững thực hành tiêm an toàn?",
+        options: [
+            { text: "A. Chỉ tổ chức một buổi tập huấn lại cho toàn bộ nhân viên", isCorrect: false },
+            { text: "B. Xử phạt ngay tất cả nhân viên không tuân thủ mà không cần phân tích nguyên nhân", isCorrect: false },
+            { text: "C. Kết hợp đào tạo, bố trí phương tiện thuận tiện, giám sát định kỳ, phản hồi kết quả và nhắc nhở trực quan tại điểm chăm sóc", isCorrect: true },
+            { text: "D. Yêu cầu người bệnh tự nhắc điều dưỡng vệ sinh tay trước khi tiêm", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 62. Trong ca trực đông người bệnh, điều dưỡng chuẩn bị sẵn thuốc tiêm cho nhiều người bệnh trên cùng một khay và chỉ ghi số giường lên bơm tiêm. Một người bệnh được chuyển giường đột xuất trước giờ tiêm. Giải pháp nào kiểm soát nguy cơ nhầm thuốc hiệu quả nhất?",
+        options: [
+            { text: "A. Tiếp tục sử dụng số giường vì đây là thông tin dễ quan sát nhất", isCorrect: false },
+            { text: "B. Chuẩn bị thuốc càng sớm càng tốt để giảm áp lực vào giờ tiêm", isCorrect: false },
+            { text: "C. Chuẩn bị thuốc riêng cho từng người bệnh, ghi đầy đủ thông tin nhận diện và đối chiếu ít nhất 4 yếu tố định danh và rút thuốc tại giường người bệnh trước khi tiêm'", isCorrect: true },
+            { text: "D. Nhờ người bệnh cùng phòng xác nhận người nhận thuốc", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 63. Một khoa thường xuyên để hộp đựng vật sắc nhọn đầy quá mức quy định, kim tiêm nhô lên khỏi miệng hộp nhưng nhân viên vẫn tiếp tục sử dụng vì chưa có hộp thay thế. Giải pháp quản lý nào cần được ưu tiên?",
+        options: [
+            { text: "A. Dùng tay hoặc kẹp đẩy kim xuống để tạo thêm khoảng trống", isCorrect: false },
+            { text: "B. Đổ kim sang túi rác y tế để tiếp tục sử dụng hộp cũ", isCorrect: false },
+            { text: "C. Ngừng sử dụng hộp đã đầy, niêm phong đúng quy định, thay hộp mới và thiết lập cơ chế kiểm tra – cung ứng trước khi hộp đạt giới hạn an toàn", isCorrect: true },
+            { text: "D. Đặt hộp đã đầy ra hành lang để nhân viên thu gom xử lý sau", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 64. Sau khi bị kim tiêm đã sử dụng đâm xuyên qua da, điều dưỡng bóp mạnh vết thương cho chảy nhiều máu, đổ dung dịch sát khuẩn đậm đặc vào vết thương và không báo cáo vì cho rằng người bệnh không có biểu hiện nhiễm bệnh. Cách xử trí đúng và đầy đủ nhất là gì?",
+        options: [
+            { text: "A. Tiếp tục bóp mạnh vết thương đến khi không còn chảy máu", isCorrect: false },
+            { text: "B. Rửa ngay dưới vòi nước với xà phòng, không chà xát hoặc bóp nặn mạnh; báo cáo sự cố, đánh giá nguy cơ và thực hiện dự phòng sau phơi nhiễm theo quy định", isCorrect: true },
+            { text: "C. Chỉ cần sát khuẩn tại chỗ và theo dõi sức khỏe tại nhà", isCorrect: false },
+            { text: "D. Chờ kết quả xét nghiệm của người bệnh rồi mới báo cáo sự cố", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 65. Trong phòng chống sốc phản vệ, việc quan trọng nhất sau tiêm là:",
+        options: [
+            { text: "A. Cho người bệnh về ngay", isCorrect: false },
+            { text: "B. Theo dõi 10–15 phút tại chỗ", isCorrect: true },
+            { text: "C. Ghi hồ sơ", isCorrect: false },
+            { text: "D. Thu dọn dụng cụ", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 66. Dấu hiệu nào sau đây gợi ý phản vệ sớm nhất?",
+        options: [
+            { text: "A. Đau đầu", isCorrect: false },
+            { text: "B. Mày đay, ngứa", isCorrect: true },
+            { text: "C. Ho nhẹ", isCorrect: false },
+            { text: "D. Buồn ngủ", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 67. Thời gian xuất hiện phản vệ sau khi tiếp xúc dị nguyên thường là:",
+        options: [
+            { text: "A. 24–48 giờ", isCorrect: false },
+            { text: "B. 12 giờ", isCorrect: false },
+            { text: "C. Vài giây đến vài giờ", isCorrect: true },
+            { text: "D. 1 tuần", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 68. Thuốc quan trọng nhất trong cấp cứu phản vệ là:",
+        options: [
+            { text: "A. Kháng histamin", isCorrect: false },
+            { text: "B. Corticoid", isCorrect: false },
+            { text: "C. Adrenalin", isCorrect: true },
+            { text: "D. Kháng sinh", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 69. Đường dùng ưu tiên của Adrenalin trong phản vệ là:",
+        options: [
+            { text: "A. Uống", isCorrect: false },
+            { text: "B. Tiêm bắp", isCorrect: true },
+            { text: "C. Tiêm dưới da", isCorrect: false },
+            { text: "D. Truyền tĩnh mạch ngay", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 70. Sau khi tiêm thuốc nghi ngờ gây phản vệ, cần theo dõi người bệnh ít nhất:",
+        options: [
+            { text: "A. 5 phút", isCorrect: false },
+            { text: "B. 10 phút", isCorrect: false },
+            { text: "C. 30 phút", isCorrect: false },
+            { text: "D. 24 giờ", isCorrect: true },
+        ]
+    },
+    {
+        q: "Câu 71. Khi người bệnh có dấu hiệu phản vệ, bước xử trí ĐẦU TIÊN là:",
+        options: [
+            { text: "A. Gọi bác sĩ", isCorrect: false },
+            { text: "B. Cho uống thuốc", isCorrect: false },
+            { text: "C. Ngừng ngay tiếp xúc dị nguyên", isCorrect: true },
+            { text: "D. Truyền dịch", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 72. Khi tiêm thuốc người bệnh sốc phản vệ độ II. Liều Adrenalin tiêm bắp cho người lớn trong sốc phản vệ là:",
+        options: [
+            { text: "A. 0.1 ml", isCorrect: false },
+            { text: "B. 0.5 - 1 ml", isCorrect: true },
+            { text: "C. 1 ml", isCorrect: false },
+            { text: "D. 2 ml", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 73. Ở người bệnh sốc phản vệ nặng, tư thế người bệnh phù hợp là:",
+        options: [
+            { text: "A. Nằm đầu cao", isCorrect: false },
+            { text: "B. Nằm đầu thấp", isCorrect: true },
+            { text: "C. Tư thế fowler", isCorrect: false },
+            { text: "D. Nằm nghiêng phải", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 74. Sau khi người bệnh tiêm thuốc kháng sinh bị sốc phản vệ độ III. Dấu hiện nhận biết là?",
+        options: [
+            { text: "A. Ngứa nhẹ", isCorrect: false },
+            { text: "B. Mày đay", isCorrect: false },
+            { text: "C. Khó thở, tụt huyết áp, rối loạn ý thức", isCorrect: true },
+            { text: "D. Buồn nôn", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 75. Điều dưỡng Sau tiêm kháng sinh 2 phút, NB: khó thở, nổi mày đay, tụt HA. Xử trí đầu tiên?",
+        options: [
+            { text: "A. Ngừng tiêm ngay + tiêm \nAdrenalin bắp", isCorrect: true },
+            { text: "B. Động viên người bệnh", isCorrect: false },
+            { text: "C. Báo bác sĩ", isCorrect: false },
+            { text: "D. Cho người bệnh nằm đầu cao", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 76. Điều dưỡng Sau tiêm kháng sinh 2 phút NB có dấu hiệu phản vệ. Điều dưỡng cho uống thuốc chống dị ứng rồi chờ bác sỹ cho y lệnh . Sai sót nghiêm trọng là gì?",
+        options: [
+            { text: "A. Động viên người bệnh", isCorrect: false },
+            { text: "B. Không tiêm Adrenalin ngay → trì hoãn cấp cứu", isCorrect: true },
+            { text: "C. Chạy tìm người hỗ trợ", isCorrect: false },
+            { text: "D. Không thực hiện đúng quy trình tiêm thuốc", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 77. Người bệnh sau tiêm kháng sinh 5 phút xuất hiện mày đay toàn thân, phù môi, khàn tiếng, khó thở và đau quặn bụng; huyết áp 120/75 mmHg. Nhận định phù hợp nhất là gì?",
+        options: [
+            { text: "A. Phản ứng dị ứng nhẹ vì huyết áp chưa giảm", isCorrect: false },
+            { text: "B. Phản vệ độ I vì có biểu hiện ngoài da", isCorrect: false },
+            { text: "C. Phản vệ độ II vì có biểu hiện nhanh ở nhiều cơ quan nhưng chưa có tụt huyết áp hoặc suy hô hấp nặng", isCorrect: true },
+            { text: "D. Phản vệ độ III vì mọi trường hợp khó thở đều được xếp độ III", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 78. Người bệnh đang truyền kháng sinh thì đột ngột khó thở, tím tái, SpO₂ 78%, mạch nhanh nhỏ, huyết áp 70/40 mmHg và rối loạn ý thức. Hành động ưu tiên nhất của điều dưỡng là gì?",
+        options: [
+            { text: "A. Ngừng tiếp xúc dị nguyên, gọi hỗ trợ cấp cứu và tiêm bắp 1 ống adrenaline ngay theo phác đồ", isCorrect: true },
+            { text: "B. Chờ bác sĩ đến khám xác định chắc chắn phản vệ rồi mới dùng thuốc", isCorrect: false },
+            { text: "C. Tiêm tĩnh mạch chậm thuốc kháng histamine trước", isCorrect: false },
+            { text: "D. Truyền nhanh kháng sinh để hoàn thành liều thuốc", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 79. Người bệnh sau khi tiêm thuốc xuất hiện phản vệ khi đang nằm trên giường. Người bệnh còn tỉnh nhưng huyết áp tụt, khó thở và cảm giác choáng váng. Tư thế nào phù hợp nhất trong giai đoạn xử trí ban đầu?",
+        options: [
+            { text: "A. Cho người bệnh ngồi dậy và tự đi lại để dễ thở", isCorrect: false },
+            { text: "B. Đặt nằm đầu thấp, nghiêng sang một bên nếu có nôn; trường hợp khó thở nhiều có thể nâng đầu giường phù hợp nhưng không để người bệnh đột ngột ngồi hoặc đứng dậy", isCorrect: true },
+            { text: "C. Cho người bệnh nằm sấp hoàn toàn", isCorrect: false },
+            { text: "D. Để người bệnh tự lựa chọn tư thế và đi lại trong phòng", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 80. Sau khi tiêm bắp adrenaline lần đầu, người bệnh vẫn khó thở, huyết áp 75/45 mmHg và mạch nhanh nhỏ. Cách xử trí phù hợp nhất là gì?",
+        options: [
+            { text: "A. Chờ ít nhất 30 phút để đánh giá đầy đủ tác dụng của adrenaline", isCorrect: false },
+            { text: "B. Tiếp tục đánh giá đường thở, hô hấp, tuần hoàn; thở oxy, thiết lập đường truyền, bù dịch và nhắc lại adrenaline theo phác đồ nếu tình trạng chưa cải thiện", isCorrect: true },
+            { text: "C. Ngừng cấp cứu vì adrenaline đã được sử dụng một lần", isCorrect: false },
+            { text: "D. Chuyển sang dùng thuốc kháng histamine thay thế adrenaline", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 81. Người bệnh chỉ xuất hiện ngứa, mày đay khu trú và phù nhẹ quanh mắt sau khi dùng thuốc; không khó thở, không đau bụng, mạch và huyết áp ổn định. Nhận định và xử trí phù hợp nhất là gì?",
+        options: [
+            { text: "A. Phản vệ độ I; ngừng tiếp xúc dị nguyên, theo dõi sát vì tình trạng có thể tiến triển nặng hơn và xử trí theo y lệnh", isCorrect: true },
+            { text: "B. Không phải phản ứng dị ứng nên có thể tiếp tục dùng thuốc", isCorrect: false },
+            { text: "C. Phản vệ độ III, cần ép tim ngay", isCorrect: false },
+            { text: "D. Phản vệ độ IV, cần đặt nội khí quản ngay lập tức", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 82. Người bệnh có tiền sử phản vệ với một loại kháng sinh. Trong lần nhập viện sau, bác sĩ dự kiến chỉ định thuốc khác cùng nhóm vì chưa có thuốc thay thế phù hợp. Giải pháp phòng ngừa an toàn nhất là gì?",
+        options: [
+            { text: "A. Cho người bệnh dùng thử một liều nhỏ tại giường bệnh", isCorrect: false },
+            { text: "B. Chỉ cần hỏi người bệnh phản ứng lần trước có nặng hay không", isCorrect: false },
+            { text: "C. Hội chẩn người có chuyên môn về dị ứng hoặc bác sĩ đã được tập huấn, cân nhắc lợi ích – nguy cơ, chuẩn bị đầy đủ phương tiện cấp cứu và có sự đồng ý theo quy định", isCorrect: true },
+            { text: "D. Cho người bệnh dùng thuốc kháng histamine trước rồi sử dụng thuốc như bình thường", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 83. Người bệnh đã ổn định sau cấp cứu phản vệ và đề nghị ra viện ngay vì không còn khó thở hoặc nổi mày đay. Cách xử trí phù hợp nhất là gì?",
+        options: [
+            { text: "A. Cho người bệnh ra viện ngay vì triệu chứng đã hết hoàn toàn", isCorrect: false },
+            { text: "B. Tiếp tục theo dõi tại cơ sở y tế theo mức độ phản vệ, giám sát nguy cơ phản vệ hai pha, ghi nhận dị nguyên nghi ngờ và hướng dẫn phòng ngừa tái diễn", isCorrect: true },
+            { text: "C. Chỉ đo lại huyết áp một lần rồi cho người bệnh về", isCorrect: false },
+            { text: "D. Cho người bệnh về nhà và tự mua thuốc adrenaline để sử dụng khi cần", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 84. Trong quá trình truyền dịch, người bệnh than đau rát tại vị trí kim truyền, vùng da xung quanh sưng nề, trắng nhợt và lạnh hơn vùng da lân cận. Điều dưỡng cần nghĩ nhiều nhất đến tình trạng nào?",
+        options: [
+            { text: "A. Viêm tĩnh mạch", isCorrect: false },
+            { text: "B. Dị ứng dịch truyền", isCorrect: false },
+            { text: "C. Thoát mạch", isCorrect: true },
+            { text: "D. Tắc kim truyền", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 85. Hướng dẫn xử trí khi phát hiện thoát mạch trong truyền dịch cho người bệnh. NGOẠI TRỪ",
+        options: [
+            { text: "A. Dừng truyền ngay lập tức, giữ nguyên kim tiêm tại chỗ.", isCorrect: false },
+            { text: "B. Nhẹ nhàng hút tối đa lượng dịch bị thoát ra. Tránh đè ép lên vùng", isCorrect: false },
+            { text: "C. Rút kim truyền/catheter, Khoanh vùng bị thoát mạch bằng bút không xóa, kê cao chi bị thoát mạch.", isCorrect: false },
+            { text: "D. Tiếp tục truyền cho xong y lệnh", isCorrect: true },
+        ]
+    },
+    {
+        q: "Câu 86. Điều dưỡng cần làm gì khi chuẩn bị tiêm tĩnh mạch để đảm bảo an toàn cho người bệnh?",
+        options: [
+            { text: "A. Sát khuẩn tại chỗ tiêm và để khô tự nhiên trước khi tiêm.", isCorrect: true },
+            { text: "B. Tiêm ngay sau khi sát khuẩn da vùng tiêm để tránh nhiễm khuẩn", isCorrect: false },
+            { text: "C. Không cần sát khuẩn nếu kim tiêm đảm bảo vô trùng", isCorrect: false },
+            { text: "D. Xác khuẩn vị trí tiêm tối đa 3 lần", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 87. Trong kỹ thuật đặt catheter tĩnh mạch ngoại vi, khi nào điều dưỡng nên ngưng ngay thủ thuật và rút kim ra để đảm bảo an toàn?",
+        options: [
+            { text: "A. Bệnh nhân than đau nhẹ lúc chọc kim", isCorrect: false },
+            { text: "B. Không thấy máu trào ngược khi chọc kim vào tĩnh mạch", isCorrect: false },
+            { text: "C. Kim vào sâu vào tĩnh mạch và thấy sưng tại vị trí chọc", isCorrect: true },
+            { text: "D. Tháy máu chảy ra ở đốc kim", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 88. Dấu hiệu nào cho thấy catheter bị nhiễm trùng?",
+        options: [
+            { text: "A. Vùng quanh catheter đỏ, sưng, đau, có mủ", isCorrect: true },
+            { text: "B. Vết thương khô", isCorrect: false },
+            { text: "C. Bệnh nhân dễ chịu", isCorrect: false },
+            { text: "D. Không có biểu hiện gì", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 89. Tại sao cần khóa catheter sau khi sử dụng?",
+        options: [
+            { text: "A. Tránh thoát máu hoặc khí vào mạch máu", isCorrect: true },
+            { text: "B. Để dễ tìm lại", isCorrect: false },
+            { text: "C. Giữ catheter thẳng", isCorrect: false },
+            { text: "D. Dễ chăm sóc", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 90. Điều gì KHÔNG đúng khi rút catheter?",
+        options: [
+            { text: "A. Rút nhanh, không cần thao tác gì", isCorrect: true },
+            { text: "B. Yêu cầu bệnh nhân nín thở khi rút", isCorrect: false },
+            { text: "C. Đè ép tại chỗ sau khi rút", isCorrect: false },
+            { text: "D. Sát khuẩn trước và sau khi rút", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 91. Trong khi chuẩn bị truyền dịch tĩnh mạch, điều dưỡng phát hiện còn một đoạn khí trong dây truyền trước khi kết nối với người bệnh. Xử trí phù hợp nhất là:",
+        options: [
+            { text: "A. Kết nối và truyền với tốc độ chậm", isCorrect: false },
+            { text: "B. Tăng tốc độ để đẩy khí qua nhanh", isCorrect: false },
+            { text: "C. Kẹp dây rồi tiếp tục truyền vì lượng khí ít", isCorrect: false },
+            { text: "D. Đuổi hết khí trong hệ thống dây truyền trước khi kết nối với người bệnh", isCorrect: true },
+        ]
+    },
+    {
+        q: "Câu 92. Trong quá trình truyền dịch, điều dưỡng thấy máu trào ngược vào dây truyền. Người bệnh không đau, không sưng tại vị trí kim và đường truyền vẫn đúng vị trí. Điều dưỡng nên làm gì trước tiên?",
+        options: [
+            { text: "A. Rút kim truyền ngay", isCorrect: false },
+            { text: "B. Kiểm tra hệ thống truyền, vị trí chai/túi dịch và nguyên nhân làm dòng dịch ngừng hoặc chảy chậm trước khi điều chỉnh lại tốc độ theo y lệnh", isCorrect: true },
+            { text: "C. Tăng ngay tốc độ truyền tối đa", isCorrect: false },
+            { text: "D. Tiếp tục theo dõi, không cần can thiệp", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 93. Người bệnh đang được truyền dung dịch Glucose 20% qua tĩnh mạch ngoại vi. Sau 20 phút, điều dưỡng phát hiện vùng quanh kim truyền sưng, lạnh, người bệnh đau tức và dịch truyền chảy chậm. Hành động ưu tiên của điều dưỡng là gì?",
+        options: [
+            { text: "A. Tăng tốc độ truyền để kiểm tra đường truyền còn thông hay không", isCorrect: false },
+            { text: "B. Ngừng truyền ngay, đánh giá vị trí truyền, rút kim theo quy trình và thiết lập đường truyền mới ở vị trí khác", isCorrect: true },
+            { text: "C. Xoa bóp mạnh vùng sưng để dung dịch thấm nhanh hơn", isCorrect: false },
+            { text: "D. Tiếp tục truyền vì Glucose 5% không gây tổn thương mô", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 94. Người bệnh đái tháo đường đang được chỉ định truyền Glucose 10% đo người bệnh ăn uống kém có nguy cơ hạ đường huyết. Sau khi truyền được 250 ml, người bệnh khát nhiều, tiểu nhiều, mệt tăng và đường huyết mao mạch là 19 mmol/L. Cách xử trí phù hợp nhất của điều dưỡng là gì?",
+        options: [
+            { text: "A. Tiếp tục truyền hết chai vì phải bảo đảm đủ lượng dịch theo y lệnh", isCorrect: false },
+            { text: "B. Tăng tốc độ truyền để rút ngắn thời gian tiếp xúc với glucose", isCorrect: false },
+            { text: "C. Tạm ngừng đánh giá dấu hiệu sinh tồn, báo bác sĩ và theo dõi đường huyết", isCorrect: true },
+            { text: "D. Cho người bệnh uống thêm nước đường để bù năng lượng", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 95. Người bệnh suy tim có y lệnh truyền 1.000 ml dung dịch Glucose 5% trong 4 giờ. Sau 2 giờ, người bệnh xuất hiện khó thở, ho, SpO₂ giảm, tĩnh mạch cổ nổi và có ran ẩm hai đáy phổi. Nhận định và xử trí ưu tiên là gì?",
+        options: [
+            { text: "A. Người bệnh bị dị ứng với glucose, cần tiêm thuốc chống dị ứng", isCorrect: false },
+            { text: "B. Người bệnh có dấu hiệu quá tải tuần hoàn; ngừng hoặc giảm tốc độ truyền, cho người bệnh tư thế phù hợp, hỗ trợ oxy và báo bác sĩ", isCorrect: true },
+            { text: "C. Đây là phản ứng bình thường khi truyền nhanh, chỉ cần tiếp tục theo dõi", isCorrect: false },
+            { text: "D. Tăng tốc độ truyền để hoàn thành đúng thời gian", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 96. Điều dưỡng nhận y lệnh truyền dung dịch Glucose ưu trương qua đường tĩnh mạch ngoại vi. Trước khi thực hiện, vị trí dự kiến truyền là tĩnh mạch nhỏ ở mu bàn tay, người bệnh than đau rát khi thử truyền. Quyết định phù hợp nhất là gì?",
+        options: [
+            { text: "A. Tiếp tục truyền vì chỉ cần giảm tốc độ là đủ", isCorrect: false },
+            { text: "B. Chọn tĩnh mạch lớn, chắc, phù hợp hơn; kiểm tra độ thông của đường truyền và theo dõi sát nguy cơ viêm tĩnh mạch, thoát mạch", isCorrect: true },
+            { text: "C. Pha loãng dung dịch bằng nước cất ngay tại giường để giảm kích ứng", isCorrect: false },
+            { text: "D. Chuyển sang tiêm bắp vì glucose ưu trương hấp thu nhanh hơn", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 97. Trong khi thay chai dịch truyền Glucose 10%, điều dưỡng phát hiện còn nhiều bọt khí trong dây truyền và khóa dây chưa được đóng hoàn toàn. Cách xử trí an toàn nhất là gì?",
+        options: [
+            { text: "A. Nối ngay chai mới vì lượng khí nhỏ không gây nguy hiểm", isCorrect: false },
+            { text: "B. Ép bọt khí di chuyển xuống phía người bệnh để tránh tắc dây", isCorrect: false },
+            { text: "C. Khóa dây truyền, loại bỏ hoàn toàn khí trong dây, kiểm tra lại hệ thống kín và đúng kỹ thuật trước khi tiếp tục truyền", isCorrect: true },
+            { text: "D. Rút kim truyền và bỏ toàn bộ hệ thống dù đường truyền vẫn tốt", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 98. Trong thời gian truyền máu, cần theo dõi người bệnh ở giai đoạn nào là quan trọng nhất",
+        options: [
+            { text: "A. Trước khi truyền máu", isCorrect: false },
+            { text: "B. 15 phút đầu sau khi bắt đầu truyền", isCorrect: true },
+            { text: "C. Khi truyền gần hết máu", isCorrect: false },
+            { text: "D. Sau khi kết thúc truyền máu", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 99. Phản ứng nguy hiểm nhất có thể xảy ra khi truyền nhầm nhóm máu là:",
+        options: [
+            { text: "A. Sốt cao đột ngột sau truyền máu", isCorrect: false },
+            { text: "B. Sốc phản vệ", isCorrect: false },
+            { text: "C. Phản ứng tan máu", isCorrect: true },
+            { text: "D. Phù phổi do truyền máu tốc độ cao", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 100. Khi phát hiện người bệnh sốt, rét run, khó thở trong khi truyền máu, điều dưỡng cần:",
+        options: [
+            { text: "A. Giảm tốc độ truyền máu", isCorrect: false },
+            { text: "B. Ngừng ngay việc truyền máu và báo bác sĩ", isCorrect: true },
+            { text: "C. Động viên người bệnh cố gắng", isCorrect: false },
+            { text: "D. Kiểm tra lại đường truyền và túi máu", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 101. Trước khi truyền máu, điều dưỡng cần. NGOẠI TRỪ",
+        options: [
+            { text: "A. Lấy dấu hiệu sinh tồn", isCorrect: false },
+            { text: "B. Giải thích và động viên người bệnh an tâm", isCorrect: false },
+            { text: "C. Cho người bệnh đi vệ sinh", isCorrect: false },
+            { text: "D. Đảm bảo kiểm soát nhiễm khuẩn", isCorrect: true },
+        ]
+    },
+    {
+        q: "Câu 102. Mục đích của việc theo dõi nước tiểu trong và sau khi truyền máu là để:",
+        options: [
+            { text: "A. Phát hiện sớm suy thận cấp do tan máu", isCorrect: true },
+            { text: "B. Đánh giá chức năng gan", isCorrect: false },
+            { text: "C. Kiểm tra hệ tiết niệu", isCorrect: false },
+            { text: "D. Đánh giá sự hấp thu máu", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 103. Sau khi truyền được vài ml máu, Người bệnh: đau lưng, rét run, khó thở, tụt huyết áp. Xử trí đầu tiên là gì?",
+        options: [
+            { text: "A. Cho thuốc hạ sốt", isCorrect: false },
+            { text: "B. Giảm tốc độ truyền", isCorrect: false },
+            { text: "C. Ngừng truyền máu ngay và thực hiện cấp cứu người bệnh", isCorrect: true },
+            { text: "D. Đông viên người bệnh và Theo dõi thêm", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 104. Sau 30–60 phút truyền máu, Người bệnh: sốt cao, rét run. Xử trí phù hợp nhất?",
+        options: [
+            { text: "A. Tiếp tục truyền nhanh", isCorrect: false },
+            { text: "B. Ngừng truyền và bác bác sĩ", isCorrect: true },
+            { text: "C. Truyền thêm máu", isCorrect: false },
+            { text: "D. Không cần xử trí", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 105. Người bệnh đang truyền máu, Xuất hiện: ngứa, nổi mày đay. Điều dưỡng xử trí đúng là",
+        options: [
+            { text: "A. Ngừng truyền + dùng thuốc kháng histamin theo y lệnh", isCorrect: true },
+            { text: "B. Truyền nhanh hơn", isCorrect: false },
+            { text: "C. Không cần xử trí", isCorrect: false },
+            { text: "D. Cho ăn uống thêm nước", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 106. Khoảng 20 phút sau khi bắt đầu truyền máu, người bệnh đột ngột rét run, sốt cao, mạch nhanh, huyết áp tụt, buồn nôn và có biểu hiện sốc. Điều dưỡng cần nhận định đến biến chứng nào?",
+        options: [
+            { text: "A. Phản ứng dị ứng nhẹ", isCorrect: false },
+            { text: "B. Quá tải tuần hoàn", isCorrect: false },
+            { text: "C. Phản ứng do nhiễm khuẩn chế phẩm máu", isCorrect: true },
+            { text: "D. Thiếu máu tiến triển", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 107. Điều dưỡng nhận một đơn vị khối hồng cầu để truyền cho người bệnh Nguyễn Văn An. Tại phòng bệnh có hai người cùng tên Nguyễn Văn An; một người không đeo vòng nhận diện. Trên phiếu truyền máu chỉ ghi họ tên và số giường. \nCách xử trí an toàn nhất là gì?",
+        options: [
+            { text: "A. Dựa vào số giường và hỏi người bệnh xem có đang chờ truyền máu hay không", isCorrect: false },
+            { text: "B. Nhờ người nhà xác nhận đúng người bệnh rồi tiến hành truyền", isCorrect: false },
+            { text: "C. Chưa truyền máu; xác minh lại bằng ít nhất 4 thông tin định danh, đối chiếu người bệnh, nhóm máu, hồ sơ bệnh án, phiếu lĩnh máu và túi máu trước khi thực hiện", isCorrect: true },
+            { text: "D. Truyền cho người bệnh có mức hemoglobin thấp hơn vì có khả năng là người được chỉ định", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 108. Khi kiểm tra túi máu trước truyền, điều dưỡng phát hiện túi máu còn hạn sử dụng nhưng có cục đông nhỏ, màu sắc không đồng nhất và thông tin nhóm máu trên nhãn bị nhòe một phần. Hành động phù hợp nhất là gì?",
+        options: [
+            { text: "A. Lắc nhẹ túi máu để làm tan cục đông rồi tiếp tục truyền", isCorrect: false },
+            { text: "B. Truyền với tốc độ chậm và theo dõi sát người bệnh", isCorrect: false },
+            { text: "C. Không sử dụng túi máu, giữ nguyên hiện trạng và liên hệ khoa xét nghiệm hoặc ngân hàng máu để kiểm tra, đổi đơn vị máu", isCorrect: true },
+            { text: "D. Lọc túi máu qua nhiều lớp gạc trước khi truyền", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 109. Người bệnh bắt đầu được truyền khối hồng cầu. Sau khoảng 10 phút, người bệnh rét run, đau thắt lưng, khó thở, mạch nhanh, huyết áp tụt và nước tiểu có màu đỏ sẫm. Hành động ưu tiên nhất của điều dưỡng là gì?",
+        options: [
+            { text: "A. Giảm tốc độ truyền và theo dõi thêm 15 phút", isCorrect: false },
+            { text: "B. Ngừng truyền máu ngay, duy trì đường truyền bằng dung dịch phù hợp với bộ dây mới, báo bác sĩ và thực hiện quy trình xử trí phản ứng truyền máu", isCorrect: true },
+            { text: "C. Cho người bệnh uống thuốc hạ sốt rồi tiếp tục truyền", isCorrect: false },
+            { text: "D. Thay túi máu khác cùng nhóm và tiếp tục truyền để bảo đảm đủ lượng máu", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 110. Người bệnh nữ, 72 tuổi, có tiền sử suy tim, được truyền khối hồng cầu. Sau khi truyền được khoảng hai phần ba đơn vị máu, người bệnh khó thở tăng, ho, SpO₂ giảm, tĩnh mạch cổ nổi, huyết áp tăng và nghe phổi có ran ẩm. Nhận định và xử trí phù hợp nhất là gì?",
+        options: [
+            { text: "A. Người bệnh có biểu hiện quá tải tuần hoàn; ngừng truyền, đặt tư thế phù hợp, hỗ trợ oxy, theo dõi và báo bác sĩ ngay", isCorrect: true },
+            { text: "B. Người bệnh bị phản ứng tan máu cấp; cần tăng tốc độ truyền để bù thể tích tuần hoàn", isCorrect: false },
+            { text: "C. Đây là biểu hiện lo lắng thông thường, chỉ cần trấn an người bệnh", isCorrect: false },
+            { text: "D. Người bệnh bị hạ đường huyết; cần cho uống nước đường", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 111. Ngay sau khi bắt đầu truyền huyết tương, người bệnh xuất hiện nổi mề đay toàn thân, phù môi, khò khè, khó thở và huyết áp giảm nhanh. Cách xử trí ưu tiên của điều dưỡng là gì?",
+        options: [
+            { text: "A. Giảm tốc độ truyền và chờ bác sĩ đến đánh giá", isCorrect: false },
+            { text: "B. Ngừng truyền ngay, gọi hỗ trợ cấp cứu, đánh giá đường thở – hô hấp – tuần hoàn và chuẩn bị xử trí phản vệ theo phác đồ", isCorrect: true },
+            { text: "C. Cho người bệnh nằm nghỉ và uống thuốc kháng histamine", isCorrect: false },
+            { text: "D. Tháo dây truyền máu, cho người bệnh đi lại để giảm cảm giác khó thở", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 112. Người bệnh đang truyền máu thì đột ngột sốt cao 40°C, rét run dữ dội, buồn nôn, đau cơ, mạch nhanh và huyết áp tụt. Túi máu có màu sắc bất thường. Nhận định nào cần được ưu tiên và xử trí như thế nào?",
+        options: [
+            { text: "A. Nghĩ đến nhiễm khuẩn liên quan chế phẩm máu; ngừng truyền ngay, báo bác sĩ, duy trì đường truyền và gửi túi máu cùng mẫu bệnh phẩm để kiểm tra theo quy trình", isCorrect: true },
+            { text: "B. Đây là phản ứng sốt nhẹ; cho thuốc hạ sốt rồi tiếp tục truyền", isCorrect: false },
+            { text: "C. Người bệnh mất nước; tăng tốc độ truyền máu để nâng huyết áp", isCorrect: false },
+            { text: "D. Đây là phản ứng tâm lý; trấn an và tiếp tục theo dõi", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 113. Sau khi kiểm tra đúng người bệnh và đúng đơn vị máu, điều dưỡng bắt đầu truyền máu với tốc độ cao để hoàn thành sớm. Điều dưỡng rời phòng và dự kiến quay lại sau 30 phút. Sai sót quan trọng nhất trong tình huống này là gì?",
+        options: [
+            { text: "A. Không cho người bệnh uống nước trước khi truyền máu", isCorrect: false },
+            { text: "B. Không giữ lại vỏ bao ngoài của túi máu", isCorrect: false },
+            { text: "C. Không truyền đúng tốc độ theo y lệnh và theo dõi sát người bệnh trong 15 phút đầu, làm tăng nguy cơ bỏ sót phản ứng truyền máu sớm", isCorrect: true },
+            { text: "D. Không yêu cầu người nhà tự theo dõi nhiệt độ người bệnh", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 114. Trong quy trình kỹ thuật lấy mẫu bệnh phẩm làm xét nghiệm. Nguyên tắc quan trọng nhất khi lấy bệnh phẩm để xét nghiệm là:",
+        options: [
+            { text: "A. Lấy nhanh", isCorrect: false },
+            { text: "B. Lấy đúng – đủ – vô khuẩn", isCorrect: true },
+            { text: "C. Lấy nhiều lần để đánh giá khách quan", isCorrect: false },
+            { text: "D. Lấy bất kỳ vị trí nào", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 115. Trong quy trình kỹ thuật lấy mẫu bệnh phẩm làm xét nghiệm. Khi lấy máu tĩnh mạch, vị trí thường được lựa chọn là:",
+        options: [
+            { text: "A. Tĩnh mạch cổ", isCorrect: false },
+            { text: "B. Tĩnh mạch bẹn", isCorrect: false },
+            { text: "C. Tĩnh mạch nếp gấp khuỷu tay", isCorrect: true },
+            { text: "D. Động mạch quay", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 116. Trong quy trình kỹ thuật lấy mẫu bệnh phẩm làm xét nghiệm. Khi lấy máu mao mạch, cần bỏ giọt máu đầu tiên vì:",
+        options: [
+            { text: "A. Không đủ lượng", isCorrect: false },
+            { text: "B. Dễ gây đau", isCorrect: false },
+            { text: "C. Có thể lẫn dịch mô", isCorrect: true },
+            { text: "D. Cả 3 đáp án trên", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 117. Trong quy trình kỹ thuật lấy mẫu bệnh phẩm làm xét nghiệm. Mục đích của việc ghi nhãn bệnh phẩm là:",
+        options: [
+            { text: "A. Đảm bảo chất lượng xét nghiệm", isCorrect: false },
+            { text: "B. Phân biệt mẫu", isCorrect: false },
+            { text: "C. Đảm bảo chính xác thông tin người bệnh", isCorrect: true },
+            { text: "D. Tiết kiệm thời gian", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 118. Trong quy trình kỹ thuật lấy mẫu bệnh phẩm đờm làm xét nghiệm. Khi lấy mẫu đờm xét nghiệm, người bệnh cần được hướng dẫn. NGOẠI TRỪ",
+        options: [
+            { text: "A. Vệ sinh bằng nước muối sinh lý trước khi lấy ddoemf làm xét nghiệm", isCorrect: false },
+            { text: "B. Ho mạnh, khạc đờm vào dụng cụ", isCorrect: false },
+            { text: "C. Nên lấy vào buổi sáng", isCorrect: false },
+            { text: "D. Cho người bệnh nhịn ăn sáng", isCorrect: true },
+        ]
+    },
+    {
+        q: "Câu 119. Người bệnh nghi nhiễm khuẩn, Điều dưỡng lấy máu sau khi đã dùng kháng sinh 2 giờ. Sai sót chính là gì?",
+        options: [
+            { text: "A. Không đủ lượng máu", isCorrect: false },
+            { text: "B. Lấy sai thời điểm", isCorrect: false },
+            { text: "C. Lấy sau khi dùng kháng sinh", isCorrect: false },
+            { text: "D. Cả 3 đáp án trên", isCorrect: true },
+        ]
+    },
+    {
+        q: "Câu 120. Điều dưỡng lấy nước tiểu giữa dòng. Để 2 giờ sau mới gửi xét nghiệm. Nguy cơ gì xảy ra?",
+        options: [
+            { text: "A. Không đủ mẫu", isCorrect: false },
+            { text: "B. Sai lệch kết quả xét nghiệm", isCorrect: true },
+            { text: "C. Không ảnh hưởng", isCorrect: false },
+            { text: "D. Nguười bệnh khó chịu", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 121. Trong quy trình lấy mẫu máu làm xét nghiệm. Khi lấy máu tĩnh mạch. Điều dưỡng sát khuẩn xong → chạm tay lại vị trí tiêm. Sai sót nguy hiểm là gì?",
+        options: [
+            { text: "A. Vi phạm vô khuẩn → nhiễm khuẩn mẫu", isCorrect: true },
+            { text: "B. Gây đau cho người bệnh", isCorrect: false },
+            { text: "C. Gúp người bệnh yên tâm", isCorrect: false },
+            { text: "D. Thực hiện sai kỹ thuật", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 122. Trong quy trình lấy mẫu dịch mủ làm xét nghiệm. gười bệnh cần xét nghiệm vi sinh, Điều dưỡng lấy mẫu mủ ở vùng rìa vết thương. Nhận định là gì?",
+        options: [
+            { text: "A. Lấy đúng vị trí", isCorrect: false },
+            { text: "B. Lấy đúng vùng tổn thương", isCorrect: false },
+            { text: "C. Lấy sai vị trí", isCorrect: true },
+            { text: "D. Không nội dung nào phù hợp", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 123. Trong quy trình kỹ thuật lấy mẫu bệnh phẩm nước tiểu làm xét nghiệm. Điều dưỡng lấy nước tiểu nhưng không hướng dẫn NB bỏ phần đầu dòng. Nhận định là?",
+        options: [
+            { text: "A. Lấy không đủ lượng", isCorrect: false },
+            { text: "B. Lấy không đúng thời gian", isCorrect: false },
+            { text: "C. Mẫu bênh phẩm nước tiểu bị nhiễm bẩn", isCorrect: true },
+            { text: "D. Không đúng dụng cụ", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 124. Người bệnh sốt cao, rét run, nghi nhiễm khuẩn huyết và đã có y lệnh dùng kháng sinh tĩnh mạch ngay. Điều dưỡng chưa lấy mẫu cấy máu. Cách thực hiện phù hợp nhất là gì?",
+        options: [
+            { text: "A. Truyền kháng sinh trước, lấy máu cấy sau khi người bệnh hết sốt", isCorrect: false },
+            { text: "B. Lấy mẫu cấy máu đúng kỹ thuật trước khi dùng kháng sinh nếu không làm trì hoãn cấp cứu, sau đó thực hiện kháng sinh theo y lệnh", isCorrect: true },
+            { text: "C. Lấy máu cấy từ dây truyền đang dùng để tiết kiệm thời gian", isCorrect: false },
+            { text: "D. Chỉ lấy một chai cấy máu vì người bệnh đang rét run", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 125. Điều dưỡng cần lấy máu xét nghiệm đông máu, huyết học và sinh hóa trong cùng một lần chọc kim. Sau khi lấy mẫu, ống xét nghiệm đông máu chỉ đạt khoảng một nửa thể tích quy định. Cách xử trí phù hợp nhất là gì?",
+        options: [
+            { text: "A. Gửi mẫu vì phòng xét nghiệm có thể tự điều chỉnh kết quả", isCorrect: false },
+            { text: "B. Đổ thêm máu từ ống huyết học sang ống đông máu", isCorrect: false },
+            { text: "C. Lấy lại mẫu vào đúng loại ống, bảo đảm đủ thể tích để duy trì đúng tỷ lệ máu và chất chống đông", isCorrect: true },
+            { text: "D. Thêm nước muối sinh lý vào ống cho đủ thể tích", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 126. Người bệnh được yêu cầu lấy mẫu đờm xét nghiệm vi khuẩn nhưng lại khạc nước bọt loãng vào lọ. Mẫu không có chất nhầy hoặc mủ. Điều dưỡng nên xử trí như thế nào?",
+        options: [
+            { text: "A. Gửi mẫu ngay vì mọi dịch tiết từ miệng đều có giá trị như nhau", isCorrect: false },
+            { text: "B. Hướng dẫn người bệnh súc miệng bằng nước sạch, hít sâu, ho khạc đờm từ đường hô hấp dưới vào lọ vô khuẩn và lấy lại mẫu", isCorrect: true },
+            { text: "C. Cho người bệnh súc miệng bằng dung dịch sát khuẩn mạnh rồi lấy lại mẫu", isCorrect: false },
+            { text: "D. Thêm một ít nước muối vào lọ để mẫu dễ xét nghiệm", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 127. Người bệnh nữ cần lấy nước tiểu giữa dòng để cấy vi khuẩn. Người bệnh đã tiểu một phần vào bô, sau đó điều dưỡng định rót nước tiểu từ bô sang lọ vô khuẩn. Nhận định nào đúng nhất?",
+        options: [
+            { text: "A. Có thể sử dụng nếu bô đã được rửa sạch bằng nước", isCorrect: false },
+            { text: "B. Có thể sử dụng nếu rót mẫu trong vòng 5 phút", isCorrect: false },
+            { text: "C. Không sử dụng mẫu này; cần hướng dẫn vệ sinh đúng, bỏ dòng tiểu đầu và lấy trực tiếp dòng giữa vào lọ vô khuẩn", isCorrect: true },
+            { text: "D. Chỉ cần lọc nước tiểu qua gạc vô khuẩn trước khi gửi xét nghiệm", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 128. Người bệnh đang truyền dung dịch Glucose qua tĩnh mạch tay trái. Điều dưỡng cần lấy máu xét nghiệm đường huyết và điện giải nhưng tĩnh mạch tay phải khó lấy. Cách thực hiện nào giúp hạn chế sai lệch kết quả nhất?",
+        options: [
+            { text: "A. Lấy máu ngay tại vị trí phía trên kim truyền ở tay trái", isCorrect: false },
+            { text: "B. Lấy máu từ dây truyền sau khi bỏ đi 1 ml dịch đầu", isCorrect: false },
+            { text: "C. Thực hiện lấy ở chi đối diện; nếu bắt buộc lấy cùng chi phải ngừng truyền theo quy định, chọn vị trí phù hợp xa đường truyền và thực hiện đúng hướng dẫn", isCorrect: true },
+            { text: "D. Tăng tốc độ truyền rồi lấy máu để mẫu không bị đông", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 129. Sau khi lấy máu, điều dưỡng để các ống mẫu không ghi nhãn trên khay, dự định quay về bàn trực mới dán tên người bệnh. Cùng thời điểm đó, điều dưỡng còn lấy mẫu cho ba người bệnh khác. Giải pháp an toàn nhất là gì?",
+        options: [
+            { text: "A. Ghi số giường lên nắp ống rồi hoàn thiện nhãn sau", isCorrect: false },
+            { text: "B. Dựa vào thứ tự đặt ống trên khay để xác định từng người bệnh", isCorrect: false },
+            { text: "C. Ghi nhãn đầy đủ ngay sau khi lấy mẫu cho người bệnh, trước khi lấy mẫu phải đối chiếu thông tin người bệnh trên phiếu chỉ định của người bệnh ít nhất là 4 thông tin", isCorrect: true },
+            { text: "D. Nhờ người nhà giữ riêng từng ống mẫu cho đến khi dán nhãn", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 130. Người bệnh được chỉ định xét nghiệm đường huyết lúc đói. Trước khi lấy máu, điều dưỡng phát hiện người bệnh vừa uống một cốc sữa có đường khoảng 30 phút trước nhưng người bệnh đề nghị vẫn lấy để khỏi chờ. Cách xử trí phù hợp nhất là gì?",
+        options: [
+            { text: "A. Vẫn lấy mẫu và ghi là đường huyết lúc đói", isCorrect: false },
+            { text: "B. Cho người bệnh uống thêm nước rồi lấy mẫu sau 15 phút", isCorrect: false },
+            { text: "C. Chưa lấy mẫu theo tiêu chuẩn lúc đói, báo hoặc trao đổi lại thời điểm lấy và giải thích cho người bệnh về nguy cơ sai lệch kết quả", isCorrect: true },
+            { text: "D. Lấy mẫu nhưng giảm một nửa lượng máu để hạn chế ảnh hưởng của thức ăn", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 131. Khi đặt ống thông tiểu lưu cho bệnh nhân nữ, bước nào sau đây là quan trọng nhất để phòng ngừa nhiễm khuẩn tiết niệu?",
+        options: [
+            { text: "A. Sử dụng găng sạch khi mở bộ dụng cụ vô khuẩn", isCorrect: false },
+            { text: "B. Rửa tay trước và sau thủ thuật", isCorrect: true },
+            { text: "C. Đưa ống thông vào nhanh để tránh bệnh nhân khó chịu", isCorrect: false },
+            { text: "D. Động viên người bệnh", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 132. Tại sao việc bôi trơn sonde trước khi đặt thông tiểu nam lại đặc biệt quan trọng?",
+        options: [
+            { text: "A. Giảm đau cho bệnh nhân", isCorrect: false },
+            { text: "B. Tránh làm trầy niêm mạc niệu đạo dài", isCorrect: true },
+            { text: "C. Tăng khả năng vào nhanh", isCorrect: false },
+            { text: "D. Giúp người bệnh yên tâm", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 133. Biến chứng xuất huyết Niệu đạo - Bàng quang thường xảy ra ra trong trường hợp nào?",
+        options: [
+            { text: "A. Do bị giảm áp suất đột ngột trong bàng quang hoặc ống thông tiểu chưa đặt đúng vị trí ở trong bàng quang đã bơm bóng (cuff) giữ ống", isCorrect: true },
+            { text: "B. Dùng ống thông không đúng kích cỡ, quá to so với đường niệu đạo.", isCorrect: false },
+            { text: "C. Điều dưỡng thực hiện động tác đặt thô bạo", isCorrect: false },
+            { text: "D. Do người bệnh lo lắng", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 134. Hoại tử niệu đạo xảy ra trên người bệnh đặt thông tiểu giữ lại thường gặp do",
+        options: [
+            { text: "A. Do Điều dưỡng thực hiện động tác đặt thô bạo.", isCorrect: false },
+            { text: "B. Do ống thông tiểu chưa vào tới bàng quang đã bơm bóng chén cố định", isCorrect: true },
+            { text: "C. Dùng ống thông không đúng kích cỡ, quá to so với đường niệu đạo", isCorrect: false },
+            { text: "D. Do người bệnh kích thích trong quá trình đặt", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 135. Khi đặt thông tiểu dẫn lưu ở người bệnh bí tiểu nhiều, khi nước tiểu chảy qua ống thông phải cho chảy từ từ và không nên quá bao nhiêu ml",
+        options: [
+            { text: "A. Không lấy quá 450 ml nước tiểu ở bàng quang ra", isCorrect: false },
+            { text: "B. Không lấy quá 500ml nước tiểu ở bàng quang ra", isCorrect: false },
+            { text: "C. Không lấy quá 650ml nước tiểu ở bàng quang ra", isCorrect: false },
+            { text: "D. Không lấy quá 750 ml nước tiểu ở bàng quang ra", isCorrect: true },
+        ]
+    },
+    {
+        q: "Câu 136. Để giảm nguy cơ hoại tử cổ bàng quang trong kỹ thuật đặt thông tiêu giữ lại cần lưu ý?",
+        options: [
+            { text: "A. Bơm vào bóng cố định khoảng 10ml nước muối sinh lý", isCorrect: false },
+            { text: "B. Bơm vào bóng cố định khoảng 15ml nước muối sinh lý", isCorrect: false },
+            { text: "C. Bơm vào bóng cố định khoảng 10ml nước cất", isCorrect: true },
+            { text: "D. Bơm vào bóng cố định khoảng 15ml nước cất", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 137. Trong quy trình đặt thông tiểu giữ lại cần lưu ý gì?",
+        options: [
+            { text: "A. Đảm bảo tuyệt đối vô khuẩn", isCorrect: true },
+            { text: "B. Đặt không quá 3 lần/ngày", isCorrect: false },
+            { text: "C. Động viên người bệnh trước khi đặt", isCorrect: false },
+            { text: "D. Cho người bệnh nhịn ăn trước đặt", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 138. Để hạn chế tổn thương niệu đạo đối với đặt thông tiểu nam người điều dưỡng cần làm gì?",
+        options: [
+            { text: "A. Bôi dầu vaselin vào ống thông khoảng 8- 10 cm.", isCorrect: false },
+            { text: "B. Bôi dầu vaselin vào ống thông khoảng 15- 20 cm.", isCorrect: true },
+            { text: "C. Bôi dầu vaselin vào ống thông khoảng 17- 20 cm.", isCorrect: false },
+            { text: "D. Bôi dầu vaselin vào ống thông khoảng 3- 5 cm.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 139. Nhiễm trùng đường tiết niệu trong bệnh nhân đặt thông tiểu thường do các yếu tố. NGOẠI TRỪ",
+        options: [
+            { text: "A. Do kỹ thuật đặt thông tiểu, rửa bàng quang không vô khuẩn", isCorrect: false },
+            { text: "B. Vệ sinh bộ phận sinh dục không sạch trước khi đặt thông tiểu", isCorrect: false },
+            { text: "C. Túi chứa nước tiểu để cao hơn bàng quang", isCorrect: false },
+            { text: "D. Người bệnh lo lắng", isCorrect: true },
+        ]
+    },
+    {
+        q: "Câu 140. Khi đặt thông tiểu cho người bệnh nữ, điều dưỡng phát hiện ống thông đã đi nhầm vào âm đạo và chưa có nước tiểu chảy ra. Xử trí phù hợp nhất là:",
+        options: [
+            { text: "A. Rút ống ra, sát khuẩn rồi dùng lại chính ống đó", isCorrect: false },
+            { text: "B. Rút ống ra và đặt lại ngay bằng cùng bộ dụng cụ", isCorrect: false },
+            { text: "C. Giữ ống đặt nhầm làm mốc, sử dụng ống thông vô khuẩn mới để đặt đúng niệu đạo, sau đó rút ống trong âm đạo", isCorrect: true },
+            { text: "D. Bơm bóng để kiểm tra vị trí ống thông", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 141. BN đặt sonde tiểu dài ngày, than đau lưng, sốt, rét run. Chẩn đoán điều dưỡng?",
+        options: [
+            { text: "A. Nguy cơ loét da", isCorrect: false },
+            { text: "B. Người bệnh nhiễm khuẩn đường tiết niệu liên quan đến sonde tiểu", isCorrect: true },
+            { text: "C. Nguy cơ hạ đường huyết", isCorrect: false },
+            { text: "D. Người bệnh lo âu", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 142. Người bệnh nam, 72 tuổi, bí tiểu cấp, bàng quang căng lớn và đau nhiều. Sau khi đặt thông tiểu, nước tiểu chảy ra nhanh với số lượng lớn. Điều dưỡng nên xử trí như thế nào để hạn chế nguy cơ tai biến?",
+        options: [
+            { text: "A. Để nước tiểu chảy hết thật nhanh nhằm giảm đau ngay cho người bệnh", isCorrect: false },
+            { text: "B. Kẹp ống thông hoàn toàn trong 2 giờ rồi mới mở lại", isCorrect: false },
+            { text: "C. Theo dõi sát mạch, huyết áp, đau bụng và lượng nước tiểu; dẫn lưu theo đúng quy trình, tránh tháo thoát quá nhanh và > \n750ml khi bàng quang căng quá mức", isCorrect: true },
+            { text: "D. Rút ống thông ngay sau khi có nước tiểu chảy ra", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 143. Người bệnh đang được lưu thông tiểu. Điều dưỡng phát hiện túi dẫn lưu được treo cao hơn bàng quang và dây dẫn bị gập dưới đùi. Nguy cơ quan trọng nhất trong tình huống này là gì?",
+        options: [
+            { text: "A. Nước tiểu chảy nhanh quá mức gây mất nước", isCorrect: false },
+            { text: "B. Nước tiểu có thể trào ngược, ứ đọng và làm tăng nguy cơ nhiễm khuẩn tiết niệu", isCorrect: true },
+            { text: "C. Túi dẫn lưu dễ bị rách do áp lực tăng", isCorrect: false },
+            { text: "D. Người bệnh dễ bị tăng huyết áp", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 144. Người bệnh sau phẫu thuật có đặt thông tiểu lưu. Trong 2 giờ gần đây không thấy nước tiểu xuống túi, người bệnh căng tức vùng hạ vị. Hành động ưu tiên của điều dưỡng là gì?",
+        options: [
+            { text: "A. Bơm nước cất mạnh vào ống thông để đẩy cục tắc", isCorrect: false },
+            { text: "B. Kiểm tra dây dẫn có gập, xoắn, bị chèn ép hay không; đánh giá vị trí túi và tình trạng bàng quang trước khi báo bác sĩ", isCorrect: true },
+            { text: "C. Rút ngay ống thông và đặt lại ống mới", isCorrect: false },
+            { text: "D. Cho người bệnh uống thật nhiều nước rồi tiếp tục theo dõi", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 145. Khi đặt thông tiểu cho người bệnh nữ, đầu ống thông vô tình chạm vào vùng hậu môn trước khi đưa vào niệu đạo. Cách xử trí đúng nhất là gì?",
+        options: [
+            { text: "A. Lau đầu ống bằng gạc vô khuẩn rồi tiếp tục đặt", isCorrect: false },
+            { text: "B. Ngâm đầu ống vào dung dịch sát khuẩn rồi tiếp tục sử dụng", isCorrect: false },
+            { text: "C. Loại bỏ ống thông đã nhiễm bẩn, thay ống mới và thực hiện lại bằng kỹ thuật vô khuẩn", isCorrect: true },
+            { text: "D. Tiếp tục đặt vì đầu ống sẽ được nước tiểu rửa sạch", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 146. Người bệnh đang rửa bàng quang liên tục sau phẫu thuật tuyến tiền liệt. Điều dưỡng ghi nhận dịch vào nhiều nhưng dịch ra ít, nước tiểu đỏ sẫm, có cục máu đông và người bệnh đau căng vùng hạ vị. Nhận định và xử trí phù hợp nhất là gì?",
+        options: [
+            { text: "A. Đây là biểu hiện bình thường, tiếp tục rửa với tốc độ cũ", isCorrect: false },
+            { text: "B. Nghĩ đến tắc nghẽn đường dẫn lưu do cục máu đông; kiểm tra hệ thống, ngừng hoặc điều chỉnh theo quy", isCorrect: true },
+            { text: "C. Tăng tối đa tốc độ dịch rửa để đẩy cục máu đông", isCorrect: false },
+            { text: "D. Kẹp ống dẫn lưu để giữ dịch trong bàng quang lâu hơn", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 147. Khi chăm sóc người bệnh có thông tiểu lưu, điều dưỡng thường xuyên ngắt chỗ nối giữa ống thông và túi dẫn lưu để lấy nước tiểu xét nghiệm. Biện pháp nào an toàn nhất để giảm nguy cơ nhiễm khuẩn?",
+        options: [
+            { text: "A. Tiếp tục ngắt hệ thống nhưng sát khuẩn nhanh đầu nối", isCorrect: false },
+            { text: "B. Duy trì hệ thống dẫn lưu kín, lấy mẫu tại cổng lấy mẫu chuyên dụng bằng kỹ thuật vô khuẩn", isCorrect: true },
+            { text: "C. Lấy nước tiểu trực tiếp từ túi dẫn lưu ở đáy túi", isCorrect: false },
+            { text: "D. Thay toàn bộ hệ thống mỗi lần lấy mẫu xét nghiệm", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 148. Người bệnh nam có phì đại tuyến tiền liệt, điều dưỡng gặp cản trở rõ khi đưa ống thông qua niệu đạo, người bệnh đau nhiều và xuất hiện máu ở miệng sáo. Cách xử trí phù hợp nhất là gì?",
+        options: [
+            { text: "A. Dùng lực đẩy mạnh hơn để đưa ống qua vị trí hẹp", isCorrect: false },
+            { text: "B. Đổi sang ống thông lớn hơn để dễ vượt qua chỗ tắc", isCorrect: false },
+            { text: "C. Ngừng thủ thuật, không cố đẩy, đánh giá tổn thương và báo bác sĩ để xử trí chuyên khoa", isCorrect: true },
+            { text: "D. Tiếp tục đặt vì chảy máu nhẹ là bình thường", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 149. Vì sao cần tuân thủ vô khuẩn khi thay băng cho người bệnh?",
+        options: [
+            { text: "A. Để tiết kiệm thời gian", isCorrect: false },
+            { text: "B. Giảm nguy cơ nhiễm trùng vết thương", isCorrect: true },
+            { text: "C. Tăng cường lưu thông máu", isCorrect: false },
+            { text: "D. Giảm đau", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 150. Dung dịch nào KHÔNG phù hợp để rửa vết thương cho người bệnh?",
+        options: [
+            { text: "A. Nước muối sinh lý 0.9%", isCorrect: false },
+            { text: "B. Povidone-Iodine loãng", isCorrect: false },
+            { text: "C. Cồn 90 độ", isCorrect: true },
+            { text: "D. Dung dịch NaCl 0.9%", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 151. Khi rửa vết thương cho người bệnh, điều dưỡng nên rửa theo hướng nào?",
+        options: [
+            { text: "A. Từ ngoài vào trong", isCorrect: false },
+            { text: "B. Từ trong ra ngoài", isCorrect: true },
+            { text: "C. Từ trên xuống dưới", isCorrect: false },
+            { text: "D. Bất kỳ hướng nào", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 152. Vì sao cần quan sát kỹ vết thương khi thay băng cho người bệnh?",
+        options: [
+            { text: "A. Để đánh giá tình trạng lành và dấu hiệu nhiễm trùng", isCorrect: true },
+            { text: "B. Thực hiện thường quy hàng ngày theo quy định", isCorrect: false },
+            { text: "C. Giúp người bệnh yên tâm", isCorrect: false },
+            { text: "D. Do người bệnh lo lắng", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 153. Lý do không nên rửa vết thương bằng oxy già thường xuyên cho người bệnh. NGOẠI TRỪ",
+        options: [
+            { text: "A. Gây đau rát cho người bệnh", isCorrect: false },
+            { text: "B. Gây tổn thương mô lành", isCorrect: false },
+            { text: "C. Làm chậm lành", isCorrect: false },
+            { text: "D. Làm sạch vết thương", isCorrect: true },
+        ]
+    },
+    {
+        q: "Câu 154. Vì sao cần thay găng khi chuyển từ thao tác bẩn sang sạch?",
+        options: [
+            { text: "A. Để tránh truyền nhiễm khuẩn", isCorrect: true },
+            { text: "B. Để đỡ tốn thời gian", isCorrect: false },
+            { text: "C. Để dễ thao tác", isCorrect: false },
+            { text: "D. Tiết kiệm kinh phí", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 155. Thời gian thay băng vết thương sạch không nhiễm trùng thông thường là?",
+        options: [
+            { text: "A. 24-48 giờ", isCorrect: true },
+            { text: "B. 12 giờ", isCorrect: false },
+            { text: "C. 6 giờ", isCorrect: false },
+            { text: "D. 3 ngày", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 156. Trong quy trình kỹ thuật thay băng vết mổ, vì sao cần tuân thủ vô khuẩn khi thay băng?",
+        options: [
+            { text: "A. Để giảm chi phí điều trị", isCorrect: false },
+            { text: "B. Giảm nguy cơ nhiễm trùng vết thương", isCorrect: true },
+            { text: "C. Mang lại sự hài lòng cho người bệnh", isCorrect: false },
+            { text: "D. Giúp người bệnh giảm lo lắng", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 157. Trong quy trình kỹ thuật thay băng vết mổ. Dung dịch nào phù hợp để rửa vết thương sạch?",
+        options: [
+            { text: "A. Nước muối sinh lý 0.9%", isCorrect: true },
+            { text: "B. Povidone-Iodine loãng", isCorrect: false },
+            { text: "C. Cồn 90 độ", isCorrect: false },
+            { text: "D. Oxy già", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 158. Trong quy trình kỹ thuật thay băng vết mổ . Khi rửa vết thương, điều dưỡng nên rửa theo hướng nào?",
+        options: [
+            { text: "A. Từ ngoài vào trong, từ trên xuống dưới", isCorrect: false },
+            { text: "B. Từ trong ra ngoài từ trên xuống dưới", isCorrect: true },
+            { text: "C. Từ trong ra ngoài từ dưới lên trên", isCorrect: false },
+            { text: "D. Từ ngoài vào trong, từ từ dưới lên trên", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 159. Để đảm bảo an toàn người bệnh điều dưỡng cần quan sát kỹ vết thương những vấn đề gì trước khi thay băng cho người bệnh?",
+        options: [
+            { text: "A. Vị trí, kích thước, hình dạng vết thương", isCorrect: false },
+            { text: "B. Màu sắc vết thương", isCorrect: false },
+            { text: "C. Độ sâu của vết thương", isCorrect: false },
+            { text: "D. Cả 3 đáp án trên", isCorrect: true },
+        ]
+    },
+    {
+        q: "Câu 160. Vết thương nhiễm trùng, chảy nhiều dịch mủ, khi điều dưỡng thay băng cần dùng dung dịch gì?",
+        options: [
+            { text: "A. Nước muối sinh lý 0.9%", isCorrect: false },
+            { text: "B. Povidone-Iodine loãng", isCorrect: false },
+            { text: "C. Cồn 90 độ", isCorrect: false },
+            { text: "D. Oxy già", isCorrect: true },
+        ]
+    },
+    {
+        q: "Câu 161. Người bệnh 72 tuổi, đái tháo đường, sau phẫu thuật có vết mổ đã đến thời điểm dự kiến cắt chỉ nhưng mép vết thương còn liền chưa chắc và khả năng lành thương chậm. Điều dưỡng nên xử trí phù hợp nhất như thế nào?",
+        options: [
+            { text: "A. Cắt toàn bộ chỉ đúng ngày theo quy định", isCorrect: false },
+            { text: "B. Cắt chỉ sớm để giảm nhiễm khuẩn", isCorrect: false },
+            { text: "C. Tự quyết định để chỉ thêm 7 ngày", isCorrect: false },
+            { text: "D. Đánh giá tình trạng liền vết thương và phối hợp bác sĩ quyết định thời điểm cắt chỉ phù hợp", isCorrect: true },
+        ]
+    },
+    {
+        q: "Câu 162. Khi thay băng vết mổ ngày thứ ba, điều dưỡng ghi nhận vết thương sưng nóng, đỏ lan rộng, đau tăng, có dịch mủ và người bệnh sốt 38,8°C. Cách xử trí phù hợp nhất là gì?",
+        options: [
+            { text: "A. Vẫn thay băng như vết thương sạch rồi theo dõi đến hôm sau", isCorrect: false },
+            { text: "B. Ép mạnh vết thương để dịch mủ thoát ra hết", isCorrect: false },
+            { text: "C. Đánh giá đầy đủ vết thương và dấu hiệu sinh tồn, báo bác sĩ, lấy bệnh phẩm khi có chỉ định và chăm sóc theo quy trình vết thương nhiễm khuẩn", isCorrect: true },
+            { text: "D. Bôi thuốc kháng sinh tại chỗ rồi băng kín hoàn toàn", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 163. Người bệnh có hai vết thương: một vết mổ sạch, khô và một vết loét có nhiều dịch mủ. Điều dưỡng cần thay băng trong cùng một lần chăm sóc. Trình tự nào phù hợp nhất?",
+        options: [
+            { text: "A. Thay vết thương có nhiều mủ trước để xử lý vị trí nặng hơn", isCorrect: false },
+            { text: "B. Thay vết thương sạch trước, sau đó đến vết thương nhiễm khuẩn; sử dụng bộ dụng cụ riêng hoặc thay dụng cụ, găng phù hợp giữa hai vết thương", isCorrect: true },
+            { text: "C. Dùng chung một bộ dụng cụ nếu đã ngâm dung dịch sát khuẩn", isCorrect: false },
+            { text: "D. Thay hai vết thương theo vị trí gần điều dưỡng nhất", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 164. Khi tháo băng cũ, điều dưỡng thấy gạc dính chặt vào bề mặt vết thương và người bệnh đau nhiều. Cách xử trí phù hợp nhất là gì?",
+        options: [
+            { text: "A. Giật nhanh băng để rút ngắn thời gian đau", isCorrect: false },
+            { text: "B. Dùng kéo cắt sát da để lấy toàn bộ băng ra", isCorrect: false },
+            { text: "C. Làm ẩm lớp gạc bằng nước muối sinh lý, chờ gạc mềm rồi tháo nhẹ nhàng theo chiều mọc của lông và quan sát dịch thấm", isCorrect: true },
+            { text: "D. Để nguyên lớp gạc cũ và phủ thêm gạc mới lên trên", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 165. Người bệnh được chỉ định cắt chỉ vết mổ bụng. Khi tháo một số mũi chỉ đầu tiên, điều dưỡng thấy hai mép vết thương bắt đầu tách nhẹ. Hành động phù hợp nhất là gì?",
+        options: [
+            { text: "A. Tiếp tục cắt hết chỉ vì đã có y lệnh", isCorrect: false },
+            { text: "B. Dùng tay ép hai mép vết thương rồi cắt nhanh các chỉ còn lại", isCorrect: false },
+            { text: "C. Ngừng cắt chỉ, hỗ trợ hai mép vết thương bằng phương tiện phù hợp, che phủ vô khuẩn và báo bác sĩ đánh giá", isCorrect: true },
+            { text: "D. Dùng băng dính thông thường kéo hai mép da lại rồi cho người bệnh về", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 166. Khi cắt chỉ, điều dưỡng định kéo đoạn chỉ nằm bên ngoài da xuyên ngược qua mô dưới da. Nguy cơ quan trọng nhất của thao tác này là gì?",
+        options: [
+            { text: "A. Làm chỉ đứt nhưng không ảnh hưởng đến vết thương", isCorrect: false },
+            { text: "B. Kéo phần chỉ đã tiếp xúc môi trường bên ngoài xuyên qua mô, làm tăng nguy cơ đưa vi sinh vật vào vết thương", isCorrect: true },
+            { text: "C. Làm người bệnh bị tăng huyết áp tạm thời", isCorrect: false },
+            { text: "D. Khiến vết thương liền nhanh hơn do kích thích mô", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 167. Người bệnh sau phẫu thuật hở vùng bụng, người bệnh ho mạnh rồi đột ngột đau vết mổ. Điều dưỡng phát hiện vết mổ bục rộng và có quai ruột lộ ra ngoài. Hành động ưu tiên nhất là gì?",
+        options: [
+            { text: "A. Đẩy ngay quai ruột trở lại ổ bụng bằng gạc vô khuẩn", isCorrect: false },
+            { text: "B. Cho người bệnh ngồi dậy và ho thêm để tống dịch ra ngoài", isCorrect: false },
+            { text: "C. Cho người bệnh nằm yên tư thế giảm căng thành bụng, phủ tạng lộ bằng gạc vô khuẩn thấm dung dịch phù hợp, gọi hỗ trợ và báo bác sĩ cấp cứu ngay", isCorrect: true },
+            { text: "D. Rửa trực tiếp quai ruột bằng dung dịch sát khuẩn rồi băng ép chặt", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 168. Trong khi thay băng, kẹp vô khuẩn của điều dưỡng vô tình chạm vào thành ngoài của túi đựng chất thải. Cách xử trí đúng nhất là gì?",
+        options: [
+            { text: "A. Lau nhanh kẹp bằng gạc sạch rồi tiếp tục sử dụng", isCorrect: false },
+            { text: "B. Nhúng kẹp vào dung dịch sát khuẩn trong vài giây rồi tiếp tục thay băng", isCorrect: false },
+            { text: "C. Xem kẹp đã bị nhiễm bẩn, loại khỏi vùng vô khuẩn và thay bằng dụng cụ vô khuẩn khác", isCorrect: true },
+            { text: "D. Tiếp tục sử dụng nếu đầu kẹp chưa chạm trực tiếp vào vết thương", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 169. Mục đích chính của kỹ thuật đặt sonde dạ dày là gì?",
+        options: [
+            { text: "A. Theo dõi tình trạng dinh dưỡng cho người bệnh", isCorrect: false },
+            { text: "B. Dẫn lưu dịch dạ dày khi có chỉ định", isCorrect: false },
+            { text: "C. Đưa thức ăn, thuốc hoặc hút dịch dạ dày", isCorrect: true },
+            { text: "D. Giúp người bệnh yên tâm", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 170. Trong quy trình kỹ thuật đặt sonde dạ dày cho người bệnh. Dụng cụ không thể thiếu khi đặt sonde dạ dày?",
+        options: [
+            { text: "A. Ống nghe", isCorrect: false },
+            { text: "B. Nước sạch", isCorrect: false },
+            { text: "C. Sonde dạ dày", isCorrect: true },
+            { text: "D. Đè lưỡi", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 171. Trong quy trình kỹ thuật đặt sonde dạ dày cho người bệnh. Cách kiểm tra chính xác nhất sonde đã vào dạ dày đúng vị trí phù hợp nhất?",
+        options: [
+            { text: "A. Bơm khí nghe ở vùng thượng vị", isCorrect: false },
+            { text: "B. Rút dịch dạ dày thấy dich dạ dày chảy ra", isCorrect: true },
+            { text: "C. Để người bệnh nuốt nước", isCorrect: false },
+            { text: "D. Quan sát tình trạng người bệnh", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 172. Trong quá trình cho người bệnh ăn qua sode cần lưu ý kiểm tra dịch còn trong dạ dày trước khi cho ăn:",
+        options: [
+            { text: "A. Nếu lượng dịch chưa tiêu hóa hết còn > 30% thể tích cữ ăn trước thì ngừng cho ăn và bác bác sĩ điều trị", isCorrect: true },
+            { text: "B. Nếu lượng dịch chưa tiêu hóa hết còn > \n40% thể tích cữ ăn trước thì ngừng cho ăn và bác bác sĩ điều trị", isCorrect: false },
+            { text: "C. Nếu lượng dịch chưa tiêu hóa hết còn > 20% thể tích cữ ăn trước thì ngừng cho ăn và bác bác sĩ điều trị", isCorrect: false },
+            { text: "D. Nếu lượng dịch chưa tiêu hóa hết còn > 10% thể tích cữ ăn trước thì ngừng cho ăn và bác bác sĩ điều trị", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 173. Đối với trẻ nhũ nhi có chỉ định ăn sữa qua sonde. Thời gian thay sonde dạ dày tốt nhất là",
+        options: [
+            { text: "A. Thay ống mỗi 3 ngày hoặc sớm hơn nếu ống bẩn, tuột ống hay tùy từng trường hợp đặc biệt theo chỉ định bác sĩ", isCorrect: false },
+            { text: "B. Thay ống mỗi 5 ngày hoặc sớm hơn nếu ống bẩn, tuột ống hay tùy từng trường hợp đặc biệt theo chỉ định bác sĩ", isCorrect: false },
+            { text: "C. Thay ống mỗi 7 ngày hoặc sớm hơn nếu ống bẩn, tuột ống hay tùy từng trường hợp đặc biệt theo chỉ định bác sĩ", isCorrect: true },
+            { text: "D. Thay ống mỗi 10 ngày hoặc sớm hơn nếu ống bẩn, tuột ống hay tùy từng trường hợp đặc biệt theo chỉ định bác sĩ", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 174. Dấu hiệu nào KHÔNG phải là biến chứng khi đặt sonde dạ dày?",
+        options: [
+            { text: "A. Sặc, ho nhiều", isCorrect: false },
+            { text: "B. Tổn thương niêm mạc mũi", isCorrect: false },
+            { text: "C. Đau họng dữ dội", isCorrect: false },
+            { text: "D. Tức ngực", isCorrect: true },
+        ]
+    },
+    {
+        q: "Câu 175. Trong quy trình kỹ thuật đặt sonde dạ dày cho người bệnh. Khi người bệnh có biểu hiện tím tái, ho sặc mạnh khi đặt sonde, điều dưỡng nên làm gì?",
+        options: [
+            { text: "A. Tiếp tục đẩy sonde", isCorrect: false },
+            { text: "B. Ngừng ngay thao tác và kiểm tra người bệnh", isCorrect: true },
+            { text: "C. Cho người bệnh uống để kiểm tra nước", isCorrect: false },
+            { text: "D. Nghe phổi người bệnh", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 176. Trong quy trình kỹ thuật đặt sonde dạ dày cho người bệnh. Dấu hiệu nhận biết sonde vào khí quản là?",
+        options: [
+            { text: "A. Bệnh nhân khó thở, ho sặc", isCorrect: true },
+            { text: "B. Bệnh nhân nuốt dễ dàng", isCorrect: false },
+            { text: "C. Không có phản ứng gì", isCorrect: false },
+            { text: "D. Bệnh nhân đau đầu", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 177. Khi chăm sóc bệnh nhân đặt sonde dạ dày nuôi ăn, cần lưu ý gì?",
+        options: [
+            { text: "A. Kiểm tra vị trí sonde, dịch tồn lưu trước khi bơm thức ăn", isCorrect: true },
+            { text: "B. Cho bệnh nhân nằm nghiêng trái", isCorrect: false },
+            { text: "C. Không cần rửa sonde sau bơm", isCorrect: false },
+            { text: "D. Bơm nhanh để tiết kiệm thời gian", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 178. Tai biến nặng có thể xảy ra khi đặt ống thông dạ dày để nuôi ăn là:",
+        options: [
+            { text: "A. Đầy bụng nhẹ", isCorrect: false },
+            { text: "B. Buồn nôn thoáng qua", isCorrect: false },
+            { text: "C. Đưa nhầm ống thông vào đường hô hấp, gây sặc và viêm phổi hít", isCorrect: true },
+            { text: "D. Khô miệng", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 179. Biến chứng lâu dài khi lưu sonde quá lâu có thể gây ra cho người bệnh. NGOẠI TRỪ",
+        options: [
+            { text: "A. Nhiễm khuẩn mũi họng", isCorrect: false },
+            { text: "B. Viêm loét mũi", isCorrect: false },
+            { text: "C. Tổn thương niêm mạc dạ dày", isCorrect: false },
+            { text: "D. Người bệnh ăn uống tốt hơn", isCorrect: true },
+        ]
+    },
+    {
+        q: "Câu 180. BN tai biến liệt nửa người, nuốt khó, được đặt sonde dạ dày để nuôi ăn. Nguy cơ ưu tiên nhất?",
+        options: [
+            { text: "A. Nguy cơ té ngã do yếu nửa người", isCorrect: false },
+            { text: "B. Nguy cơ loét tì đè do bất động", isCorrect: false },
+            { text: "C. Nguy cơ viêm phổi do ứ đọng", isCorrect: false },
+            { text: "D. Nguy cơ sặc do trào ngược thức ăn vào đường hô hấp", isCorrect: true },
+        ]
+    },
+    {
+        q: "Câu 181. BN cho ăn qua sonde, bụng trướng, nôn ói, dịch trào ra miệng. Chẩn đoán điều dưỡng phù hợp?",
+        options: [
+            { text: "A. Nguy cơ giảm thể tích tuần hoàn", isCorrect: false },
+            { text: "B. Người bệnh giảm khẩu phần ăn", isCorrect: false },
+            { text: "C. Người bệnh có rối loạn tiêu hóa liên quan đến nuôi ăn sonde", isCorrect: true },
+            { text: "D. Nguy cơ hạ đường huyết", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 182. BN tai biến, liệt ½ người P, nuôi ăn sonde dạ dày, có nhiều dịch tồn lưu trước lần ăn mới. Điều dưỡng nhận định đúng?",
+        options: [
+            { text: "A. Nguy cơ loét tì đè do hạn chế vận động", isCorrect: false },
+            { text: "B. Giảm hấp thu do hạn chế vận động, nuôi ăn qua sonde", isCorrect: true },
+            { text: "C. Người bệnh lo âu do sonde gây đau", isCorrect: false },
+            { text: "D. Nguy cơ hít sặc", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 183. Trong khi đặt ống thông dạ dày cho người bệnh tỉnh, người bệnh đột ngột ho dữ dội, tím môi, khó thở và không nói được. Hành động ưu tiên của điều dưỡng là gì?",
+        options: [
+            { text: "A. Tiếp tục đẩy ống nhanh để ống đi qua vùng hầu họng", isCorrect: false },
+            { text: "B. Rút ống ra ngay, hỗ trợ hô hấp, đánh giá tình trạng người bệnh và chỉ thực hiện lại khi bảo đảm an toàn", isCorrect: true },
+            { text: "C. Cho người bệnh uống nước để đẩy ống xuống dạ dày", isCorrect: false },
+            { text: "D. Cố định ống tại vị trí hiện tại rồi kiểm tra sau", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 184. Sau khi đặt ống thông, điều dưỡng bơm khí vào ống và nghe thấy tiếng ở vùng thượng vị nên dự định cho ăn ngay. Người bệnh đang giảm ý thức và có nguy cơ hít sặc cao. Cách xử trí an toàn nhất là gì?",
+        options: [
+            { text: "A. Cho ăn ngay vì nghe được tiếng khí ở thượng vị chứng tỏ ống đã đúng vị trí", isCorrect: false },
+            { text: "B. Kiểm tra vị trí ống bằng phương pháp tin cậy theo quy định của cơ sở trước khi sử dụng, đặc biệt ở người bệnh nguy cơ cao", isCorrect: true },
+            { text: "C. Rút ống ra 5 cm rồi cho ăn thử một lượng nhỏ", isCorrect: false },
+            { text: "D. Cho người bệnh uống nước để kiểm tra phản xạ nuốt", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 185. Người bệnh đang được nuôi ăn qua ống thông dạ dày. Trước cữ ăn, điều dưỡng thấy người bệnh ho nhiều, thở nhanh, SpO₂ giảm và chiều dài đoạn ống ngoài mũi thay đổi so với dấu đánh dấu ban đầu. Hành động phù hợp nhất là gì?",
+        options: [
+            { text: "A. Tiếp tục cho ăn chậm vì người bệnh đã quen với ống thông", isCorrect: false },
+            { text: "B. Ngừng cho ăn, đánh giá hô hấp, kiểm tra lại vị trí ống và báo bác sĩ khi cần", isCorrect: true },
+            { text: "C. Đẩy ống sâu thêm theo ước lượng rồi tiếp tục cho ăn", isCorrect: false },
+            { text: "D. Chỉ cần hút sạch đờm rồi cho ăn như bình thường", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 186. Khi chuẩn bị cho ăn qua ống thông, điều dưỡng hút được lượng dịch tồn dư dạ dày > 150 ml ; người bệnh bụng chướng, buồn nôn và nhu động ruột giảm. Cách xử trí phù hợp nhất là gì?",
+        options: [
+            { text: "A. Cho ăn nhanh để kích thích nhu động ruột", isCorrect: false },
+            { text: "B. Bỏ toàn bộ dịch hút được rồi tiếp tục cho ăn đủ lượng", isCorrect: false },
+            { text: "C. Tạm ngừng cho ăn, đánh giá tình trạng tiêu hóa, xem lại y lệnh và báo bác sĩ để xác định hướng xử trí", isCorrect: true },
+            { text: "D. Pha loãng thức ăn bằng nước rồi cho ăn như kế hoạch", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 187. Người bệnh được chỉ định dùng nhiều loại thuốc qua ống thông dạ dày, trong đó có viên giải phóng kéo dài, viên bao tan trong ruột và viên thuốc thông thường. Cách thực hiện an toàn nhất là gì?",
+        options: [
+            { text: "A. Nghiền chung tất cả các thuốc, hòa với thức ăn và bơm một lần", isCorrect: false },
+            { text: "B. Không nghiền viên giải phóng kéo dài và viên bao tan trong ruột; bác bác sĩ đổi dạng thay thế, dùng từng thuốc riêng và bơm rửa ống giữa các thuốc", isCorrect: true },
+            { text: "C. Bẻ đôi tất cả các viên thuốc rồi bơm cùng lúc", isCorrect: false },
+            { text: "D. Hòa thuốc với sữa để giảm kích ứng dạ dày", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 188. Trong khi cho ăn qua ống thông, người bệnh xuất hiện ho sặc, tím tái, khó thở và thức ăn trào ra miệng. Hành động ưu tiên của điều dưỡng là gì?",
+        options: [
+            { text: "A. Tiếp tục cho ăn với tốc độ chậm hơn", isCorrect: false },
+            { text: "B. Ngừng cho ăn ngay, đặt người bệnh ở tư thế phù hợp, làm", isCorrect: true },
+            { text: "C. Hạ đầu giường để thức ăn dễ xuống dạ dày", isCorrect: false },
+            { text: "D. Bơm thêm nước vào ống để đẩy thức ăn xuống", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 189. Sau khi cho ăn qua ống thông, điều dưỡng đặt người bệnh nằm đầu thấp ngay để người bệnh nghỉ. Khoảng 10 phút sau, người bệnh ho, khò khè và SpO₂ giảm. Biện pháp phòng ngừa phù hợp nhất là gì?",
+        options: [
+            { text: "A. Cho người bệnh nằm đầu thấp để thức ăn không trào ra ngoài", isCorrect: false },
+            { text: "B. Duy trì đầu giường nâng khoảng 30–45 độ trong khi cho ăn và một thời gian thích hợp sau ăn, đồng thời theo dõi dấu hiệu hít sặc", isCorrect: true },
+            { text: "C. Chỉ nâng đầu giường đối với người bệnh còn tỉnh", isCorrect: false },
+            { text: "D. Cho ăn nhanh hơn để giảm thời gian người bệnh phải ngồi", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 190. Trong quy trình rửa dạ dày. Loại dung dịch nào sau đây KHÔNG phù hợp để bơm rửa sonde dạ dày?",
+        options: [
+            { text: "A. Nước muối sinh lý 0.9%", isCorrect: false },
+            { text: "B. Nước lọc", isCorrect: false },
+            { text: "C. Glucose 10%", isCorrect: true },
+            { text: "D. Nước đun sôi để nguội", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 191. Trong trường hợp bệnh nhân hôn mê, khi thực hiện rửa dạ dày cần lưu ý gì?",
+        options: [
+            { text: "A. Người bệnh dễ sặc vào đường thở gây viêm phổi", isCorrect: true },
+            { text: "B. Người bệnh không hợp tác tốt", isCorrect: false },
+            { text: "C. Người bệnh tự rút sonde", isCorrect: false },
+            { text: "D. B, C đúng", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 192. Trong kỹ thuật rửa dạ dày. Dấu hiệu nhận biết sonde vào khí quản là?",
+        options: [
+            { text: "A. Người bệnh khó thở, ho sặc", isCorrect: false },
+            { text: "B. Sonde dạ dày xuất hiện hơi đọng trong lòng ống", isCorrect: false },
+            { text: "C. Người bệnh kích thích", isCorrect: false },
+            { text: "D. Cả 3 đáp án trên", isCorrect: true },
+        ]
+    },
+    {
+        q: "Câu 193. Trong quá trình thực hiện súc rửa dạ dày phát hiện thấy sonde bị tắt. Điều dưỡng xử lý sonde bị tắc?",
+        options: [
+            { text: "A. Dùng bơm mạnh khí", isCorrect: false },
+            { text: "B. Dùng nước ấm bơm nhẹ nhàng", isCorrect: true },
+            { text: "C. Rút sonde thay mới", isCorrect: false },
+            { text: "D. Lắc mạnh sonde", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 194. Người bệnh nam, 25 tuổi, được đưa đến cấp cứu sau khi uống một lượng lớn thuốc ngủ khoảng 30 phút. Người bệnh lơ mơ, Glasgow 7 điểm, phản xạ ho yếu và có nhiều đờm dãi. Bác sĩ cân nhắc rửa dạ dày. Điều kiện ưu tiên phải được bảo đảm trước khi thực hiện là gì?",
+        options: [
+            { text: "A. Cho người bệnh uống nhiều nước để pha loãng thuốc", isCorrect: false },
+            { text: "B. Bảo vệ đường thở bằng biện pháp phù hợp trước khi đặt ống và rửa dạ dày", isCorrect: true },
+            { text: "C. Đặt người bệnh nằm ngửa hoàn toàn rồi tiến hành ngay", isCorrect: false },
+            { text: "D. Cho thuốc gây nôn để loại bỏ bớt chất độc", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 195. Người bệnh uống nhầm dung dịch tẩy rửa có tính ăn mòn mạnh, hiện đau rát miệng, chảy nhiều nước bọt, khàn tiếng và đau sau xương ức. Người nhà yêu cầu rửa dạ dày ngay. \nCách xử trí phù hợp nhất là gì?",
+        options: [
+            { text: "A. Rửa dạ dày bằng thật nhiều nước để pha loãng hóa chất", isCorrect: false },
+            { text: "B. Gây nôn trước rồi rửa dạ dày sau", isCorrect: false },
+            { text: "C. Không rửa dạ dày vì nguy cơ gây tổn thương, thủng và làm hóa chất tiếp xúc lại với thực quản; báo bác sĩ để xử trí chuyên khoa", isCorrect: true },
+            { text: "D. Trung hòa hóa chất bằng một dung dịch có tính chất đối lập rồi rửa dạ dày", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 196. Người bệnh uống nhầm dầu hỏa khoảng 20 phút, hiện ho sặc, khó thở nhẹ nhưng còn tỉnh. Nhận định nào phù hợp nhất về chỉ định rửa dạ dày?",
+        options: [
+            { text: "A. Phải rửa ngay vì người bệnh đến sớm", isCorrect: false },
+            { text: "B. Không nên rửa dạ dày do nguy cơ hít sặc hydrocarbon gây tổn thương phổi nặng", isCorrect: true },
+            { text: "C. Chỉ cần đặt người bệnh nằm đầu thấp rồi rửa", isCorrect: false },
+            { text: "D. Pha dầu hỏa bằng sữa trước khi tiến hành rửa", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 197. Trong khi rửa dạ dày cho người bệnh ngộ độc thuốc, điều dưỡng thấy dịch rửa không chảy ra, bụng người bệnh căng nhanh và người bệnh đau vùng thượng vị. Hành động ưu tiên là gì?",
+        options: [
+            { text: "A. Tiếp tục đưa thêm dịch để tạo áp lực đẩy chất độc ra ngoài", isCorrect: false },
+            { text: "B. Ép mạnh vùng thượng vị để dịch thoát ra", isCorrect: false },
+            { text: "C. Ngừng bơm dịch vào, kiểm tra vị trí và sự thông của ống, đánh giá bụng và báo bác sĩ nếu nghi tắc nghẽn hoặc biến chứng", isCorrect: true },
+            { text: "D. Kéo ống ra một đoạn rồi tiếp tục bơm dịch mà không cần kiểm tra", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 198. Trong quá trình đặt ống để rửa dạ dày, người bệnh đột ngột ho dữ dội, tím tái, khó thở, SpO₂ giảm và không nói được. \nHành động ưu tiên của điều dưỡng là gì?",
+        options: [
+            { text: "A. Tiếp tục đẩy ống nhanh để ống đi xuống dạ dày", isCorrect: false },
+            { text: "B. Rút ống ngay, ngừng thủ thuật, đánh giá và hỗ trợ đường thở – hô hấp, gọi hỗ trợ cấp cứu", isCorrect: true },
+            { text: "C. Bơm thử một ít nước để kiểm tra vị trí đầu ống", isCorrect: false },
+            { text: "D. Cố định ống và chờ người bệnh hết ho", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 199. Người bệnh đang được rửa dạ dày thì xuất hiện ho sặc, khó thở, ran ẩm hai phổi và SpO₂ giảm từ 97% xuống 84%. Nhận định và xử trí phù hợp nhất là gì?",
+        options: [
+            { text: "A. Người bệnh bị quá tải tuần hoàn; tiếp tục rửa nhưng giảm lượng dịch mỗi lần", isCorrect: false },
+            { text: "B. Nghĩ đến hít sặc; ngừng rửa, bảo đảm đường thở, hút dịch khi cần, hỗ trợ oxy và báo bác sĩ ngay", isCorrect: true },
+            { text: "C. Đây là phản ứng bình thường do kích thích họng, không cần ngừng thủ thuật", isCorrect: false },
+            { text: "D. Cho người bệnh uống nước ấm rồi tiếp tục rửa", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 200. Khi rửa dạ dày cho người bệnh trưởng thành, điều dưỡng liên tục đưa một lượng dịch rất lớn vào dạ dày trong mỗi lần mà không kiểm soát lượng dịch thu hồi. Nguy cơ quan trọng nhất của thực hành này là gì?",
+        options: [
+            { text: "A. Làm chất độc hấp thu chậm hơn nên kéo dài thời gian điều trị", isCorrect: false },
+            { text: "B. Gây căng giãn dạ dày, nôn, hít sặc, rối loạn nước điện giải hoặc đẩy chất độc xuống ruột", isCorrect: true },
+            { text: "C. Làm người bệnh tăng cảm giác đói sau thủ thuật", isCorrect: false },
+            { text: "D. Làm giảm tác dụng của thuốc giải độc đã dùng trước đó", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 201. Trong quá trình rửa dạ dày, lượng dịch đưa vào là 2.000 ml nhưng lượng dịch thu hồi chỉ khoảng 1.200 ml; người bệnh bắt đầu bụng chướng và khó chịu. Cách xử trí phù hợp nhất là gì?",
+        options: [
+            { text: "A. Tiếp tục rửa cho đến khi dịch ra hoàn toàn trong", isCorrect: false },
+            { text: "B. Đưa thêm dịch nhanh để tạo áp lực kéo lượng dịch còn lại ra ngoài", isCorrect: false },
+            { text: "C. Tạm ngừng rửa, kiểm tra ống có gập hoặc sai vị trí, đánh giá bụng, lượng dịch vào – ra và báo bác sĩ khi cần", isCorrect: true },
+            { text: "D. Cho người bệnh ngồi dậy và tự gây nôn", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 202. Người bệnh ngộ độc đã được rửa dạ dày. Sau thủ thuật, người bệnh xuất hiện đau bụng tăng, bụng cứng, mạch nhanh và huyết áp giảm. Nhận định nào cần được ưu tiên?",
+        options: [
+            { text: "A. Người bệnh đói do đã loại bỏ thức ăn trong dạ dày", isCorrect: false },
+            { text: "B. Người bệnh có thể bị tổn thương hoặc thủng đường tiêu hóa, cần ngừng mọi can thiệp qua ống và báo bác sĩ cấp cứu", isCorrect: true },
+            { text: "C. Đây là tác dụng phụ thông thường, chỉ cần cho người bệnh nằm nghỉ", isCorrect: false },
+            { text: "D. Người bệnh bị hạ đường huyết, cần cho ăn ngay qua ống", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 203. Người bệnh tỉnh táo, uống một lượng nhỏ thuốc ít độc cách đây hơn 4 giờ, hiện không có triệu chứng và dấu hiệu sinh tồn ổn định. Người nhà đề nghị rửa dạ dày để “làm sạch hoàn toàn”. Quyết định phù hợp nhất là gì?",
+        options: [
+            { text: "A. Rửa dạ dày vì mọi trường hợp uống nhầm thuốc đều phải rửa", isCorrect: false },
+            { text: "B. Cho người bệnh uống nhiều nước rồi rửa dạ dày", isCorrect: false },
+            { text: "C. Không thực hiện rửa dạ dày thường quy; báo bác sĩ hoặc trung tâm chống độc để đánh giá loại chất, liều lượng, thời gian và lựa chọn biện pháp theo dõi, xử trí phù hợp", isCorrect: true },
+            { text: "D. Gây nôn tại giường trước, nếu không hiệu quả mới rửa dạ dày", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 204. Nguyên tắc quan trọng nhất khi phụ bác sĩ chọc dò là:",
+        options: [
+            { text: "A. Làm nhanh", isCorrect: false },
+            { text: "B. Đảm bảo vô khuẩn tuyệt đối", isCorrect: true },
+            { text: "C. Tiết kiệm dụng cụ", isCorrect: false },
+            { text: "D. Cho người bệnh nhịn ăn", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 205. Trong khi chọc dò, điều dưỡng phải theo dõi quan trọng nhất:",
+        options: [
+            { text: "A. Sắc mặt và dấu hiệu sinh tồn", isCorrect: true },
+            { text: "B. Động viên người bệnh", isCorrect: false },
+            { text: "C. Tùy vào tình trạng người bệnh", isCorrect: false },
+            { text: "D. Phản ứng dđau của người bệnh", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 206. Trước khi chọc dò, điều dưỡng cần làm gì?",
+        options: [
+            { text: "A. Không cần chuẩn bị", isCorrect: false },
+            { text: "B. Đo mạch, nhiệt độ, huyết áp, nhịp thở", isCorrect: true },
+            { text: "C. Cho người bệnh vận động", isCorrect: false },
+            { text: "D. Cho người bệnh ăn no trước khi thực hiện thủ thuật", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 207. Sau chọc dò màng phổi, tư thế đúng của người bệnh là:",
+        options: [
+            { text: "A. Nằm nghiêng bên bệnh", isCorrect: false },
+            { text: "B. Nằm nghiêng bên lành", isCorrect: true },
+            { text: "C. Ngồi dậy ngay", isCorrect: false },
+            { text: "D. Tùy cào tình trạng người bệnh", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 208. Sau chọc dò tủy sống, người bệnh cần:",
+        options: [
+            { text: "A. Ngồi dậy ngay", isCorrect: false },
+            { text: "B. Nằm đầu thấp, không kê gối", isCorrect: true },
+            { text: "C. Uống nước nhiều", isCorrect: false },
+            { text: "D. Tùy cào tình trạng người bệnh", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 209. NB: Nam 55 tuổi, Đang chọc dò màng tim, Đột ngột: Mạch: 120 lần/phút, nhỏ khó bắt, HA: 80/50 mmHg, NB ngất, vã mồ hôi. Tai biến gì xảy ra là gì?",
+        options: [
+            { text: "A. Ngất do phản xạ", isCorrect: true },
+            { text: "B. Lo lắng", isCorrect: false },
+            { text: "C. Đâm kim quá sâu", isCorrect: false },
+            { text: "D. Do người bệnh khó thở", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 210. NB: Nữ 60 tuổi, chọc dò màng phổi, Sau thủ thuật: Khó thở dữ dội, Mạch: 130 lần/phút, Tím tái, Gõ vang, mất tiếng thở. Nhận định là?",
+        options: [
+            { text: "A. Tràn khí màng phổi", isCorrect: true },
+            { text: "B. Do người bệnh đau", isCorrect: false },
+            { text: "C. Do chọc hút quá nhanh", isCorrect: false },
+            { text: "D. Do người bệnh lo lắng", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 211. NB nam 65 tuổi sau chọc tháo dịch màng phổi: khó thở, ho bọt hồng, HA tụt, Nhận định đúng là",
+        options: [
+            { text: "A. Tràn khí màng phổi", isCorrect: false },
+            { text: "B. Ngất", isCorrect: false },
+            { text: "C. Phù phổi cấp.", isCorrect: true },
+            { text: "D. Do người bệnh sốt cao", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 212. NB nữ 40 tuổi sau chọc tủy sống: đau đầu, chóng mặt. Nguyên nhân là?",
+        options: [
+            { text: "A. Đau đầu liên quan rò dịch não tủy sau chọc màng cứng.", isCorrect: true },
+            { text: "B. Do đau tại vị trí chọc", isCorrect: false },
+            { text: "C. Do chọc hút dịch quá nhanh", isCorrect: false },
+            { text: "D. Do người bệnh lo lắng", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 213. Người bệnh sốt 39°C sau chọc dò 2 ngày. Nhận định là?",
+        options: [
+            { text: "A. Nhiễm khuẩn.", isCorrect: true },
+            { text: "B. Choáng", isCorrect: false },
+            { text: "C. Viêm phổi", isCorrect: false },
+            { text: "D. Do thực hiện sai kỹ thuật", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 214. Người bệnh tràn dịch màng tim có khó thở, huyết áp 80/50 mmHg, mạch nhanh nhỏ, tĩnh mạch cổ nổi và tiếng tim mờ. Trong khi chuẩn bị phụ bác sĩ chọc dò màng tim, nhiệm vụ ưu tiên của điều dưỡng là gì?",
+        options: [
+            { text: "A. Cho người bệnh ăn nhẹ để tránh hạ đường huyết khi làm thủ thuật", isCorrect: false },
+            { text: "B. Chuẩn bị phương tiện cấp cứu, oxy, đường truyền tĩnh mạch, theo dõi liên tục dấu hiệu sinh tồn và hỗ trợ bác sĩ thực hiện khẩn cấp", isCorrect: true },
+            { text: "C. Để người bệnh tự đi đến phòng thủ thuật nhằm đánh giá khả năng vận động", isCorrect: false },
+            { text: "D. Chờ hoàn thành đầy đủ hồ sơ hành chính rồi mới chuẩn bị dụng cụ", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 215. Trong khi bác sĩ chọc dò màng tim, người bệnh đột ngột đau ngực tăng, khó thở, mạch chậm bất thường và huyết áp tụt. \nHành động phù hợp nhất của điều dưỡng là gì?",
+        options: [
+            { text: "A. Tiếp tục động viên người bệnh vì đây là phản ứng thường gặp", isCorrect: false },
+            { text: "B. Báo ngay cho bác sĩ, ngừng thao tác theo chỉ định, đánh giá đường thở – hô hấp – tuần hoàn và chuẩn bị cấp cứu", isCorrect: true },
+            { text: "C. Cho người bệnh uống nước ấm để giảm khó chịu", isCorrect: false },
+            { text: "D. Hạ thấp đầu giường và rời khỏi phòng để gọi người nhà", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 216. Người bệnh được chỉ định chọc dò màng phổi do tràn dịch lượng nhiều. Khi đang tháo dịch, người bệnh xuất hiện ho dữ dội, đau ngực, khó thở, SpO₂ giảm và vã mồ hôi. Cách xử trí ưu tiên là gì?",
+        options: [
+            { text: "A. Tăng tốc độ tháo dịch để giảm nhanh áp lực trong khoang màng phổi", isCorrect: false },
+            { text: "B. Báo bác sĩ ngừng hoặc tạm dừng tháo dịch, hỗ trợ oxy, theo dõi dấu hiệu sinh tồn và đánh giá biến chứng", isCorrect: true },
+            { text: "C. Cho người bệnh nằm ngửa hoàn toàn rồi tiếp tục thủ thuật", isCorrect: false },
+            { text: "D. Yêu cầu người bệnh nín thở đến khi hết ho", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 217. Sau chọc dò màng phổi, người bệnh đột ngột khó thở tăng, đau ngực bên chọc, gõ vang và rì rào phế nang giảm rõ. Nhận định nào cần được ưu tiên?",
+        options: [
+            { text: "A. Người bệnh bị hạ đường huyết sau thủ thuật", isCorrect: false },
+            { text: "B. Người bệnh có thể bị tràn khí màng phổi, cần báo bác sĩ và chuẩn bị xử trí cấp cứu", isCorrect: true },
+            { text: "C. Người bệnh chỉ lo lắng nên thở nhanh", isCorrect: false },
+            { text: "D. Đây là biểu hiện bình thường sau khi tháo dịch màng phổi", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 218. Người bệnh xơ gan cổ trướng được chọc dò tháo dịch màng bụng. Sau khi tháo lượng dịch lớn, người bệnh chóng mặt, mạch nhanh và huyết áp giảm. Hành động phù hợp nhất của điều dưỡng là gì?",
+        options: [
+            { text: "A. Cho người bệnh ngồi dậy và đi lại để huyết áp ổn định", isCorrect: false },
+            { text: "B. Báo bác sĩ, tạm ngừng hoặc giảm tốc độ tháo dịch, đặt người bệnh nằm phù hợp, theo dõi tuần hoàn và thực hiện bù dịch theo y lệnh", isCorrect: true },
+            { text: "C. Tiếp tục tháo nhanh hết dịch để giảm áp lực ổ bụng", isCorrect: false },
+            { text: "D. Cho người bệnh uống nhiều nước ngay trong khi thủ thuật", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 219. Trong khi phụ chọc dò màng bụng, điều dưỡng phát hiện dịch chảy ra có máu đỏ tươi, người bệnh đau bụng tăng và huyết áp giảm. Cách xử trí phù hợp nhất là gì?",
+        options: [
+            { text: "A. Tiếp tục dẫn lưu vì dịch máu thường gặp ở người bệnh cổ trướng", isCorrect: false },
+            { text: "B. Báo bác sĩ ngay, ngừng thủ thuật theo chỉ định, đánh giá dấu hiệu mất máu và chuẩn bị phương tiện cấp cứu", isCorrect: true },
+            { text: "C. Thay bình chứa dịch lớn hơn rồi tiếp tục tháo", isCorrect: false },
+            { text: "D. Ép mạnh vùng bụng để máu ngừng chảy", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 220. Người bệnh được chọc dò tủy sống để xét nghiệm dịch não tủy. Trong lúc thực hiện ở tư thế nằm nghiêng, người bệnh không giữ được lưng cong và liên tục xoay người. Vai trò phù hợp nhất của điều dưỡng là gì?",
+        options: [
+            { text: "A. Dùng lực giữ chặt đầu và cổ người bệnh ở tư thế gập tối đa", isCorrect: false },
+            { text: "B. Giải thích, hỗ trợ người bệnh duy trì tư thế cong lưng phù hợp, giữ yên nhưng không làm cản trở hô hấp và theo dõi sát trong thủ thuật", isCorrect: true },
+            { text: "C. Cho người bệnh ngồi dậy và tự điều chỉnh tư thế liên tục", isCorrect: false },
+            { text: "D. Rời vị trí để chuẩn bị nhãn mẫu xét nghiệm trước", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 221. Trong khi chọc dò tủy sống, người bệnh đột ngột đau nhói lan xuống hai chân, co giật chân và rất kích thích. Hành động của điều dưỡng là gì?",
+        options: [
+            { text: "A. Trấn an và yêu cầu bác sĩ tiếp tục đưa kim sâu hơn", isCorrect: false },
+            { text: "B. Báo ngay cho bác sĩ, yêu cầu người bệnh giữ yên, theo dõi thần kinh và hỗ trợ điều chỉnh hoặc ngừng thủ thuật theo chỉ định", isCorrect: true },
+            { text: "C. Xoa bóp mạnh hai chân để giảm đau", isCorrect: false },
+            { text: "D. Cho người bệnh đứng dậy ngay để kiểm tra vận động", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 222. Sau chọc dò tủy sống vài giờ, người bệnh đau đầu tăng rõ khi ngồi hoặc đứng và giảm khi nằm, kèm buồn nôn nhưng không sốt, không rối loạn ý thức. Nhận định và chăm sóc phù hợp nhất là gì?",
+        options: [
+            { text: "A. Nghĩ đến đau đầu sau chọc dò; cho người bệnh nghỉ ngơi, theo dõi, bù dịch theo chỉ định và báo bác sĩ nếu triệu chứng kéo dài hoặc tăng", isCorrect: true },
+            { text: "B. Cho người bệnh đi lại nhiều để dịch não tủy lưu thông", isCorrect: false },
+            { text: "C. Đây là dấu hiệu viêm màng não chắc chắn, phải cách ly ngay", isCorrect: false },
+            { text: "D. Cho người bệnh ngồi đầu cao liên tục để giảm áp lực nội sọ", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 223. Điều dưỡng nhận bốn mẫu bệnh phẩm sau chọc dò gồm dịch màng tim, dịch màng phổi, dịch màng bụng và dịch não tủy. Biện pháp nào bảo đảm giá trị xét nghiệm và an toàn người bệnh tốt nhất?",
+        options: [
+            { text: "A. Đặt tất cả mẫu trên cùng khay, dán nhãn sau khi về khoa", isCorrect: false },
+            { text: "B. Ghi nhãn ngay tại nơi lấy mẫu với đầy đủ thông tin định danh, loại bệnh phẩm, thời gian lấy; bảo quản và chuyển xét nghiệm đúng yêu cầu", isCorrect: true },
+            { text: "C. Chỉ ghi tên người bệnh trên nắp lọ để tiết kiệm thời gian", isCorrect: false },
+            { text: "D. Giữ tất cả mẫu ở nhiệt độ phòng đến cuối ca trực rồi mới gửi", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 224. Trong quy trình kỹ thuật cho người bệnh thở oxy. Lưu lượng oxy tối đa khi sử dụng ống thông mũi (nasal cannula) là?",
+        options: [
+            { text: "A. 2 - 4 lít/phút", isCorrect: false },
+            { text: "B. 4-8 lít/phút", isCorrect: false },
+            { text: "C. 1- 5 lít/phút", isCorrect: true },
+            { text: "D. 8 – 10 lít/phút", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 225. Chỉ số SpO2 bình thường ở người khỏe mạnh là?",
+        options: [
+            { text: "A. 85-89%", isCorrect: false },
+            { text: "B. 90-94%", isCorrect: false },
+            { text: "C. 95-100%", isCorrect: true },
+            { text: "D. 100-105%", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 226. Khi chức năng sống người bệnh bị ảnh hưởng liên quan đến thiếu oxy, thực hiện y lệnh thở oxy với phương pháp ống thông mũi hầu: lưu lượng oxy từ 1 - 5 1ít/phút thì? có thể đạt nồng độ oxy trong khí thở là?",
+        options: [
+            { text: "A. Có thể đạt nồng độ oxy trong khí thở là từ 22 - 30%.", isCorrect: true },
+            { text: "B. Có thể đạt nồng độ oxy trong khí thở là từ \n25 - 35%.", isCorrect: false },
+            { text: "C. Có thể đạt nồng độ oxy trong khí thở là từ 30 - 40%.", isCorrect: false },
+            { text: "D. Có thể đạt nồng độ oxy trong khí thở là từ 45 - 55%.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 227. Khi chức năng sống người bệnh bị ảnh hưởng liên quan đến thiếu oxy, thực hiện y lệnh thở oxy với phương pháp ống thông mũi hầu: lưu lượng oxy từ 8-12 1ít/phút thì? có thể đạt nồng độ oxy trong khí thở là?",
+        options: [
+            { text: "A. Có thể đạt nồng độ oxy trong khí thở là từ 20 - 40%.", isCorrect: false },
+            { text: "B. Có thể đạt nồng độ oxy trong khí thở là từ \n21 - 30%.", isCorrect: false },
+            { text: "C. Có thể đạt nồng độ oxy trong khí thở là từ 35 - 60%.", isCorrect: true },
+            { text: "D. Có thể đạt nồng độ oxy trong khí thở là từ 15 - 30%.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 228. Yếu tố nào giúp giảm nguy cơ viêm phổi liên quan nội khí quản?",
+        options: [
+            { text: "A. Vệ sinh răng miệng hàng ngày đảm bảo vô khuẩn", isCorrect: true },
+            { text: "B. Vỗ rung người bệnh", isCorrect: false },
+            { text: "C. Hút đờm liên tục tránh ứ đọng", isCorrect: false },
+            { text: "D. A, B đúng", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 229. Trong quy trình chăm sóc người bệnh đặt Nội khí quản. Khi bơm bóng chèn quá căng, nguy cơ nào có thể xảy ra. NGOẠI \nTRỪ",
+        options: [
+            { text: "A. Tổn thương thanh quản", isCorrect: false },
+            { text: "B. Loét khí quản", isCorrect: false },
+            { text: "C. Tổn thương niêm mạc khí quản", isCorrect: false },
+            { text: "D. Phù phổi cấp", isCorrect: true },
+        ]
+    },
+    {
+        q: "Câu 230. Khi rút nội khí quản, dấu hiệu nào cho thấy bệnh nhân có thể tự thở tốt?",
+        options: [
+            { text: "A. Người bệnh tự thở đều, nhịp thở ổn định", isCorrect: true },
+            { text: "B. Tím tái", isCorrect: false },
+            { text: "C. Khó thở giảm dần", isCorrect: false },
+            { text: "D. Nhịp thở chậm đều, Sp02 tăng dần", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 231. Mục tiêu chính khi đặt nội khí quản là?",
+        options: [
+            { text: "A. Giữ đường thở thông thoáng và cung cấp oxy kịp thời cho người bênh", isCorrect: true },
+            { text: "B. Giảm nguy cơ suy hô hấp", isCorrect: false },
+            { text: "C. Giảm nguy cơ sốc", isCorrect: false },
+            { text: "D. Giảm tình trạng nhiễm khuẩn", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 232. Trong quy trình chăm sóc người bệnh đặt Nội khí quản. Để kiểm tra rò khí quanh bóng chèn, điều dưỡng cần?",
+        options: [
+            { text: "A. Rút ống nội khí quản ra khoảng 5cm để kiểm tra", isCorrect: false },
+            { text: "B. Kiểm tra áp lực bóng chèn bằng dụng cụ chuyên dụng", isCorrect: true },
+            { text: "C. Quan sát tần số thở người bệnh", isCorrect: false },
+            { text: "D. Kiểm tra dấu hiệu sinh tồn cho người bệnh", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 233. Trong quy trình chăm sóc người bệnh đặt Nội khí quản. Để giảm loét môi khi đặt nội khí quản lâu ngày, điều dưỡng nên?",
+        options: [
+            { text: "A. Cố định chắc chắn và thay đổi vị trí cố định định kỳ", isCorrect: true },
+            { text: "B. Để nguyên vị trí", isCorrect: false },
+            { text: "C. Không cần cố định", isCorrect: false },
+            { text: "D. Thay ống mỗi ngày", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 234. Trong quy trình chăm sóc người bệnh đặt Nội khí quản. Điều dưỡng cần làm gì khi bệnh nhân đang thở máy có dấu hiệu cảnh báo máy?",
+        options: [
+            { text: "A. Kiểm tra hệ thống máy và người bệnh", isCorrect: true },
+            { text: "B. Tắt máy ngay và baó bác sĩ điều trị", isCorrect: false },
+            { text: "C. Gọi kỹ thuật viên hỗ trợ", isCorrect: false },
+            { text: "D. Theo dõi dấu hiệu sinh tồn", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 235. Trong quy trình chăm sóc người bệnh đặt Nội khí quản. Dấu hiệu nào cảnh báo tắc ống nội khí quản. NGOẠI TRỪ",
+        options: [
+            { text: "A. Thở khò khè", isCorrect: false },
+            { text: "B. Lồng ngực không di động", isCorrect: false },
+            { text: "C. Khó đẩy khí qua bóng Ambu", isCorrect: false },
+            { text: "D. Người bệnh sốt cao 39 độ C", isCorrect: true },
+        ]
+    },
+    {
+        q: "Câu 236. Trong quy trình chăm sóc người bệnh đặt Nội khí quản. Khi hút đờm qua ống nội khí quản, áp lực hút tối ưu là bao nhiêu?",
+        options: [
+            { text: "A. 50-80 mmHg", isCorrect: false },
+            { text: "B. 80-120 mmHg", isCorrect: true },
+            { text: "C. 120-150 mmHg", isCorrect: false },
+            { text: "D. 150-200 mmHg", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 237. Trong quy trình chăm sóc người bệnh đặt Nội khí quản. Mục đích của việc cố định ống nội khí quản là gì?",
+        options: [
+            { text: "A. Tránh lệch vị trí ống", isCorrect: true },
+            { text: "B. Giảm nguy cơ nhiễm khuẩn", isCorrect: false },
+            { text: "C. Tăng thông khí", isCorrect: false },
+            { text: "D. Giảm áp lực bóng chèn", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 238. Người bệnh đang thở máy xâm nhập, SpO₂ giảm từ 96% xuống 88%, máy thở báo áp lực đường thở cao và nghe có nhiều ran đờm. Điều dưỡng cần ưu tiên thực hiện biện pháp nào?",
+        options: [
+            { text: "A. Điều chỉnh người bệnh nằm đầu thấp", isCorrect: false },
+            { text: "B. Tăng lượng dịch truyền ngay", isCorrect: false },
+            { text: "C. Kiểm tra đường thở, đánh giá đờm và hút đờm khi có chỉ định", isCorrect: true },
+            { text: "D. Ngừng máy thở để người bệnh tự thở", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 239. Chẩn đoán điều dưỡng nào sau đây là phù hợp nhất với tình trạng hiện tại của bệnh nhân viêm phổi nặng.",
+        options: [
+            { text: "A. Nguy cơ giảm thể tích dịch do sốt cao", isCorrect: false },
+            { text: "B. Rối loạn trao đổi khí liên quan đến tổn thương nhu mô phổi do viêm", isCorrect: true },
+            { text: "C. Mất ngủ liên quan đến môi trường bệnh viện", isCorrect: false },
+            { text: "D. Rối loạn dinh dưỡng do ăn uống kém", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 240. Trong quy trình chăm sóc người bệnh đặt Nội khí quản. Dấu hiệu nào sau đây cho thấy bệnh nhân đang gặp tình trạng thiếu oxy máu do viêm phổi nặng",
+        options: [
+            { text: "A. Mạch 110 lần/phút", isCorrect: false },
+            { text: "B. Huyết áp 100/60 mmHg", isCorrect: false },
+            { text: "C. SpO₂ 85%", isCorrect: false },
+            { text: "D. A, C đúng", isCorrect: true },
+        ]
+    },
+    {
+        q: "Câu 241. Trong quy trình hút đàm qua ống nội khí quản, điều dưỡng cần lưu ý gì để hạn chế mất oxy cho người bệnh?",
+        options: [
+            { text: "A. Thực hiện hút liên tục trong 60 giây", isCorrect: false },
+            { text: "B. Hút thật sâu để làm sạch hoàn toàn", isCorrect: false },
+            { text: "C. Cho bệnh nhân thở oxy trước và sau hút đàm", isCorrect: true },
+            { text: "D. Không cần thở oxy vì thời gian hút ngắn", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 242. Chẩn đoán điều dưỡng phù hợp nhất đối với người bệnh thở máy kéo dài là:",
+        options: [
+            { text: "A. Đau do nằm lâu một tư thế", isCorrect: false },
+            { text: "B. Nguy cơ loét tỳ đè liên quan đến bất động kéo dài", isCorrect: true },
+            { text: "C. Mất ngủ do môi trường ồn ào", isCorrect: false },
+            { text: "D. Thiếu dinh dưỡng do kém hấp thu", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 243. Chẩn đoán điều dưỡng phù hợp nhất khi người bệnh thở máy có nhiều đờm dãi, bí tắc đường thở là gì?",
+        options: [
+            { text: "A. Khó thở do đang ống nội khí quản", isCorrect: false },
+            { text: "B. Nguy cơ thiếu hụt dinh dưỡng do thở máy kéo dài, ăn uống kém", isCorrect: false },
+            { text: "C. Nguy cơ suy hô hấp do bí tắc đờm", isCorrect: true },
+            { text: "D. Tắt đờm do viêm phổi", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 244. Chẩn đoán điều dưỡng phù hợp nhất khi người bệnh thở máy không tự chủ được bài tiết là gì?",
+        options: [
+            { text: "A. Nguy cơ viêm phổi do hít sặc", isCorrect: false },
+            { text: "B. Thiếu oxy mô", isCorrect: false },
+            { text: "C. Nguy cơ loét da do ẩm ướt kéo dài", isCorrect: true },
+            { text: "D. Mất ngủ do không thoải mái", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 245. Chẩn đoán điều dưỡng phù hợp nhất khi người bệnh thở máy có dấu hiệu kháng máy thở là gì?",
+        options: [
+            { text: "A. Nguy cơ ngừng hô hấp do kháng máy thở", isCorrect: false },
+            { text: "B. Suy giảm giao tiếp do không nói được", isCorrect: false },
+            { text: "C. Rối loạn thông khí do không đồng bộ với máy thở", isCorrect: true },
+            { text: "D. Nguy cơ mất nước do khó thở kéo dài", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 246. Người bệnh đang thở máy qua ống nội khí quản, xuất hiện nhiều đờm đặc, SpO₂ giảm và nghe có ran đờm. Xử trí ưu tiên của điều dưỡng là:",
+        options: [
+            { text: "A. Cho người bệnh uống nhiều nước để làm loãng đờm", isCorrect: false },
+            { text: "B. Vỗ rung lồng ngực rồi tiếp tục theo dõi", isCorrect: false },
+            { text: "C. Đánh giá tình trạng hô hấp và tiến hành hút đờm qua ống nội khí quản khi có chỉ định", isCorrect: true },
+            { text: "D. Giảm FiO₂ để hạn chế khô đường thở", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 247. Chẩn đoán điều dưỡng phù hợp nhất khi người bệnh thở máy có biểu hiện tím tái, SpO2 giảm là gì?",
+        options: [
+            { text: "A. Giảm thông khí phế nang liên quan đến rối loạn trao đổi khí", isCorrect: true },
+            { text: "B. Thiếu oxy do viêm phổi", isCorrect: false },
+            { text: "C. Mệt mỏi do thở máy lâu ngày", isCorrect: false },
+            { text: "D. Nguy cơ loét tì đè do bất động", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 248. Người bệnh khó thở nhiều, SpO₂ 85%, đang được cho thở oxy kính mũi 5 lít/phút, vẫn tím môi. Chẩn đoán điều dưỡng?",
+        options: [
+            { text: "A. Nguy cơ loét tì đè", isCorrect: false },
+            { text: "B. Người bệnh lo âu", isCorrect: false },
+            { text: "C. Người bệnh giảm oxy máu liên quan đến nhu cầu oxy tăng", isCorrect: true },
+            { text: "D. Nguy cơ hạ đường huyết", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 249. Khi chăm sóc người bệnh viêm phổi có thở máy, thở nhanh 30 lần/ph, SpO₂ 89%, thở oxy mask 8 lít/ph. Chẩn đoán nào đúng?",
+        options: [
+            { text: "A. Người bệnh giảm trao đổi khí liên quan đến viêm phổi", isCorrect: true },
+            { text: "B. Nguy cơ loét tì đè", isCorrect: false },
+            { text: "C. Nguy cơ ngừng hô hấp tuần hoàn do diễn biến bệnh", isCorrect: false },
+            { text: "D. Nguy sơ suy dinh dưỡng do thở máy kéo dài", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 250. Sau mổ bụng Người bệnh thở nông, SpO₂ 90%, da tái. Điều dưỡng chẩn đoán điều dưỡng nào phù hợp?",
+        options: [
+            { text: "A. Người bệnh giảm thông khí phế nang liên quan đến đau sau mổ", isCorrect: true },
+            { text: "B. Nguy cơ sặc", isCorrect: false },
+            { text: "C. Nguy cơ hạ đường huyết", isCorrect: false },
+            { text: "D. Người bệnh lo âu", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 251. Người bệnh thở oxy kính mũi dài ngày, khô niêm mạc mũi, chảy máu cam nhẹ. Chẩn đoán điều dưỡng?",
+        options: [
+            { text: "A. Người bệnh tổn thương niêm mạc mũi liên quan đến thở oxy kéo dài", isCorrect: true },
+            { text: "B. Nguy cơ loét da", isCorrect: false },
+            { text: "C. Nguy cơ hạ đường huyết", isCorrect: false },
+            { text: "D. Người bệnh lo âu", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 252. Người bệnh COPD đang thở oxy qua gọng mũi 5 lít/phút. Sau 30 phút, người bệnh ngủ gà, nhịp thở giảm còn 14 lần/phút, SpO₂ 98%. Nhận định và xử trí phù hợp nhất của điều dưỡng là gì?",
+        options: [
+            { text: "A. Tiếp tục duy trì lưu lượng oxy vì SpO₂ đã đạt mức tốt", isCorrect: false },
+            { text: "B. Tăng oxy lên 8 lít/phút để phòng thiếu oxy khi người bệnh ngủ", isCorrect: false },
+            { text: "C. Nghĩ đến nguy cơ ứ CO₂ do cung cấp oxy không phù hợp; đánh giá ngay hô hấp, báo bác sĩ và điều chỉnh oxy theo mục tiêu được chỉ định", isCorrect: true },
+            { text: "D. Ngừng hoàn toàn oxy và cho người bệnh tự thở khí phòng", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 253. Người bệnh đang thở oxy qua mặt nạ đơn giản với lưu lượng 3 lít/phút, xuất hiện khó chịu và nhịp thở tăng. Sai sót kỹ thuật quan trọng nhất khi thực hiện quy trình thở oxy là gì?",
+        options: [
+            { text: "A. Lưu lượng oxy quá cao làm khô niêm mạc", isCorrect: false },
+            { text: "B. Lưu lượng oxy quá thấp, có nguy cơ làm người bệnh hít lại khí CO₂ trong mặt nạ", isCorrect: true },
+            { text: "C. Mặt nạ đơn giản chỉ được dùng khi người bệnh hôn mê", isCorrect: false },
+            { text: "D. Mặt nạ đơn giản không được sử dụng cho người lớn", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 254. Người bệnh suy hô hấp đang thở oxy qua mặt nạ có túi dự trữ. Điều dưỡng nhận thấy túi dự trữ xẹp hoàn toàn khi người bệnh hít vào. Cách xử trí phù hợp nhất là gì?",
+        options: [
+            { text: "A. Giảm lưu lượng oxy để người bệnh dễ thở hơn", isCorrect: false },
+            { text: "B. Tháo bỏ túi dự trữ và sử dụng như mặt nạ đơn giản", isCorrect: false },
+            { text: "C. Kiểm tra hệ thống và tăng lưu lượng oxy phù hợp để túi dự trữ luôn còn phồng một phần khi người bệnh hít vào", isCorrect: true },
+            { text: "D. Bóp túi dự trữ bằng tay theo từng nhịp thở", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 255. Người bệnh đang thở oxy đột ngột có SpO₂ giảm từ 95% xuống 82%, khó thở tăng. Bình oxy vẫn còn nhưng bóng làm ẩm không thấy sủi khí. Hành động ưu tiên của điều dưỡng là gì?",
+        options: [
+            { text: "A. Thay ngay máy đo SpO₂ mà không cần kiểm tra người bệnh", isCorrect: false },
+            { text: "B. Đánh giá nhanh người bệnh, kiểm tra toàn bộ hệ thống oxy từ nguồn, đồng hồ, dây dẫn đến dụng cụ thở và khắc phục chỗ gián đoạn", isCorrect: true },
+            { text: "C. Chờ thêm 10 phút vì SpO₂ có thể tự hồi phục", isCorrect: false },
+            { text: "D. Cho người bệnh uống nước để làm ẩm đường thở", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 256. Người bệnh thở máy đột ngột có báo động áp lực đường thở cao, SpO₂ giảm, lồng ngực di động kém và nghe nhiều ran ngáy. Nguyên nhân và xử trí ưu tiên nào phù hợp nhất?",
+        options: [
+            { text: "A. Có thể tắc đờm hoặc gập ống; kiểm tra đường thở, ống nội khí quản và hút đờm khi có chỉ định", isCorrect: true },
+            { text: "B. Có thể máy thở cung cấp quá ít oxy; tăng tối đa thể tích khí lưu thông", isCorrect: false },
+            { text: "C. Đây là báo động không quan trọng nếu máy vẫn hoạt động", isCorrect: false },
+            { text: "D. Người bệnh đang thở quá sâu; cho thuốc an thần ngay mà không cần đánh giá", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 257. Người bệnh đang thở máy xuất hiện báo động áp lực thấp, thể tích khí thở ra giảm và không thấy lồng ngực nâng đều. \nĐiều dưỡng nên ưu tiên kiểm tra vấn đề nào?",
+        options: [
+            { text: "A. Nhiệt độ phòng bệnh quá thấp", isCorrect: false },
+            { text: "B. Hệ thống dây máy thở có tuột, hở, rò khí hoặc bóng chèn ống nội khí quản bị xẹp", isCorrect: true },
+            { text: "C. Người bệnh có tăng huyết áp", isCorrect: false },
+            { text: "D. Bình làm ẩm có quá nhiều nước", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 258. Trong khi chăm sóc người bệnh thở máy, điều dưỡng phát hiện ống nội khí quản tụt ra ngoài thêm 4 cm so với vị trí được ghi nhận trước đó, người bệnh kích thích và SpO₂ giảm. \nCách xử trí phù hợp nhất là gì?",
+        options: [
+            { text: "A. Đẩy ống trở lại theo chiều dài cũ mà không cần báo bác sĩ", isCorrect: false },
+            { text: "B. Cố định thêm băng dính bên ngoài rồi tiếp tục theo dõi", isCorrect: false },
+            { text: "C. Gọi hỗ trợ, đánh giá thông khí, cố định ống tại vị trí hiện tại, hỗ trợ oxy và báo bác sĩ kiểm tra lại vị trí ống", isCorrect: true },
+            { text: "D. Rút bỏ hoàn toàn ống nội khí quản ngay lập tức", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 259. Người bệnh thở máy có nhiều đờm nhưng SpO₂ đang ổn định. Điều dưỡng thực hiện hút đờm liên tục trong 30 giây và lặp lại nhiều lần không nghỉ. Nguy cơ nghiêm trọng nhất của thao tác này là gì?",
+        options: [
+            { text: "A. Làm tăng tiết nước bọt nhưng không ảnh hưởng hô hấp", isCorrect: false },
+            { text: "B. Gây thiếu oxy, tổn thương niêm mạc, rối loạn nhịp tim và tăng áp lực nội sọ", isCorrect: true },
+            { text: "C. Làm giảm nguy cơ nhiễm khuẩn phổi", isCorrect: false },
+            { text: "D. Làm ống nội khí quản sạch hơn nên có thể chấp nhận", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 260. Người bệnh thở máy qua ống nội khí quản đang được cho ăn qua ống thông dạ dày. Đầu giường thường để nằm ngang, khoang miệng nhiều dịch tiết. Biện pháp chăm sóc nào có ý nghĩa nhất trong phòng viêm phổi liên quan thở máy?",
+        options: [
+            { text: "A. Chỉ hút đờm khi người bệnh tím tái", isCorrect: false },
+            { text: "B. Nâng đầu giường khoảng 30–45 độ nếu không chống chỉ định, chăm sóc răng miệng, hút dịch tiết và tuân thủ vệ sinh tay", isCorrect: true },
+            { text: "C. Cho người bệnh nằm đầu thấp sau ăn để thức ăn dễ tiêu hóa", isCorrect: false },
+            { text: "D. Thay dây máy thở mỗi ca trực dù không bẩn", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 261. Người bệnh thở máy đột ngột tím tái, SpO₂ giảm nhanh, máy thở báo động liên tục và chưa xác định được nguyên nhân. \nHành động cấp cứu phù hợp nhất của điều dưỡng là gì?",
+        options: [
+            { text: "A. Tắt chuông báo động và chờ kỹ thuật viên kiểm tra máy", isCorrect: false },
+            { text: "B. Tiếp tục để người bệnh gắn với máy thở cho đến khi tìm được lỗi", isCorrect: false },
+            { text: "C. Gọi hỗ trợ, tách người bệnh khỏi máy nếu nghi máy hoặc hệ thống có sự cố, bóp bóng qua oxy và đánh giá đường thở – hô hấp – tuần hoàn", isCorrect: true },
+            { text: "D. Rút ống nội khí quản để người bệnh tự thở", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 262. Ngừng tuần hoàn được định nghĩa là:",
+        options: [
+            { text: "A. Tim ngừng đập, phổi ngừng thở", isCorrect: true },
+            { text: "B. Tim đập nhanh, thở nhanh", isCorrect: false },
+            { text: "C. Ngừng thở nhưng tim còn đập", isCorrect: false },
+            { text: "D. Chỉ tụt huyết áp", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 263. Trong ngừng tuần hoàn, tổn thương não do thiếu oxy có thể bắt đầu xuất hiện sau khoảng thời gian nào nếu không được cấp cứu kịp thời?",
+        options: [
+            { text: "A. 1–2 phút", isCorrect: false },
+            { text: "B. 4–6 phút", isCorrect: true },
+            { text: "C. 10–15 phút", isCorrect: false },
+            { text: "D. Trên 30 phút", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 264. Dấu hiệu sớm nhất khi người bệnh ngừng tuần hoàn là?",
+        options: [
+            { text: "A. Ngừng thở", isCorrect: false },
+            { text: "B. Mất ý thức đột ngột", isCorrect: true },
+            { text: "C. Mạch bẹn không bắt được", isCorrect: false },
+            { text: "D. Ngừng tim", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 265. Trong quy tình kỹ thuật cấp cứu ngừng tuần hoàn. Chất lượng ép tim được đánh giá tốt khi?",
+        options: [
+            { text: "A. Lồng ngực di động rõ", isCorrect: false },
+            { text: "B. Tần số đúng, độ sâu đủ và nhả hoàn toàn", isCorrect: true },
+            { text: "C. Bệnh nhân tỉnh lại ngay", isCorrect: false },
+            { text: "D. Nghe tiếng lạch cạch", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 266. Ngừng tuần hoàn hay gặp nhất ở đối tượng nào?",
+        options: [
+            { text: "A. Người trẻ khỏe", isCorrect: false },
+            { text: "B. Người cao tuổi có bệnh lý tim mạch", isCorrect: true },
+            { text: "C. Trẻ sơ sinh", isCorrect: false },
+            { text: "D. Phụ nữ có thai", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 267. Trong quy trình kỹ thuật cấp cứu ngừng tuần hoàn. Vì sao không được ngưng ép tim quá lâu?",
+        options: [
+            { text: "A. Mất tác dụng CPR", isCorrect: true },
+            { text: "B. Tăng nguy cơ tổn thương phổi", isCorrect: false },
+            { text: "C. Làm bệnh nhân đau", isCorrect: false },
+            { text: "D. Tốn thời gian", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 268. Trong quy trình kỹ thuật cấp cứu ngừng tuần hoàn. Điều gì quan trọng nhất trong cấp cứu ngừng tuần hoàn?",
+        options: [
+            { text: "A. Đúng quy trình và không gián đoạn ép tim", isCorrect: true },
+            { text: "B. Chỉ cần thổi ngạt", isCorrect: false },
+            { text: "C. Chỉ cần gọi cấp cứu", isCorrect: false },
+            { text: "D. Chỉ cần sốc điện", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 269. Trong quy trình kỹ thuật cấp cứu ngừng tuần hoàn. Yếu tố nào cải thiện tiên lượng sống sót sau ngừng tuần hoàn?",
+        options: [
+            { text: "A. Tiến hành CPR kịp thời", isCorrect: true },
+            { text: "B. Chờ bác sĩ đến", isCorrect: false },
+            { text: "C. Tiêm thuốc chống loạn nhịp ngay", isCorrect: false },
+            { text: "D. Cho bệnh nhân uống nước", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 270. Trong quy trình kỹ thuật cấp cứu ngừng tuần hoàn. Nguy cơ lớn nhất khi ép tim sai vị trí là?",
+        options: [
+            { text: "A. Gãy xương sườn", isCorrect: true },
+            { text: "B. Tổn thương tim", isCorrect: false },
+            { text: "C. Tổn thương phổi", isCorrect: false },
+            { text: "D. Tổn thương gan", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 271. Trong quy trình kỹ thuật cấp cứu ngừng tuần hoàn. Người thực hiện CPR cần lưu ý gì để tránh tổn thương cho bản thân?",
+        options: [
+            { text: "A. Giữ đúng tư thế ép tim", isCorrect: true },
+            { text: "B. Đứng thẳng người", isCorrect: false },
+            { text: "C. Dùng lực cánh tay", isCorrect: false },
+            { text: "D. Đứng xa nạn nhân", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 272. Trong quy trình kỹ thuật cấp cứu ngừng tuần hoàn. Điều gì cần làm ngay sau khi bệnh nhân phục hồi tuần hoàn?",
+        options: [
+            { text: "A. Chăm sóc và theo dõi chặt chẽ các dấu hiệu sinh tồn", isCorrect: true },
+            { text: "B. Tiếp tục cấp cứu", isCorrect: false },
+            { text: "C. Ngừng theo dõi", isCorrect: false },
+            { text: "D. Cho người bệnh ăn ngay đề phòng hạ đường huyết", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 273. Trong khi cấp cứu ngừng tuần hoàn cho người bệnh trưởng thành, sau 30 lần ép tim, điều dưỡng phối hợp thực hiện 2 nhịp thổi ngạt. Để duy trì hiệu quả tưới máu, thời gian gián đoạn ép tim cần được kiểm soát như thế nào?",
+        options: [
+            { text: "A. Không quá 5 giây", isCorrect: false },
+            { text: "B. Dưới 10 giây", isCorrect: true },
+            { text: "C. Không quá 15 giây", isCorrect: false },
+            { text: "D. Không quá 20 giây", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 274. Trong quy trình kỹ thuật cấp cứu ngừng tuần hoàn. Đánh giá hiệu quả ép tim dựa vào?",
+        options: [
+            { text: "A. Mặt bệnh nhân hồng hào", isCorrect: false },
+            { text: "B. Mạch bẹn rõ", isCorrect: true },
+            { text: "C. Lồng ngực di động", isCorrect: false },
+            { text: "D. Âm thanh bệnh nhân tạo ra", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 275. Trong quy trình kỹ thuật cấp cứu ngừng tuần hoàn. Nguyên tắc đầu tiên khi phát hiện nạn nhân ngừng thở - ngừng tim?",
+        options: [
+            { text: "A. Gọi người giúp", isCorrect: false },
+            { text: "B. Đánh giá an toàn hiện trường", isCorrect: true },
+            { text: "C. Tiến hành ép tim ngay", isCorrect: false },
+            { text: "D. Kiểm tra mạch", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 276. Trong quy trình kỹ thuật cấp cứu ngừng tuần hoàn. Khi bệnh nhân hôn mê sau hồi sinh, điều dưỡng cần?",
+        options: [
+            { text: "A. Để bệnh nhân nằm nghiêng trái", isCorrect: false },
+            { text: "B. Cố định đường thở và theo dõi người bệnh", isCorrect: true },
+            { text: "C. Gọi người nhà ngay", isCorrect: false },
+            { text: "D. Cho bệnh nhân nằm tư thế fowler", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 277. Trong quy trình kỹ thuật cấp cứu ngừng tuần hoàn. Sau bao lâu nên đánh giá lại dấu hiệu tuần hoàn?",
+        options: [
+            { text: "A. 30 giây", isCorrect: false },
+            { text: "B. 1 phút", isCorrect: false },
+            { text: "C. 2 phút", isCorrect: true },
+            { text: "D. 5 phút", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 278. Trong quy trình kỹ thuật cấp cứu ngừng tuần hoàn. Vị trí ép tim ngoài lồng ngực đúng là?",
+        options: [
+            { text: "A. Đặt lòng bàn tay vào 1/3 dưới của xương ức", isCorrect: true },
+            { text: "B. Đặt lòng bàn tay vào \n1/3 trên của xương ức", isCorrect: false },
+            { text: "C. Đặt lòng bàn tay vào 2/3 dưới của xương ức", isCorrect: false },
+            { text: "D. Đặt lòng bàn tay vào 2/3 trên của xương ức", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 279. Trong quy trình kỹ thuật cấp cứu ngừng tuần hoàn. Điều kiện nào sau đây KHÔNG phải là tiêu chuẩn ngừng CPR?",
+        options: [
+            { text: "A. Bệnh nhân phục hồi tuần hoàn tự phát", isCorrect: false },
+            { text: "B. Có chỉ định ngừng của bác sĩ", isCorrect: false },
+            { text: "C. Người cấp cứu mệt", isCorrect: true },
+            { text: "D. Cấp cứu kéo dài trên 60 phút", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 280. Trong khi cấp cứu một người bệnh trưởng thành ngừng tuần hoàn, điều dưỡng tiến hành ép tim ngoài lồng ngực. Sau vài chu kỳ, người hỗ trợ nhận thấy lồng ngực người bệnh chỉ lún khoảng 3 cm mỗi lần ép. Điều dưỡng cần điều chỉnh như thế nào để bảo đảm ép tim có hiệu quả?",
+        options: [
+            { text: "A. Giảm lực ép để tránh gãy xương sườn", isCorrect: false },
+            { text: "B. Tiếp tục ép với độ sâu khoảng 3 cm", isCorrect: false },
+            { text: "C. Tăng lực ép để đạt độ sâu khoảng 5–6 cm", isCorrect: true },
+            { text: "D. Ép sâu trên 7 cm để tăng tưới máu", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 281. Điều dưỡng cần làm gì khi bệnh nhân có dấu hiệu tái ngừng tuần hoàn?",
+        options: [
+            { text: "A. Bắt đầu CPR lại ngay", isCorrect: true },
+            { text: "B. Báo bác sĩ", isCorrect: false },
+            { text: "C. Gọi người nhà hỗ trợ", isCorrect: false },
+            { text: "D. Chuyển người bệnh về phòng cấp cứu", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 282. Trong quy trình kỹ thuật cấp cứu ngừng tuần hoàn. Sai lầm nghiêm trọng nhất trong kỹ thuật cấp cứu ngừng tuần hoàn. \nNGOẠI TRÙ",
+        options: [
+            { text: "A. Ép tim tim và thổi ngạt liên tục mà không thực hiện kiểm tra người bệnh", isCorrect: false },
+            { text: "B. Chỉ cần hỗ trợ hô hấp đảm bảo là được", isCorrect: false },
+            { text: "C. Ngừng ép tim quá lâu để đặt đường nội khí quản", isCorrect: false },
+            { text: "D. Chờ có đầy đủ phương tiện mới thực hiện cấp cứu cho người bệnh", isCorrect: true },
+        ]
+    },
+    {
+        q: "Câu 283. Trong quy trình kỹ thuật cấp cứu ngừng tuần hoàn. Điều gì không đúng khi theo dõi sau CPR?",
+        options: [
+            { text: "A. Theo dõi tri giác", isCorrect: false },
+            { text: "B. Theo dõi mạch và huyết áp", isCorrect: false },
+            { text: "C. Ngừng theo dõi khi bệnh nhân ổn", isCorrect: true },
+            { text: "D. Theo dõi SpO2 liên tục", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 284. Trong khi cấp cứu ngừng tuần hoàn cho người bệnh trưởng thành, sau mỗi lần ép tim điều dưỡng nhận thấy lồng ngực chưa trở về hoàn toàn vị trí ban đầu. Điều dưỡng cần làm gì?",
+        options: [
+            { text: "A. Tăng tốc độ ép tim trên \n140 lần/phút", isCorrect: false },
+            { text: "B. Giảm tỳ đè giữa các lần ép để lồng ngực nở lại hoàn toàn", isCorrect: true },
+            { text: "C. Ngừng ép tim để kiểm tra mạch sau mỗi chu kỳ", isCorrect: false },
+            { text: "D. Giảm độ sâu ép tim xuống dưới 3 cm", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 285. Trong quy trình kỹ thuật cấp cứu ngừng tuần hoàn. Khi phát hiện người bệnh ngừng tuần hoàn, việc cần làm ngay là:",
+        options: [
+            { text: "A. Gọi hỗ trợ và tiến hành cấp cứu ngay", isCorrect: true },
+            { text: "B. Đo huyết áp trước", isCorrect: false },
+            { text: "C. Nghe tim thật kỹ", isCorrect: false },
+            { text: "D. Chờ bác sĩ đến", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 286. Trong quy trình kỹ thuật cấp cứu ngừng tuần hoàn. Tỷ lệ ép tim - thổi ngạt khi cấp cứu một người lớn phù hợp là:",
+        options: [
+            { text: "A. 30 ép tim : 2 thổi ngạt", isCorrect: true },
+            { text: "B. 15 ép tim : 2 thổi ngạt", isCorrect: false },
+            { text: "C. 30 ép tim : 1 thổi ngạt", isCorrect: false },
+            { text: "D. 20 ép tim : 2 thổi ngạt", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 287. Trong quy trình kỹ thuật cấp cứu ngừng tuần hoàn. Trong khai thông đường thở, động tác đúng ở người không nghi chấn thương cổ là:",
+        options: [
+            { text: "A. Ngửa đầu, nâng cằm", isCorrect: true },
+            { text: "B. Gập cổ tối đa", isCorrect: false },
+            { text: "C. Ép bụng ngay", isCorrect: false },
+            { text: "D. Cho ngồi dậy", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 288. Trang cấp cứu hồi sinh tim phổi Tần số ép tim khi thực hiện cấp cứu người bệnh đạt hiệu quả nhất là",
+        options: [
+            { text: "A. Nhịp ép: ≤ 100 lần/ phút", isCorrect: false },
+            { text: "B. Nhịp ép: 100 – 120 lần/ phút", isCorrect: true },
+            { text: "C. Nhịp ép: 110 - ≥ 120 lần/ phút", isCorrect: false },
+            { text: "D. Nhịp ép: ≥ 100 lần/ phút", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 289. Người bệnh vào viện trong tình trạng vừa ngừng hô hấp tuần hoàn, tiến hành cấp cứu nhưng không hiệu quả. Thời gian cấp cứu bao nhiêu lâu thì ngừng",
+        options: [
+            { text: "A. > 30 phút mà không có kết quả, Đồng tử giãn to, mất phản xạ ánh sáng; tim không đập lại", isCorrect: false },
+            { text: "B. > 50 phút mà không có kết quả, Đồng tử giãn to, mất phản xạ ánh sáng; tim không đập lại.", isCorrect: false },
+            { text: "C. > 60 phút mà không có kết quả, Đồng tử giãn to, mất phản xạ ánh sáng; tim không đập lại.", isCorrect: true },
+            { text: "D. > 90 phút mà không có kết quả, Đồng tử giãn to, mất phản xạ ánh sáng; tim không đập lại", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 290. Người bệnh sau ngừng tuần hoàn đã có tuần hoàn tự nhiên trở lại. Hiện người bệnh đang được thở oxy, SpO₂ 100%. Điều dưỡng cần phối hợp điều chỉnh oxy như thế nào để phù hợp với mục tiêu chăm sóc sau hồi sinh tim phổi?",
+        options: [
+            { text: "A. Duy trì SpO₂ 100% để bảo đảm tối đa oxy cho mô", isCorrect: false },
+            { text: "B. Giảm oxy để duy trì SpO₂ khoảng 85–89%", isCorrect: false },
+            { text: "C. Điều chỉnh oxy để duy trì \nSpO₂ trong khoảng 90–\n98%", isCorrect: true },
+            { text: "D. Ngừng oxy ngay khi SpO₂ đạt trên 94%", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 291. Điều dưỡng phát hiện người bệnh đột ngột mất ý thức, không thở bình thường và không bắt được mạch. Vì sao điều dưỡng phải tiến hành hồi sinh tim phổi ngay?",
+        options: [
+            { text: "A. Để phòng ngừa người bệnh xuất hiện co giật", isCorrect: false },
+            { text: "B. Để nhanh chóng làm người bệnh tỉnh lại", isCorrect: false },
+            { text: "C. Để duy trì tưới máu và cung cấp oxy cho não, hạn chế tổn thương não do thiếu oxy", isCorrect: true },
+            { text: "D. Để xác định chính xác nguyên nhân ngừng tuần hoàn", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 292. Một bệnh nhân nam 62 tuổi, tiền sử tăng huyết áp và đái tháo đường, đang điều trị nội trú tại khoa Nội. Điều dưỡng trực phát hiện bệnh nhân đột ngột bất tỉnh trên giường, không đáp ứng khi gọi to và lay nhẹ. Kiểm tra nhanh thấy không bắt được mạch cảnh, không có nhịp thở tự nhiên. Hành động đúng và ưu tiên hàng đầu của điều dưỡng trong tình huống này là gì?",
+        options: [
+            { text: "A. Gọi bác sĩ trực và chuẩn bị thuốc Adrenalin", isCorrect: false },
+            { text: "B. Đặt bệnh nhân nằm đầu thấp, theo dõi huyết áp", isCorrect: false },
+            { text: "C. Báo động cấp cứu và tiến hành ép tim cấp cứu ngừng tuần hoàn ngay lập tức", isCorrect: true },
+            { text: "D. Thở oxy qua mask 10–15 lít/phút", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 293. Bệnh nhân nữ, 70 tuổi, có tiền sử tăng huyết áp, đái tháo đường type 2, được người nhà đưa vào viện vì đau đầu, đột ngột yếu nửa người bên phải, nói khó, méo miệng khoảng 2 giờ trước. Bệnh nhân tỉnh táo, hiểu được lời nói nhưng không trả lời trọn câu được. Huyết áp: 180/100 mmHg, Mạch 88 lần/phút, Nhịp thở: 20 lần/phút, SpO₂: 96% khi thở khí trời. CT sọ não: Hình ảnh nhồi máu não vùng động mạch não giữa trái. Chẩn đoán điều dưỡng nào phù hợp nhất?",
+        options: [
+            { text: "A. Rối loạn giao tiếp liên quan đến tổn thương vùng ngôn ngữ", isCorrect: true },
+            { text: "B. Đau đầu do nhồi máu não", isCorrect: false },
+            { text: "C. Rối loạn tiêu hóa liên quan đến nôn ói", isCorrect: false },
+            { text: "D. Nguy cơ suy dinh dưỡng do ăn uống kém", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 294. BN sau cấp cứu ngừng tuần hoàn, đang thở máy, huyết áp ổn định, nguy cơ nào ưu tiên theo dõi?",
+        options: [
+            { text: "A. Nguy cơ loét tì đè do bất động", isCorrect: false },
+            { text: "B. Nguy cơ tái ngừng tuần hoàn", isCorrect: true },
+            { text: "C. Nguy cơ hạ đường huyết", isCorrect: false },
+            { text: "D. Nguy cơ loét tì đè do bất động", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 295. Người bệnh đột ngột mất ý thức, ngừng thở và không bắt được mạch cảnh. Monitor ghi nhận rung thất. Máy khử rung đã sẵn sàng. Hành động ưu tiên của nhóm cấp cứu là gì?",
+        options: [
+            { text: "A. Đặt nội khí quản trước rồi mới khử rung", isCorrect: false },
+            { text: "B. Tiêm adrenaline trước khi khử rung", isCorrect: false },
+            { text: "C. Khử rung càng sớm càng tốt, sau đó ép tim lại ngay trong 2 phút mà không dừng lâu để kiểm tra mạch", isCorrect: true },
+            { text: "D. Kiểm tra huyết áp nhiều lần trước khi sốc điện", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 296. Sau lần khử rung đầu tiên, monitor vẫn ghi nhận rung thất. Nhóm cấp cứu dừng ép tim để bắt mạch trong 30 giây nhưng không xác định được mạch. Điều chỉnh nào phù hợp nhất?",
+        options: [
+            { text: "A. Tiếp tục dừng ép tim cho đến khi xác định chắc chắn mạch", isCorrect: false },
+            { text: "B. Ép tim lại ngay, hạn chế tối đa thời gian gián đoạn và chỉ đánh giá nhịp theo chu kỳ quy định", isCorrect: true },
+            { text: "C. Chuyển ngay sang sốc điện đồng bộ", isCorrect: false },
+            { text: "D. Ngừng cấp cứu vì lần khử rung đầu tiên không hiệu quả", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 297. Người bệnh ngừng tuần hoàn có nhịp vô tâm thu trên monitor. Sau khi kiểm tra điện cực và chuyển đạo, kết quả vẫn là đường thẳng. Xử trí phù hợp nhất là gì?",
+        options: [
+            { text: "A. Khử rung ngay với mức năng lượng tối đa", isCorrect: false },
+            { text: "B. Ép tim chất lượng cao, sử dụng adrenaline sớm và tìm nguyên nhân có thể đảo ngược", isCorrect: true },
+            { text: "C. Sốc điện đồng bộ để tái lập nhịp xoang", isCorrect: false },
+            { text: "D. Chỉ bóp bóng trong 2 phút rồi đánh giá lại", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 298. Trong lúc cấp cứu, monitor hiển thị hoạt động điện có tổ chức với tần số 60 lần/phút nhưng không bắt được mạch trung tâm. Nhận định và xử trí phù hợp nhất là gì?",
+        options: [
+            { text: "A. Đây là nhịp xoang chậm; cần tạo nhịp qua da ngay", isCorrect: false },
+            { text: "B. Đây là hoạt động điện vô mạch; tiếp tục ép tim, dùng adrenaline và tìm nguyên nhân có thể đảo ngược", isCorrect: true },
+            { text: "C. Đây là rung thất biên độ nhỏ; cần khử rung ngay", isCorrect: false },
+            { text: "D. Người bệnh đã tái lập tuần hoàn vì monitor có nhịp", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 299. Người bệnh đang được ép tim nhưng độ sâu ép không ổn định, người ép tỳ người lên lồng ngực và tốc độ khoảng 140 lần/phút. Biện pháp cải thiện phù hợp nhất là gì?",
+        options: [
+            { text: "A. Tăng tốc độ ép tim vì ép càng nhanh càng tạo được nhiều tuần hoàn", isCorrect: false },
+            { text: "B. Điều chỉnh tốc độ về \n100–120 lần/phút, độ sâu khoảng 5–6 cm, để lồng ngực nảy lại hoàn toàn và đổi người ép tim định kỳ", isCorrect: true },
+            { text: "C. Giảm độ sâu ép còn 2–3 cm để tránh gãy xương sườn", isCorrect: false },
+            { text: "D. Dừng ép tim thường xuyên để kiểm tra mạch", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 300. Sau 12 phút cấp cứu, monitor xuất hiện nhịp có tổ chức, bắt được mạch cảnh, huyết áp 85/50 mmHg Người bệnh vẫn hôn mê và SpO₂ 88%. Xử trí tiếp theo phù hợp nhất là gì?",
+        options: [
+            { text: "A. Ngừng toàn bộ theo dõi vì người bệnh đã có mạch trở lại", isCorrect: false },
+            { text: "B. Khử rung thêm một lần để ổn định nhịp tim", isCorrect: false },
+            { text: "C. Chuyển sang chăm sóc sau tái lập tuần hoàn: bảo đảm đường thở và oxy hóa, hỗ trợ huyết áp, làm điện tâm đồ, tìm nguyên nhân và đánh giá thần kinh", isCorrect: true },
+            { text: "D. Tiếp tục ép tim thêm 5 phút để phòng ngừng tuần hoàn tái phát", isCorrect: false },
+        ]
+    }
+];
+
+        // Lưu trữ trạng thái kết quả của từng câu
+        let userAnswers = {};
+
+        // Hàm xáo trộn mảng
+        function shuffleArray(array) {
+            let shuffled = JSON.parse(JSON.stringify(array));
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        // Khởi tạo giao diện
+        function initQuiz() {
+            userAnswers = {};
+            updateScoreBoard();
+
+            const quizContainer = document.getElementById('quiz-container');
+            quizContainer.innerHTML = '';
+
+            // Random câu hỏi
+            const shuffledQuestions = shuffleArray(rawQuestions);
+
+            shuffledQuestions.forEach((item, qIndex) => {
+                const card = document.createElement('div');
+                card.className = 'question-card';
+
+                // Tiêu đề câu hỏi
+                const qTitle = document.createElement('div');
+                qTitle.className = 'question-text';
+                qTitle.innerText = `${qIndex + 1}. ${item.q.replace(/^Câu \d+\.\s*/, '')}`;
+                card.appendChild(qTitle);
+
+                // Danh sách đáp án
+                const optionsDiv = document.createElement('div');
+                optionsDiv.className = 'options-container';
+
+                // Random đáp án
+                const shuffledOptions = shuffleArray(item.options);
+                const labels = ['A', 'B', 'C', 'D'];
+
+                shuffledOptions.forEach((opt, oIndex) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'option-btn';
+                    const cleanText = opt.text.replace(/^[A-D]\.\s*/, '');
+                    btn.innerText = `${labels[oIndex]}. ${cleanText}`;
+                    
+                    // Xử lý khi nhấn chọn đáp án (có thể chọn lại)
+                    btn.onclick = () => selectOption(qIndex, btn, opt.isCorrect, optionsDiv, card);
+                    optionsDiv.appendChild(btn);
+                });
+
+                card.appendChild(optionsDiv);
+
+                // Khung thông báo đúng/sai
+                const feedbackDiv = document.createElement('div');
+                feedbackDiv.className = 'feedback';
+                card.appendChild(feedbackDiv);
+
+                quizContainer.appendChild(card);
+            });
+        }
+
+        // Xử lý khi chọn/đổi đáp án
+        function selectOption(qIndex, selectedBtn, isCorrect, optionsContainer, card) {
+            const buttons = optionsContainer.querySelectorAll('.option-btn');
+            
+            // Xóa màu cũ trên tất cả các đáp án của câu này
+            buttons.forEach(btn => {
+                btn.classList.remove('correct', 'wrong');
+            });
+
+            const feedbackDiv = card.querySelector('.feedback');
+
+            // Cập nhật giao diện theo lựa chọn mới
+            if (isCorrect) {
+                selectedBtn.classList.add('correct');
+                feedbackDiv.innerText = "✓ Chính xác!";
+                feedbackDiv.style.color = "#155724";
+                userAnswers[qIndex] = true; // Lưu trạng thái: Đúng
+            } else {
+                selectedBtn.classList.add('wrong');
+                feedbackDiv.innerText = "✗ Chưa đúng! Bạn có thể chọn lại đáp án khác.";
+                feedbackDiv.style.color = "#721c24";
+                userAnswers[qIndex] = false; // Lưu trạng thái: Sai
+            }
+
+            // Cập nhật lại điểm số tổng
+            updateScoreBoard();
+        }
+
+        // Cập nhật thanh điểm số
+        function updateScoreBoard() {
+            const answeredCount = Object.keys(userAnswers).length;
+            const correctCount = Object.values(userAnswers).filter(val => val === true).length;
+
+            document.getElementById('score').innerText = correctCount;
+            document.getElementById('total-answered').innerText = answeredCount;
+        }
+
+        // Chạy khi mở trang
+        window.onload = initQuiz;
+    </script>
+</body>
+</html>
