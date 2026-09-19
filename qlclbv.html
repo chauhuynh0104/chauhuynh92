@@ -1,0 +1,1587 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trắc Nghiệm Viêm Gan B</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+
+        #quiz-container {
+            margin-top: 20px;
+        }
+
+        .question-card {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-btn {
+            background-color: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            padding: 12px 15px;
+            text-align: left;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .option-btn:hover {
+            background-color: #e2e6ea;
+            border-color: #dae0e5;
+        }
+
+        .option-btn.correct {
+            background-color: #d4edda !important;
+            border-color: #c3e6cb !important;
+            color: #155724 !important;
+            font-weight: bold;
+        }
+
+        .option-btn.wrong {
+            background-color: #f8d7da !important;
+            border-color: #f5c6cb !important;
+            color: #721c24 !important;
+        }
+
+        .feedback {
+            margin-top: 10px;
+            font-weight: bold;
+            font-size: 0.95rem;
+        }
+
+        .score-board {
+        
+            top: 10px;
+            background-color: #007bff;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            z-index: 1000;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .reset-btn {
+            background-color: #ffc107;
+            color: #212529;
+            border: none;
+            padding: 8px 16px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .reset-btn:hover {
+            background-color: #e0a800;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Bài Trắc Nghiệm Y Khoa</h1>
+
+    <div class="score-board">
+        <span>Điểm số: <span id="score">0</span> / <span id="total-answered">0</span></span>
+        <button class="reset-btn" onclick="initQuiz()">Làm lại bài</button>
+    </div>
+
+    <div id="quiz-container"></div>
+
+    <script>
+        const rawQuestions =     [
+		
+		       {
+        q: "Câu 1: Tại Ấn Độ khoảng năm 230 TCN, Vua Ashoka đã lập bao nhiêu nhà thương có bác sĩ và phụ tá chăm sóc cho người mắc các loại bệnh.",
+        options: [
+            { text: "A. 15 nhà thương.", isCorrect: false },
+            { text: "B. 18 nhà thương.", isCorrect: true },
+            { text: "C. 20 nhà thương.", isCorrect: false },
+            { text: "D. 24 nhà thương.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 2: Bệnh viện giáo dục y học đầu tiên trên thế giới được thành lập tại đâu.",
+        options: [
+            { text: "A. Ai Cập.", isCorrect: false },
+            { text: "B. Ấn Độ.", isCorrect: false },
+            { text: "C. Hàn lâm viên Gundishapur Ba Tư.", isCorrect: true },
+            { text: "D. Constantinopolis La Mã.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 3: Ở Việt Nam, ai là người đã xây dựng 24 ngôi chùa có chữa bệnh làm phúc sớm nhất vào thế kỷ XIV.",
+        options: [
+            { text: "A. Hải Thượng Lãn Ông.", isCorrect: false },
+            { text: "B. Nguyễn Bá Tĩnh (Tuệ Tĩnh).", isCorrect: true },
+            { text: "C. Vua Lý Thái Tổ.", isCorrect: false },
+            { text: "D. Langlois.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 4: Bệnh viện Grall được Pháp xây dựng năm 1863 hiện nay là bệnh viện nào.",
+        options: [
+            { text: "A. Bệnh viện Chợ Rẫy.", isCorrect: false },
+            { text: "B. Bệnh viện Nhi đồng 1, TP. HCM.", isCorrect: true },
+            { text: "C. Bệnh viện Quân y 108.", isCorrect: false },
+            { text: "D. Bệnh viện Hữu Nghị.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 5: Theo Quy chế bệnh viện ban hành tại Quyết định số 1895/1997/QĐ–BYT của Bộ Y Tế, Bệnh viện có tổng cộng bao nhiêu nhiệm vụ.",
+        options: [
+            { text: "A. 5 nhiệm vụ.", isCorrect: false },
+            { text: "B. 6 nhiệm vụ.", isCorrect: false },
+            { text: "C. 7 nhiệm vụ.", isCorrect: true },
+            { text: "D. 8 nhiệm vụ.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 6: Trong các nhiệm vụ của bệnh viện, nhiệm vụ nào được xem là quan trọng bậc nhất.",
+        options: [
+            { text: "A. Đào tạo huấn luyện cán bộ y tế.", isCorrect: false },
+            { text: "B. Cấp cứu, khám chữa bệnh, chăm sóc điều dưỡng và phục hồi chức năng.", isCorrect: true },
+            { text: "C. Nghiên cứu khoa học về y tế.", isCorrect: false },
+            { text: "D. Quản lý kinh tế trong Bệnh viện.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 7: Nhiệm vụ nào của bệnh viện được xem là nhiệm vụ \"sống còn\" vì nó góp phần tích cực nâng cao chất lượng bệnh viện.",
+        options: [
+            { text: "A. Hợp tác quốc tế.", isCorrect: false },
+            { text: "B. Chỉ đạo tuyến dưới về chuyên môn kỹ thuật.", isCorrect: false },
+            { text: "C. Nghiên cứu khoa học về y tế.", isCorrect: true },
+            { text: "D. Phối hợp với cơ sở y tế dự phòng.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 8: Bệnh viện đa khoa Trung ương Việt Nam – Thụy Điển Uông Bí thuộc tuyến bệnh viện nào.",
+        options: [
+            { text: "A. Bệnh viện tuyến trung ương.", isCorrect: false },
+            { text: "B. Bệnh viện vùng.", isCorrect: true },
+            { text: "C. Bệnh viện tuyến tỉnh.", isCorrect: false },
+            { text: "D. Bệnh viện khu vực.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 9: Bệnh viện Giao thông vận tải, Bệnh viện Nông nghiệp được phân loại vào nhóm bệnh viện nào theo tuyến kỹ thuật.",
+        options: [
+            { text: "A. Bệnh viện vùng.", isCorrect: false },
+            { text: "B. Bệnh viện ngành.", isCorrect: true },
+            { text: "C. Bệnh viện tuyến trung ương.", isCorrect: false },
+            { text: "D. Bệnh viện khu vực.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 10: Theo Thông tư số 23/2005/TT-BYT, bệnh viện được chia thành bao nhiêu hạng.",
+        options: [
+            { text: "A. 3 hạng.", isCorrect: false },
+            { text: "B. 4 hạng.", isCorrect: false },
+            { text: "C. 5 hạng.", isCorrect: true },
+            { text: "D. 6 hạng.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 11: Trong 5 nhóm tiêu chuẩn xếp hạng đơn vị sự nghiệp y tế, nhóm tiêu chuẩn nào có điểm số cao nhất (30 điểm).",
+        options: [
+            { text: "A. Quy mô và nội dung hoạt động.", isCorrect: false },
+            { text: "B. Cơ cấu lao động và trình độ cán bộ.", isCorrect: true },
+            { text: "C. Khả năng chuyên môn kỹ thuật, hiệu quả, chất lượng công việc.", isCorrect: false },
+            { text: "D. Cơ sở hạ tầng, trang thiết bị.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 12: Bệnh viện hạng I phải đạt số điểm tối thiểu là bao nhiêu theo quy định xếp hạng.",
+        options: [
+            { text: "A. Từ 40 điểm trở lên.", isCorrect: false },
+            { text: "B. Từ 70 điểm trở lên.", isCorrect: false },
+            { text: "C. Từ 90 điểm trở lên.", isCorrect: true },
+            { text: "D. 100 điểm.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 13: Theo WHO, tư duy mới về quản lý bệnh viện coi bệnh viện như một tổ chức nào.",
+        options: [
+            { text: "A. Một doanh nghiệp kinh doanh dịch vụ.", isCorrect: false },
+            { text: "B. Một xã hội thu nhỏ.", isCorrect: true },
+            { text: "C. Một cơ sở từ thiện.", isCorrect: false },
+            { text: "D. Một trung tâm tài chính.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 14: Theo quan điểm quản lý mới của WHO, bệnh viện cần ưu tiên phát triển công tác nào và đưa về càng gần dân càng tốt.",
+        options: [
+            { text: "A. Công tác nội trú.", isCorrect: false },
+            { text: "B. Công tác ngoại trú.", isCorrect: true },
+            { text: "C. Công tác cấp cứu.", isCorrect: false },
+            { text: "D. Công tác phẫu thuật.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 15: Có bao nhiêu nguyên tắc quản lý bệnh viện được nêu ra trong tài liệu.",
+        options: [
+            { text: "A. 4 nguyên tắc.", isCorrect: false },
+            { text: "B. 5 nguyên tắc.", isCorrect: true },
+            { text: "C. 6 nguyên tắc.", isCorrect: false },
+            { text: "D. 7 nguyên tắc.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 16: Nguyên tắc \"Lấy người bệnh làm trung tâm\" có ý nghĩa là gì.",
+        options: [
+            { text: "A. Người bệnh được tự do lựa chọn bác sĩ điều trị.", isCorrect: false },
+            { text: "B. Mọi suy nghĩ định hướng, chính sách, hoạt động đều hướng tới lợi ích của người bệnh.", isCorrect: true },
+            { text: "C. Bệnh viện phải miễn phí toàn bộ chi phí cho người bệnh.", isCorrect: false },
+            { text: "D. Bệnh viện chỉ điều trị cho những người mắc bệnh nặng.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 17: Khách hàng của bệnh viện theo nguyên tắc quản lý chất lượng bao gồm những đối tượng nào.",
+        options: [
+            { text: "A. Chỉ bao gồm người bệnh.", isCorrect: false },
+            { text: "B. Chỉ bao gồm người bệnh và người nhà của họ.", isCorrect: false },
+            { text: "C. Người bệnh và các nhóm lợi ích bên trong, bên ngoài bệnh viện.", isCorrect: true },
+            { text: "D. Chỉ bao gồm các công ty bảo hiểm y tế.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 18: Các quyết định quản lý dựa trên cơ sở pháp luật, khoa học và bằng chứng cụ thể là nội dung của nguyên tắc nào.",
+        options: [
+            { text: "A. Cải tiến liên tục.", isCorrect: false },
+            { text: "B. Bệnh viện an toàn.", isCorrect: false },
+            { text: "C. Quản lý dựa trên bằng chứng.", isCorrect: true },
+            { text: "D. Lấy người bệnh làm trung tâm.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 19: Nguyên tắc \"Điều đầu tiên không gây tổn hại cho người bệnh\" bắt nguồn từ thời của ai.",
+        options: [
+            { text: "A. Vua Ashoka.", isCorrect: false },
+            { text: "B. Hippocrate.", isCorrect: true },
+            { text: "C. Nguyễn Bá Tĩnh.", isCorrect: false },
+            { text: "D. Tu sĩ giáo hội Trung cổ.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 20: Việc áp dụng phần mềm quản lý tổng thể hay bệnh án điện tử thuộc phương pháp quản lý nào.",
+        options: [
+            { text: "A. Phương pháp ISO.", isCorrect: false },
+            { text: "B. Tin học hóa quản lý Bệnh viện.", isCorrect: true },
+            { text: "C. Phương pháp TQM.", isCorrect: false },
+            { text: "D. Phương pháp theo quan điểm hệ thống.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 21: Từ góc độ của người bệnh hay khách hàng, họ quan tâm nhiều đến yếu tố nào của chất lượng y tế.",
+        options: [
+            { text: "A. Quy trình khoa học của chăm sóc y tế.", isCorrect: false },
+            { text: "B. Hiệu suất trong cung ứng dịch vụ chăm sóc sức khỏe.", isCorrect: false },
+            { text: "C. Thái độ thân thiện, được đối xử tôn trọng, sự thoải mái và sạch sẽ.", isCorrect: true },
+            { text: "D. Khả năng chẩn đoán và điều trị một ca bệnh.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 22: Từ góc độ nhân viên y tế hoặc cơ sở y tế, yếu tố nào được quan tâm nhiều nhất khi nói về chất lượng.",
+        options: [
+            { text: "A. Quy trình khoa học của chăm sóc y tế, khả năng chẩn đoán và điều trị.", isCorrect: true },
+            { text: "B. Sự sẵn có của nhiều dịch vụ phù hợp với túi tiền.", isCorrect: false },
+            { text: "C. Hiệu lực, tính phù hợp và khả năng chấp nhận được của dịch vụ.", isCorrect: false },
+            { text: "D. Chi phí quản lý và vận hành bệnh viện.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 23: Việc lập kế hoạch đóng vai trò như thế nào để có được chất lượng theo tài liệu.",
+        options: [
+            { text: "A. Không cần thiết vì chất lượng xảy ra ngẫu nhiên.", isCorrect: false },
+            { text: "B. Là việc làm quan trọng để có được chất lượng.", isCorrect: true },
+            { text: "C. Chỉ cần thiết đối với nhà quản lý cấp cao.", isCorrect: false },
+            { text: "D. Làm tăng chi phí mà không mang lại hiệu quả.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 24: Tổ chức Y tế thế giới (WHO) xác định chiều hướng chất lượng trong y tế bao gồm yếu tố nào.",
+        options: [
+            { text: "A. An toàn, người bệnh làm trung tâm, chăm sóc lâm sàng hiệu quả.", isCorrect: true },
+            { text: "B. Chi phí thấp, phục vụ nhanh chóng, tiện nghi cao cấp.", isCorrect: false },
+            { text: "C. Giảm tải bệnh viện, tăng thu nhập, mở rộng quy mô.", isCorrect: false },
+            { text: "D. Quảng cáo mạnh mẽ, trang thiết bị nhập khẩu, nhân lực trẻ.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 25: Nhiệm vụ của thầy thuốc đối với người bệnh về mặt an toàn là gì.",
+        options: [
+            { text: "A. Đảm bảo người bệnh được sử dụng thuốc đắt tiền nhất.", isCorrect: false },
+            { text: "B. Bảo đảm môi trường an toàn cho người bệnh của mình.", isCorrect: true },
+            { text: "C. Chuyển người bệnh lên tuyến trên ngay khi nhập viện.", isCorrect: false },
+            { text: "D. Miễn phí toàn bộ chi phí điều trị cho người bệnh.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 26: Một môi trường không an toàn trong chăm sóc y tế có thể dẫn đến hậu quả gì.",
+        options: [
+            { text: "A. Tăng cường khả năng cạnh tranh của bệnh viện.", isCorrect: false },
+            { text: "B. Thu hút thêm nhiều nhân viên y tế giỏi.", isCorrect: false },
+            { text: "C. Dẫn đến vấn đề trách nhiệm, tổn thương tâm sinh lý và gây tổn hại danh tiếng.", isCorrect: true },
+            { text: "D. Làm tăng năng suất làm việc của đội ngũ y bác sĩ.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 27: Khái niệm \"Chăm sóc dễ tiếp cận\" mang ý nghĩa gì.",
+        options: [
+            { text: "A. Bệnh viện mở cửa 24/7 và miễn phí mọi dịch vụ.", isCorrect: false },
+            { text: "B. Sẵn có, chấp nhận được và người sử dụng đủ khả năng chi trả.", isCorrect: true },
+            { text: "C. Bệnh nhân có thể tự do lấy thuốc mà không cần kê đơn.", isCorrect: false },
+            { text: "D. Bệnh viện luôn có xe đưa đón bệnh nhân tận nhà.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 28: Nguyên tắc làm việc nào đòi hỏi thầy thuốc phải áp dụng để cung cấp dịch vụ chăm sóc hiệu quả.",
+        options: [
+            { text: "A. Làm nhanh nhất có thể để giảm thời gian chờ đợi.", isCorrect: false },
+            { text: "B. Làm theo kinh nghiệm cá nhân không cần theo chuẩn.", isCorrect: false },
+            { text: "C. Làm đúng ngay từ lần đầu và làm tốt hơn trong những lần tiếp theo.", isCorrect: true },
+            { text: "D. Thử nghiệm nhiều phương pháp cho đến khi thành công.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 29: Trong cung ứng chăm sóc y tế có chất lượng, tương tác cá nhân sẽ không đem lại chăm sóc tổng thể nếu thiếu yếu tố nào.",
+        options: [
+            { text: "A. Máy móc hiện đại.", isCorrect: false },
+            { text: "B. Sự hợp tác theo nhóm.", isCorrect: true },
+            { text: "C. Nguồn vốn đầu tư lớn.", isCorrect: false },
+            { text: "D. Sự chỉ đạo của Bộ Y tế.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 30: Tiêu chuẩn hóa trong cải tiến chất lượng nhằm mục đích gì.",
+        options: [
+            { text: "A. Tăng cường doanh thu cho bệnh viện tư nhân.", isCorrect: false },
+            { text: "B. Tăng cường kiểm soát kết quả đầu ra dự kiến và giảm sai lệch trong cung ứng dịch vụ.", isCorrect: true },
+            { text: "C. Loại bỏ hoàn toàn sự cạnh tranh giữa các bệnh viện.", isCorrect: false },
+            { text: "D. Giảm bớt số lượng nhân viên y tế cần thiết.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 31: Công khai kết quả thực hiện các tiêu chí chất lượng mang lại lợi ích gì cho người sử dụng dịch vụ.",
+        options: [
+            { text: "A. Giúp họ biết, so sánh và lựa chọn cơ sở y tế.", isCorrect: true },
+            { text: "B. Giúp họ không phải trả tiền khám chữa bệnh.", isCorrect: false },
+            { text: "C. Bắt buộc họ phải chọn bệnh viện tuyến trung ương.", isCorrect: false },
+            { text: "D. Giúp họ tự chẩn đoán bệnh tại nhà.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 32: Sự cạnh tranh giữa các cơ sở y tế thúc đẩy điều gì trong quản lý chất lượng.",
+        options: [
+            { text: "A. Thúc đẩy việc giảm giá thành thuốc nhập khẩu.", isCorrect: false },
+            { text: "B. Thúc đẩy nâng cao chất lượng nhằm tạo uy tín, thương hiệu và sức thu hút.", isCorrect: true },
+            { text: "C. Thúc đẩy việc chuyển viện bệnh nhân liên tục.", isCorrect: false },
+            { text: "D. Thúc đẩy việc từ chối nhận bệnh nhân nặng.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 33: Cung ứng dịch vụ y tế có chất lượng tốt nhất nhằm giảm thiểu tai biến, rủi ro cho người bệnh còn được coi là khía cạnh của điều gì.",
+        options: [
+            { text: "A. Quản trị rủi ro.", isCorrect: false },
+            { text: "B. Y đức.", isCorrect: true },
+            { text: "C. Pháp lý y tế.", isCorrect: false },
+            { text: "D. Kinh tế y tế.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 34: \"Cam kết của lãnh đạo\" có ý nghĩa quan trọng trong việc gì.",
+        options: [
+            { text: "A. Trừng phạt những nhân viên mắc sai lầm.", isCorrect: false },
+            { text: "B. Duy trì chất lượng, hỗ trợ chủ động, bố trí nhân lực và vật lực cho cải tiến chất lượng.", isCorrect: true },
+            { text: "C. Từ chối mọi phàn nàn của người bệnh.", isCorrect: false },
+            { text: "D. Chỉ định người thân vào các vị trí quan trọng.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 35: Nguyên tắc \"Lấy khách hàng làm trung tâm\" phân nhóm khách hàng thành những nhóm nào.",
+        options: [
+            { text: "A. Nhóm khách hàng giàu và nhóm khách hàng nghèo.", isCorrect: false },
+            { text: "B. Nhóm khách hàng nội trú và nhóm khách hàng ngoại trú.", isCorrect: false },
+            { text: "C. Nhóm khách hàng 'sống còn' và nhóm khách hàng quan trọng.", isCorrect: true },
+            { text: "D. Nhóm khách hàng ưu tiên và nhóm khách hàng bình thường.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 36: Tính hệ thống của một tổ chức được tạo thành bởi ba thành phần chính nào.",
+        options: [
+            { text: "A. Nhân lực, vật lực, tài lực.", isCorrect: false },
+            { text: "B. Cấu trúc (nguồn lực), quy trình và kết quả.", isCorrect: true },
+            { text: "C. Bác sĩ, điều dưỡng, bệnh nhân.", isCorrect: false },
+            { text: "D. Khoa lâm sàng, khoa cận lâm sàng, phòng hành chính.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 37: Khi một nhân viên tiếp xúc với khách hàng và làm mọi việc cần thiết để đáp ứng nhu cầu dù đó không thuộc trách nhiệm của họ, điều này thể hiện nguyên tắc nào.",
+        options: [
+            { text: "A. Năng lực lãnh đạo.", isCorrect: false },
+            { text: "B. Trao quyền cho nhân viên.", isCorrect: true },
+            { text: "C. Hạn chế sự khác biệt.", isCorrect: false },
+            { text: "D. Can thiệp đón đầu.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 38: Tiêu chuẩn hóa là một phương thức để kiểm soát vấn đề gì trong các quy trình.",
+        options: [
+            { text: "A. Kiểm soát chi phí nhập khẩu thiết bị.", isCorrect: false },
+            { text: "B. Kiểm soát thời gian làm việc của bác sĩ.", isCorrect: false },
+            { text: "C. Kiểm soát sự khác biệt vì mọi người đều áp dụng những tiêu chuẩn giống nhau.", isCorrect: true },
+            { text: "D. Kiểm soát số lượng bệnh nhân đến khám mỗi ngày.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 39: Trong nguyên tắc \"Số liệu có vai trò quyết định\", các quyết định quản lý phải dựa trên cơ sở nào.",
+        options: [
+            { text: "A. Quyết định tùy tiện của người lãnh đạo.", isCorrect: false },
+            { text: "B. Kinh nghiệm dân gian truyền miệng.", isCorrect: false },
+            { text: "C. Các số liệu chính xác được phân tích từ dữ liệu.", isCorrect: true },
+            { text: "D. Trực giác của các bác sĩ trưởng khoa.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 40: Biện pháp giáo dục và đào tạo nào được xem là hiệu quả nhất để nâng cao kỹ năng cho nhân viên.",
+        options: [
+            { text: "A. Đào tạo trực tuyến qua video thu sẵn.", isCorrect: false },
+            { text: "B. Cử đi học nước ngoài dài hạn.", isCorrect: false },
+            { text: "C. Đào tạo tại chỗ, tại nơi làm việc để áp dụng ngay vào công việc.", isCorrect: true },
+            { text: "D. Đọc tài liệu tham khảo trong thư viện.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 41: Khi một bệnh viện lấy thành tích tỷ lệ nhiễm khuẩn thấp của bệnh viện khác làm mục tiêu cho mình, đó là loại chuẩn hóa nào.",
+        options: [
+            { text: "A. Chuẩn hóa theo quy trình.", isCorrect: false },
+            { text: "B. Chuẩn hóa theo nhân lực.", isCorrect: false },
+            { text: "C. Chuẩn hóa theo kết quả.", isCorrect: true },
+            { text: "D. Chuẩn hóa theo tài chính.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 42: Chu trình PDCA là viết tắt của các từ tiếng Anh nào.",
+        options: [
+            { text: "A. Plan – Do – Check – Act.", isCorrect: true },
+            { text: "B. Plan – Direct – Control – Act.", isCorrect: false },
+            { text: "C. Prepare – Do – Check – Assess.", isCorrect: false },
+            { text: "D. Process – Do – Correct – Act.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 43: Nếu năng lực hoạt động đạt tới mức 6 Sigma, thì xác suất lỗi có thể xảy ra là bao nhiêu.",
+        options: [
+            { text: "A. 6200 tới 6700 lỗi trên 1 triệu cơ hội.", isCorrect: false },
+            { text: "B. 100 tới 200 lỗi trên 1 triệu cơ hội.", isCorrect: false },
+            { text: "C. 3 đến 4 lỗi trên 1 triệu cơ hội.", isCorrect: true },
+            { text: "D. Hoàn toàn không có lỗi nào.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 44: Khách hàng nội bộ của bệnh viện được định nghĩa là đối tượng nào dưới đây.",
+        options: [
+            { text: "A. Người bệnh và người nhà người bệnh.", isCorrect: false },
+            { text: "B. Các đơn vị trong bệnh viện.", isCorrect: true },
+            { text: "C. Các cơ quan quản lý y tế tuyến trên.", isCorrect: false },
+            { text: "D. Các nhà cung cấp trang thiết bị.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 45: Kế hoạch và chương trình quản lý chất lượng của bệnh viện được lồng ghép vào loại kế hoạch nào.",
+        options: [
+            { text: "A. Kế hoạch hoạt động hàng tháng và hàng quý.", isCorrect: false },
+            { text: "B. Kế hoạch hoạt động hàng năm và 5 năm.", isCorrect: true },
+            { text: "C. Kế hoạch tài chính dài hạn.", isCorrect: false },
+            { text: "D. Kế hoạch phát triển nhân sự.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 46: Khi lập các đề án cải tiến chất lượng, bệnh viện cần xác định các vấn đề ưu tiên để triển khai phù hợp với điều kiện gì.",
+        options: [
+            { text: "A. Yêu cầu của người bệnh.", isCorrect: false },
+            { text: "B. Nguồn lực hiện có của bệnh viện.", isCorrect: true },
+            { text: "C. Chỉ đạo của chính quyền địa phương.", isCorrect: false },
+            { text: "D. Mức độ cạnh tranh của các bệnh viện khác.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 47: Nghị định nào quy định cụ thể về tổ chức và hoạt động của tổ chức chứng nhận chất lượng ở Việt Nam.",
+        options: [
+            { text: "A. Nghị định số 87/2011/NĐ-CP.", isCorrect: true },
+            { text: "B. Nghị định số 19/2013/NĐ-CP.", isCorrect: false },
+            { text: "C. Nghị định số 1313/2013/NĐ-CP.", isCorrect: false },
+            { text: "D. Nghị định số 23/2005/NĐ-CP.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 48: Nhiều bệnh viện đã áp dụng hệ thống quản lý chất lượng xét nghiệm y học theo tiêu chuẩn nào.",
+        options: [
+            { text: "A. ISO 9001-2008.", isCorrect: false },
+            { text: "B. ISO 14001.", isCorrect: false },
+            { text: "C. ISO 15189.", isCorrect: true },
+            { text: "D. ISO 22000.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 49: Mục tiêu của quản lý chất lượng toàn diện (TQM) là gì.",
+        options: [
+            { text: "A. Chỉ nhằm giảm thiểu chi phí hoạt động của bệnh viện.", isCorrect: false },
+            { text: "B. Cải tiến chất lượng sản phẩm, dịch vụ và nâng cao sự thoả mãn khách hàng ở mức tốt nhất.", isCorrect: true },
+            { text: "C. Tăng cường số lượng nhân viên y tế.", isCorrect: false },
+            { text: "D. Mở rộng quy mô cơ sở hạ tầng của bệnh viện.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 50: Loại đo lường nào nhằm đánh giá sự thay đổi về sức khoẻ của người bệnh sau khi thực hiện hàng loạt các quy trình.",
+        options: [
+            { text: "A. Đo lường hiện trạng.", isCorrect: false },
+            { text: "B. Đo lường cấu trúc.", isCorrect: false },
+            { text: "C. Đo lường xu hướng.", isCorrect: false },
+            { text: "D. Đo lường kết quả.", isCorrect: true },
+        ]
+    },
+    {
+        q: "Câu 51: Việc triển khai thực hiện các hướng dẫn chuyên môn trong khám chữa bệnh do Bộ Y tế ban hành có tính chất như thế nào đối với các bệnh viện.",
+        options: [
+            { text: "A. Khuyến khích thực hiện.", isCorrect: false },
+            { text: "B. Chỉ áp dụng cho bệnh viện tuyến trung ương.", isCorrect: false },
+            { text: "C. Bắt buộc để đảm bảo chất lượng chuyên môn.", isCorrect: true },
+            { text: "D. Tùy thuộc vào quyết định của Giám đốc bệnh viện.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 52: Biện pháp đầu tiên trong các biện pháp cụ thể để bảo đảm an toàn người bệnh và nhân viên y tế là gì.",
+        options: [
+            { text: "A. Giảm nguy cơ nhiễm khuẩn bệnh viện.", isCorrect: false },
+            { text: "B. Cải thiện an toàn với thuốc có nguy cơ cao.", isCorrect: false },
+            { text: "C. Xác định chính xác người bệnh.", isCorrect: true },
+            { text: "D. Phòng ngừa người bệnh ngã.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 53: Khuyến khích báo cáo tự nguyện sai sót chuyên môn, sự cố y khoa dựa trên nguyên tắc nào.",
+        options: [
+            { text: "A. Phê bình, kỷ luật nghiêm khắc.", isCorrect: false },
+            { text: "B. Không phê phán chỉ trích, học từ sai sót.", isCorrect: true },
+            { text: "C. Trừ lương người vi phạm.", isCorrect: false },
+            { text: "D. Công khai danh tính người mắc lỗi.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 54: Khi xử lý các sai sót, sự cố y khoa, cần đặc biệt quan tâm khắc phục loại nguyên nhân nào để tránh lặp lại.",
+        options: [
+            { text: "A. Nguyên nhân khách quan từ người bệnh.", isCorrect: false },
+            { text: "B. Nguyên nhân do điều kiện thời tiết.", isCorrect: false },
+            { text: "C. Nguyên nhân gốc, nguyên nhân có tính hệ thống.", isCorrect: true },
+            { text: "D. Nguyên nhân tài chính của bệnh viện.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 55: Biện pháp nào được chứng minh là có hiệu quả nhằm phát huy điểm tốt và khắc phục các dịch vụ chất lượng còn kém.",
+        options: [
+            { text: "A. Cắt giảm lương nhân viên.", isCorrect: false },
+            { text: "B. Định kỳ lấy ý kiến đánh giá sự hài lòng của người bệnh, người nhà và nhân viên y tế.", isCorrect: true },
+            { text: "C. Đóng cửa các khoa phòng hoạt động kém.", isCorrect: false },
+            { text: "D. Tăng giá viện phí.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 56: Mạng lưới quản lý chất lượng bệnh viện được thiết lập ở phạm vi nào.",
+        options: [
+            { text: "A. Chỉ ở cấp ban giám đốc.", isCorrect: false },
+            { text: "B. Từ bệnh viện đến các khoa, phòng trong bệnh viện.", isCorrect: true },
+            { text: "C. Chỉ ở các khoa lâm sàng.", isCorrect: false },
+            { text: "D. Chỉ ở các phòng hành chính.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 57: Đơn vị nào làm đầu mối tham mưu cho giám đốc bệnh viện và Hội đồng quản lý chất lượng bệnh viện.",
+        options: [
+            { text: "A. Phòng Kế hoạch tổng hợp.", isCorrect: false },
+            { text: "B. Phòng (Tổ) Quản lý chất lượng.", isCorrect: true },
+            { text: "C. Khoa Khám bệnh.", isCorrect: false },
+            { text: "D. Phòng Điều dưỡng.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 58: Tổ quản lý chất lượng bệnh viện do ai trực tiếp phụ trách.",
+        options: [
+            { text: "A. Trưởng khoa Dược.", isCorrect: false },
+            { text: "B. Giám đốc trực tiếp phụ trách hoặc lãnh đạo phòng phụ trách.", isCorrect: true },
+            { text: "C. Điều dưỡng trưởng bệnh viện.", isCorrect: false },
+            { text: "D. Bác sĩ khoa Cấp cứu.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 59: Việc làm đầu mối thiết lập hệ thống quản lý sai sót, sự cố bao gồm phát hiện, báo cáo và đề xuất giải pháp là nhiệm vụ của đơn vị nào.",
+        options: [
+            { text: "A. Phòng Hành chính quản trị.", isCorrect: false },
+            { text: "B. Phòng Tài chính kế toán.", isCorrect: false },
+            { text: "C. Phòng (Tổ) Quản lý chất lượng.", isCorrect: true },
+            { text: "D. Ban Giám đốc.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 60: Ai có nhiệm vụ tổng kết, báo cáo hoạt động và kết quả công tác quản lý chất lượng trong toàn bệnh viện.",
+        options: [
+            { text: "A. Giám đốc bệnh viện.", isCorrect: false },
+            { text: "B. Trưởng phòng (tổ trưởng) quản lý chất lượng.", isCorrect: true },
+            { text: "C. Trưởng phòng Kế hoạch tổng hợp.", isCorrect: false },
+            { text: "D. Chủ tịch Hội đồng quản lý chất lượng.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 61: Bệnh viện Nhi đồng 1 (TP.HCM) đã lựa chọn mô hình quản lý và cải tiến chất lượng nào có tính khả thi cao.",
+        options: [
+            { text: "A. ISO 9001-2008.", isCorrect: false },
+            { text: "B. ISO 15189.", isCorrect: false },
+            { text: "C. Mô hình quản lý và cải tiến chất lượng liên tục (TQM/CQI).", isCorrect: true },
+            { text: "D. Lean Six Sigma.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 62: Bệnh viện Nhi đồng 1 đã triển khai bao nhiêu hoạt động của chương trình cải tiến chất lượng bệnh viện.",
+        options: [
+            { text: "A. 5 hoạt động.", isCorrect: false },
+            { text: "B. 7 hoạt động.", isCorrect: false },
+            { text: "C. 10 hoạt động.", isCorrect: true },
+            { text: "D. 12 hoạt động.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 63: Ứng dụng y học chứng cứ trong bệnh viện Nhi đồng 1 dựa trên nguyên tắc nào.",
+        options: [
+            { text: "A. Nội dung chăm sóc dựa trên y học chứng cứ, quy trình chăm sóc dựa trên cải tiến liên tục.", isCorrect: true },
+            { text: "B. Chăm sóc dựa trên kinh nghiệm cá nhân.", isCorrect: false },
+            { text: "C. Điều trị chủ yếu dựa vào thuốc nhập khẩu.", isCorrect: false },
+            { text: "D. Quy trình chăm sóc giữ nguyên không thay đổi.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 64: Bệnh viện Chợ Rẫy đã thiết lập đơn vị nào với mục tiêu tăng cường sự an toàn cho người bệnh.",
+        options: [
+            { text: "A. Đơn vị quản lý chất lượng toàn diện.", isCorrect: false },
+            { text: "B. Đơn vị quản lý nguy cơ.", isCorrect: true },
+            { text: "C. Ban kiểm soát nhiễm khuẩn độc lập.", isCorrect: false },
+            { text: "D. Trung tâm đánh giá lâm sàng.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 65: Trong bối cảnh thực tế hiện nay, việc áp dụng các mô hình quản lý chất lượng khác nhau tùy thuộc vào yếu tố nào.",
+        options: [
+            { text: "A. Quy mô diện tích của bệnh viện.", isCorrect: false },
+            { text: "B. Nguồn lực của các bệnh viện.", isCorrect: true },
+            { text: "C. Số lượng bệnh nhân nội trú.", isCorrect: false },
+            { text: "D. Số lượng thiết bị y tế.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 66: Tài liệu khuyên các bệnh viện nên bắt đầu việc áp dụng mô hình quản lý chất lượng bằng hành động nào.",
+        options: [
+            { text: "A. Thay đổi toàn bộ đội ngũ y bác sĩ.", isCorrect: false },
+            { text: "B. Huấn luyện về quản lý chất lượng cho các cán bộ quản lý của bệnh viện.", isCorrect: true },
+            { text: "C. Mua sắm trang thiết bị hiện đại nhất.", isCorrect: false },
+            { text: "D. Áp dụng ngay bộ tiêu chuẩn quốc tế khó nhất.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 67: Theo Harold Dresner, một nhà quản lý tốt cần có thái độ như thế nào đối với cấp dưới?",
+        options: [
+            { text: "A. Luôn chỉ trích và phàn nàn để nhân viên tiến bộ.", isCorrect: false },
+            { text: "B. Có thái độ đúng mực, biết khen ngợi và hoan nghênh trung thực.", isCorrect: true },
+            { text: "C. Chỉ quan tâm đến kết quả công việc, không cần khen ngợi.", isCorrect: false },
+            { text: "D. Giám sát chặt chẽ và xử phạt nghiêm minh các lỗi nhỏ.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 68: Ông Sochiro Honda ví đội ngũ nhân viên tốt và hết mình vì công việc như thế nào?",
+        options: [
+            { text: "A. Là những cỗ máy hoạt động không mệt mỏi.", isCorrect: false },
+            { text: "B. Là nguồn vốn vô tận của doanh nghiệp.", isCorrect: false },
+            { text: "C. Giúp công ty như \"hổ mọc thêm cánh\".", isCorrect: true },
+            { text: "D. Là những người thợ lành nghề nhất.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 69: Động lực lao động được định nghĩa là gì?",
+        options: [
+            { text: "A. Là sự bắt buộc của tổ chức đối với người lao động.", isCorrect: false },
+            { text: "B. Là yếu tố kích thích con người nỗ lực làm việc để tạo năng suất cao.", isCorrect: true },
+            { text: "C. Là các quy định và nội quy mà nhân viên phải tuân theo.", isCorrect: false },
+            { text: "D. Là số tiền lương mà nhân viên nhận được hàng tháng.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 70: Có bao nhiêu học thuyết cơ bản về tạo động lực lao động được đề cập trong tài liệu?",
+        options: [
+            { text: "A. 4 học thuyết.", isCorrect: false },
+            { text: "B. 5 học thuyết.", isCorrect: false },
+            { text: "C. 6 học thuyết.", isCorrect: true },
+            { text: "D. 7 học thuyết.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 71: Nhu cầu sinh lý trong học thuyết Maslow bao gồm các đòi hỏi cơ bản nào?",
+        options: [
+            { text: "A. Được bảo vệ khỏi các bất trắc và nguy hiểm.", isCorrect: false },
+            { text: "B. Hít thở, thức ăn, nước uống, nơi ở, ngủ, nghỉ ngơi.", isCorrect: true },
+            { text: "C. Giao tiếp, tình cảm và sự gắn kết xã hội.", isCorrect: false },
+            { text: "D. Có địa vị và được người khác công nhận.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 72: Nhu cầu tự hoàn thiện trong học thuyết Maslow được hiểu là gì?",
+        options: [
+            { text: "A. Nhu cầu có địa vị cao trong tổ chức.", isCorrect: false },
+            { text: "B. Nhu cầu được phát triển, biến năng lực thành hiện thực và sáng tạo.", isCorrect: true },
+            { text: "C. Nhu cầu được mọi người xung quanh yêu mến.", isCorrect: false },
+            { text: "D. Nhu cầu về tiền lương và thưởng.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 73: Học thuyết tăng cường cho rằng những hành vi nào có xu hướng được lặp lại?",
+        options: [
+            { text: "A. Những hành vi bị xử phạt nghiêm khắc.", isCorrect: false },
+            { text: "B. Những hành vi được khen thưởng.", isCorrect: true },
+            { text: "C. Những hành vi không gây ảnh hưởng đến ai.", isCorrect: false },
+            { text: "D. Những hành vi mang tính chất đối phó.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 74: Theo học thuyết kỳ vọng, nhà quản lý cần làm cho người lao động hiểu rõ mối quan hệ nào?",
+        options: [
+            { text: "A. Mối quan hệ giữa thời gian làm việc và tiền lương.", isCorrect: false },
+            { text: "B. Mối quan hệ nỗ lực - thành tích và thành tích - kết quả/phần thưởng.", isCorrect: true },
+            { text: "C. Mối quan hệ giữa cấp trên và cấp dưới.", isCorrect: false },
+            { text: "D. Mối quan hệ giữa các đồng nghiệp trong cùng một tổ chức.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 75: Theo học thuyết về sự công bằng, người lao động có xu hướng so sánh điều gì?",
+        options: [
+            { text: "A. So sánh sự đóng góp và quyền lợi của mình với người khác.", isCorrect: true },
+            { text: "B. So sánh năng lực của mình với cấp trên.", isCorrect: false },
+            { text: "C. So sánh lương của mình với mức lương thị trường.", isCorrect: false },
+            { text: "D. So sánh trang thiết bị làm việc của các phòng ban.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 76: Nhóm 1 trong học thuyết hai yếu tố của Herzberg bao gồm các yếu tố nào?",
+        options: [
+            { text: "A. Chính sách quản lý, tiền lương và điều kiện làm việc.", isCorrect: false },
+            { text: "B. Sự thành đạt, thừa nhận thành tích, bản chất công việc, trách nhiệm.", isCorrect: true },
+            { text: "C. Sự giám sát công việc và các quan hệ con người.", isCorrect: false },
+            { text: "D. Các chế độ bảo hiểm và phúc lợi xã hội.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 77: Học thuyết về đặt mục tiêu (Goal Setting Theory) chỉ ra rằng điều gì dẫn đến thực hiện công việc tốt hơn?",
+        options: [
+            { text: "A. Các mục tiêu mập mờ và dễ dàng.", isCorrect: false },
+            { text: "B. Các mục tiêu cụ thể và mang tính thách thức.", isCorrect: true },
+            { text: "C. Việc không đặt ra bất kỳ mục tiêu nào.", isCorrect: false },
+            { text: "D. Các mục tiêu do cấp trên đơn phương áp đặt.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 78: Để tạo động lực theo học thuyết đặt mục tiêu, người quản lý cần thực hiện việc gì?",
+        options: [
+            { text: "A. Tự quyết định mọi mục tiêu mà không cần hỏi ý kiến nhân viên.", isCorrect: false },
+            { text: "B. Thu hút người lao động vào việc đặt mục tiêu.", isCorrect: true },
+            { text: "C. Chỉ đặt ra những mục tiêu cực kỳ dễ để nhân viên không nản lòng.", isCorrect: false },
+            { text: "D. Thay đổi mục tiêu liên tục hàng ngày.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 79: Nhà quản lý cần làm gì để tạo điều kiện thuận lợi cho nhân viên hoàn thành nhiệm vụ?",
+        options: [
+            { text: "A. Tăng thêm các thủ tục hành chính để kiểm soát.", isCorrect: false },
+            { text: "B. Phát hiện, loại trừ những trở ngại và cung cấp điều kiện cần thiết.", isCorrect: true },
+            { text: "C. Để nhân viên tự xoay xở với các khó khăn phát sinh.", isCorrect: false },
+            { text: "D. Chỉ phân công công việc mà không cần cung cấp công cụ.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 80: Công cụ cơ bản và là đòn bẩy kinh tế để kích thích người lao động là gì?",
+        options: [
+            { text: "A. Lời khen ngợi của giám đốc.", isCorrect: true },
+            { text: "B. Tiền công và tiền lương.", isCorrect: false },
+            { text: "C. Bằng khen và huy chương.", isCorrect: false },
+            { text: "D. Các chuyến du lịch nghỉ mát.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 81: Khái niệm \"Khuyến khích\" được hiểu như thế nào?",
+        options: [
+            { text: "A. Là sự ép buộc nhân viên phải làm việc tăng ca.", isCorrect: false },
+            { text: "B. Là tác động đến tinh thần để gây phấn khởi, tin tưởng mà cố gắng hơn.", isCorrect: true },
+            { text: "C. Là việc chi trả lương đúng hạn hàng tháng.", isCorrect: false },
+            { text: "D. Là các hình thức kỷ luật đối với nhân viên yếu kém.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 82: Tầm quan trọng của sự khuyến khích trong tổ chức y tế là gì?",
+        options: [
+            { text: "A. Là công cụ để giảm bớt số lượng nhân viên.", isCorrect: false },
+            { text: "B. Nhằm mục đích tiết kiệm chi phí cho bệnh viện.", isCorrect: false },
+            { text: "C. Chỉ có tác dụng ở các cơ sở y tế tư nhân.", isCorrect: false },
+            { text: "D. Là đòn bẩy để thu hút, duy trì và làm hài lòng nhân viên.", isCorrect: true },
+        ]
+    },
+    {
+        q: "Câu 83: Tiền thưởng thường được chi trả cho những trường hợp cụ thể nào?",
+        options: [
+            { text: "A. Làm thêm giờ hoặc phụ cấp độc hại, vùng sâu vùng xa.", isCorrect: true },
+            { text: "B. Khi nhân viên đi làm đúng giờ hàng ngày.", isCorrect: false },
+            { text: "C. Khi nhân viên thực hiện các công việc cơ bản trong mô tả công việc.", isCorrect: false },
+            { text: "D. Chỉ chi trả cho các lãnh đạo cấp cao.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 84: Phát triển nghề nghiệp giúp nhân viên y tế như thế nào?",
+        options: [
+            { text: "A. Giúp họ có lý do để yêu cầu tăng lương ngay lập tức.", isCorrect: false },
+            { text: "B. Tạo sự tự tin và cung cấp thêm giá trị trên thị trường lao động.", isCorrect: true },
+            { text: "C. Giảm bớt thời gian phải chăm sóc bệnh nhân.", isCorrect: false },
+            { text: "D. Chỉ mang lại lợi ích cho cá nhân, không có lợi cho tổ chức.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 85: Biện pháp nào giúp nhân viên phục hồi sức khỏe sau những đợt làm việc căng thẳng?",
+        options: [
+            { text: "A. Tăng thêm khối lượng công việc để họ làm quen.", isCorrect: false },
+            { text: "B. Cho nhân viên nghỉ phép hoặc nghỉ bù hợp lý.", isCorrect: true },
+            { text: "C. Cắt giảm các giờ nghỉ giải lao giữa ca.", isCorrect: false },
+            { text: "D. Yêu cầu nhân viên làm việc liên tục không nghỉ.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 86: Môi trường làm việc tích cực không bao gồm yếu tố nào sau đây?",
+        options: [
+            { text: "A. Quan hệ tốt với đồng nghiệp và người bệnh.", isCorrect: false },
+            { text: "B. An toàn cho nhân viên y tế.", isCorrect: false },
+            { text: "C. Cách cư xử quan liêu dựa vào quyền lực quản lý.", isCorrect: true },
+            { text: "D. Ý thức tự giác trong công việc.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 87: Một nguyên tắc cơ bản trong kỹ năng động viên là gì?",
+        options: [
+            { text: "A. Chỉ trích công khai để làm gương cho người khác.", isCorrect: false },
+            { text: "B. Luôn chỉ trích riêng tư và động viên công khai.", isCorrect: true },
+            { text: "C. Động viên riêng tư và chỉ trích công khai trước tập thể.", isCorrect: false },
+            { text: "D. Không bao giờ chỉ trích nhân viên dù họ làm sai.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 88: Tại sao nên để nhân viên trực tiếp đưa ra cam kết phấn đấu với người quản lý?",
+        options: [
+            { text: "A. Để nhân viên có ý thức tự trọng và nỗ lực hoàn thành cam kết.", isCorrect: true },
+            { text: "B. Để nhà quản lý có bằng chứng để kỷ luật sau này.", isCorrect: false },
+            { text: "C. Để giảm bớt trách nhiệm của người lãnh đạo.", isCorrect: false },
+            { text: "D. Vì đây là quy định bắt buộc trong luật lao động.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 89: Mục tiêu cuối cùng của việc khuyến khích, động viên nhân viên y tế là gì?",
+        options: [
+            { text: "A. Để nhân viên cảm thấy vui vẻ và không phàn nàn.", isCorrect: false },
+            { text: "B. Để bệnh viện đạt được các danh hiệu thi đua.", isCorrect: false },
+            { text: "C. Hướng tới chất lượng, năng suất và hiệu quả trong khám chữa bệnh.", isCorrect: true },
+            { text: "D. Để giảm bớt chi phí quản lý nhân sự.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 90: Theo Tổ chức Y tế Thế giới, tại các nước phát triển có khoảng bao nhiêu phần trăm người bệnh bị tổn hại sức khỏe do sự cố y khoa.",
+        options: [
+            { text: "A. Khoảng 5%.", isCorrect: true },
+            { text: "B. Khoảng 10%.", isCorrect: false },
+            { text: "C. Khoảng 15%.", isCorrect: false },
+            { text: "D. Khoảng 20%.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 91: Trong số các nguyên nhân gây tổn hại sức khỏe do sự cố y khoa, tỷ lệ nguyên nhân có thể phòng tránh được là bao nhiêu phần trăm.",
+        options: [
+            { text: "A. 30%.", isCorrect: false },
+            { text: "B. 40%.", isCorrect: false },
+            { text: "C. 50%.", isCorrect: true },
+            { text: "D. 60%.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 92: Chi phí điều trị cho các sự cố y khoa chiếm khoảng bao nhiêu phần trăm chi phí chung tại bệnh viện.",
+        options: [
+            { text: "A. Hơn 10%.", isCorrect: false },
+            { text: "B. Hơn 12%.", isCorrect: false },
+            { text: "C. Hơn 14%.", isCorrect: true },
+            { text: "D. Hơn 16%.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 93: Hội nghị Y tế Thế giới lần thứ 72 quyết định ngày An toàn người bệnh thế giới diễn ra vào thời gian nào.",
+        options: [
+            { text: "A. Tháng 5/2017.", isCorrect: false },
+            { text: "B. Tháng 5/2018.", isCorrect: false },
+            { text: "C. Tháng 5/2019.", isCorrect: true },
+            { text: "D. Tháng 5/2020.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 94: Hội nghị Y tế Thế giới đã quyết định lấy ngày nào hàng năm là Ngày An toàn người bệnh thế giới.",
+        options: [
+            { text: "A. Ngày 17/7.", isCorrect: false },
+            { text: "B. Ngày 17/8.", isCorrect: false },
+            { text: "C. Ngày 17/9.", isCorrect: true },
+            { text: "D. Ngày 17/10.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 95: Theo Bảng 1.2, loại sự cố y khoa trong phẫu thuật chiếm tỷ lệ cao nhất tại Bang Minnesota là sự cố nào.",
+        options: [
+            { text: "A. Phẫu thuật nhầm người bệnh.", isCorrect: false },
+            { text: "B. Phẫu thuật nhầm bộ phận cơ thể.", isCorrect: false },
+            { text: "C. Chỉ định phẫu thuật sai.", isCorrect: false },
+            { text: "D. Để sót gạc dụng cụ.", isCorrect: true },
+        ]
+    },
+    {
+        q: "Câu 96: Theo Bảng 1.2, tỷ lệ phần trăm của sự cố để sót gạc dụng cụ trong phẫu thuật tại Bang Minnesota là bao nhiêu.",
+        options: [
+            { text: "A. 31,0%.", isCorrect: false },
+            { text: "B. 32,0%.", isCorrect: false },
+            { text: "C. 37,0%.", isCorrect: true },
+            { text: "D. 40,0%.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 97: Theo Bảng 1.2, tỷ lệ sự cố phẫu thuật nhầm bộ phận cơ thể tại Bang Minnesota là bao nhiêu.",
+        options: [
+            { text: "A. 31,0%.", isCorrect: false },
+            { text: "B. 32,0%.", isCorrect: true },
+            { text: "C. 37,0%.", isCorrect: false },
+            { text: "D. 42,0%.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 98: WHO công bố tỷ lệ nhiễm khuẩn bệnh viện đối với người bệnh nội trú nói chung là bao nhiêu.",
+        options: [
+            { text: "A. Từ 3% - 10%.", isCorrect: false },
+            { text: "B. Từ 5% - 15%.", isCorrect: true },
+            { text: "C. Từ 9% - 37%.", isCorrect: false },
+            { text: "D. Từ 15% - 25%.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 99: Tỷ lệ nhiễm khuẩn bệnh viện nói chung tại Mỹ chiếm bao nhiêu phần trăm.",
+        options: [
+            { text: "A. 4,5%.", isCorrect: true },
+            { text: "B. 5,6%.", isCorrect: false },
+            { text: "C. 7,8%.", isCorrect: false },
+            { text: "D. 9,0%.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 100: Theo nghiên cứu của Nguyễn Thanh Hà (năm 2005) tại 66 bệnh viện phía Nam, tỷ lệ nhiễm khuẩn bệnh viện là bao nhiêu.",
+        options: [
+            { text: "A. 4,3%.", isCorrect: false },
+            { text: "B. 5,6%.", isCorrect: true },
+            { text: "C. 7,8%.", isCorrect: false },
+            { text: "D. 8,5%.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 101: Nghiên cứu của Lê Thị Anh Thư (năm 2011) về viêm phổi bệnh viện liên quan thở máy tại bệnh viện Chợ Rẫy ghi nhận tỷ lệ là bao nhiêu.",
+        options: [
+            { text: "A. 24,6%.", isCorrect: false },
+            { text: "B. 34,5%.", isCorrect: false },
+            { text: "C. 39,4%.", isCorrect: true },
+            { text: "D. 49,4%.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 102: Các báo cáo tại các hội nghị hiện nay cho thấy nhiễm khuẩn bệnh viện hiện mắc chiếm tỷ lệ khoảng bao nhiêu phần trăm người bệnh nội trú.",
+        options: [
+            { text: "A. Từ 2,5 - 5%.", isCorrect: false },
+            { text: "B. Từ 4,5 - 8%.", isCorrect: true },
+            { text: "C. Từ 5,5 - 10%.", isCorrect: false },
+            { text: "D. Từ 9 - 15%.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 103: Theo Bảng 1.4, sự cố y khoa được phân loại theo mức độ nguy hại từ A đến mức độ nào.",
+        options: [
+            { text: "A. Mức độ F.", isCorrect: false },
+            { text: "B. Mức độ G.", isCorrect: false },
+            { text: "C. Mức độ H.", isCorrect: false },
+            { text: "D. Mức độ I.", isCorrect: true },
+        ]
+    },
+    {
+        q: "Câu 104: Trong phân loại mức độ nguy hại, sự cố ở mức độ A được mô tả như thế nào.",
+        options: [
+            { text: "A. Sự cố đã xảy ra nhưng chưa thực hiện trên người bệnh.", isCorrect: false },
+            { text: "B. Sự cố xảy ra có thể tạo ra lỗi/sai sót.", isCorrect: true },
+            { text: "C. Sự cố xảy ra gây tổn hại sức khỏe tạm thời.", isCorrect: false },
+            { text: "D. Sự cố xảy ra gây tử vong.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 105: Hiệp hội An toàn người bệnh thế giới phân loại sự cố y khoa theo đặc điểm chuyên môn thành bao nhiêu nhóm.",
+        options: [
+            { text: "A. 4 nhóm.", isCorrect: false },
+            { text: "B. 5 nhóm.", isCorrect: false },
+            { text: "C. 6 nhóm.", isCorrect: true },
+            { text: "D. 8 nhóm.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 106: Tại Mỹ, các sự cố y khoa làm tăng chi phí bình quân cho việc giải quyết sự cố cho một người bệnh là bao nhiêu tiền.",
+        options: [
+            { text: "A. 1.262 USD.", isCorrect: false },
+            { text: "B. 2.262 USD.", isCorrect: true },
+            { text: "C. 2.595 USD.", isCorrect: false },
+            { text: "D. 3.262 USD.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 107: Theo số liệu tại Mỹ, sự cố y khoa làm tăng thời gian điều trị bình quân thêm bao nhiêu ngày.",
+        options: [
+            { text: "A. 1,5 ngày.", isCorrect: false },
+            { text: "B. 1,9 ngày.", isCorrect: true },
+            { text: "C. 2,2 ngày.", isCorrect: false },
+            { text: "D. 3,0 ngày.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 108: Theo số liệu tòa án tại Nhật Bản, bình quân mỗi ngày người dân đưa bệnh viện ra tòa bao nhiêu vụ khiếu kiện.",
+        options: [
+            { text: "A. 1 - 2 vụ.", isCorrect: false },
+            { text: "B. 2 - 3 vụ.", isCorrect: true },
+            { text: "C. 3 - 4 vụ.", isCorrect: false },
+            { text: "D. 4 - 5 vụ.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 109: Thời gian trung bình để giải quyết các sự cố y khoa tại Nhật Bản là bao nhiêu lâu cho mỗi vụ khiếu kiện.",
+        options: [
+            { text: "A. 1 năm/vụ.", isCorrect: false },
+            { text: "B. 2 năm/vụ.", isCorrect: true },
+            { text: "C. 3 năm/vụ.", isCorrect: false },
+            { text: "D. 4 năm/vụ.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 110: Theo mô hình của Reason J. Cathey, cứ có một lỗi hoạt động thường có kèm theo bao nhiêu yếu tố liên quan tới lỗi hệ thống.",
+        options: [
+            { text: "A. 1 - 2 yếu tố.", isCorrect: false },
+            { text: "B. 2 - 3 yếu tố.", isCorrect: false },
+            { text: "C. 3 - 4 yếu tố.", isCorrect: true },
+            { text: "D. 4 - 5 yếu tố.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 111: Hội chứng suy yếu của tổ chức trong việc đối phó với sự cố y khoa có bao nhiêu nhóm triệu chứng chính.",
+        options: [
+            { text: "A. 2 nhóm.", isCorrect: false },
+            { text: "B. 3 nhóm.", isCorrect: true },
+            { text: "C. 4 nhóm.", isCorrect: false },
+            { text: "D. 5 nhóm.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 112: Thông tư nào của Bộ Y tế hướng dẫn quản lý chất lượng khám chữa bệnh tại bệnh viện có quy định về xác định nguyên nhân gốc của sự cố y khoa.",
+        options: [
+            { text: "A. Thông tư số 17/2013/TT-BYT.", isCorrect: false },
+            { text: "B. Thông tư số 18/2013/TT-BYT.", isCorrect: false },
+            { text: "C. Thông tư số 19/2013/TT-BYT.", isCorrect: true },
+            { text: "D. Thông tư số 20/2013/TT-BYT.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 113: Theo các nghiên cứu, bao nhiêu phần trăm sự cố y khoa không mong muốn là do các yếu tố hệ thống gây ra.",
+        options: [
+            { text: "A. 30%.", isCorrect: false },
+            { text: "B. 50%.", isCorrect: false },
+            { text: "C. 70%.", isCorrect: true },
+            { text: "D. 90%.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 114: Điều số mấy trong Thông tư 19/2013/TT-BYT quy định các bệnh viện cần xây dựng quy định cụ thể đảm bảo an toàn người bệnh và nhân viên y tế.",
+        options: [
+            { text: "A. Điều 5.", isCorrect: false },
+            { text: "B. Điều 6.", isCorrect: false },
+            { text: "C. Điều 7.", isCorrect: true },
+            { text: "D. Điều 8.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 115: Theo Luật lao động của Việt Nam, nguồn lực con người bao gồm mấy yếu tố.",
+        options: [
+            { text: "A. 2 yếu tố.", isCorrect: false },
+            { text: "B. 3 yếu tố.", isCorrect: false },
+            { text: "C. 4 yếu tố.", isCorrect: true },
+            { text: "D. 5 yếu tố.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 116: Có bao nhiêu công việc chính trong hoạt động quản lý nguồn nhân lực.",
+        options: [
+            { text: "A. 3 công việc.", isCorrect: false },
+            { text: "B. 4 công việc.", isCorrect: true },
+            { text: "C. 5 công việc.", isCorrect: false },
+            { text: "D. 6 công việc.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 117: Bác sĩ, dược sĩ, điều dưỡng, kỹ thuật viên y, hộ sinh chiếm khoảng bao nhiêu phần trăm tổng số nguồn nhân lực hoạt động trong các bệnh viện.",
+        options: [
+            { text: "A. Khoảng 60 – 65%.", isCorrect: false },
+            { text: "B. Khoảng 70 – 75%.", isCorrect: false },
+            { text: "C. Khoảng 80 – 85%.", isCorrect: true },
+            { text: "D. Khoảng 90 – 95%.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 118: Có bao nhiêu phương pháp quản lý nhân lực chính được đề cập.",
+        options: [
+            { text: "A. 2 phương pháp.", isCorrect: false },
+            { text: "B. 3 phương pháp.", isCorrect: false },
+            { text: "C. 4 phương pháp.", isCorrect: true },
+            { text: "D. 5 phương pháp.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 119: Quản lý tài chính bệnh viện bao gồm việc quản lý mấy nguồn vốn chính.",
+        options: [
+            { text: "A. 2 nguồn.", isCorrect: false },
+            { text: "B. 3 nguồn.", isCorrect: false },
+            { text: "C. 4 nguồn.", isCorrect: true },
+            { text: "D. 5 nguồn.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 120: Quy trình quản lý tài chính bệnh viện bao gồm mấy bước.",
+        options: [
+            { text: "A. 3 bước.", isCorrect: false },
+            { text: "B. 4 bước.", isCorrect: true },
+            { text: "C. 5 bước.", isCorrect: false },
+            { text: "D. 6 bước.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 121: Phó chủ tịch Hội đồng thuốc và điều trị kiêm ủy viên thường trực là chức danh nào.",
+        options: [
+            { text: "A. Trưởng khoa lâm sàng.", isCorrect: false },
+            { text: "B. Trưởng phòng Điều dưỡng.", isCorrect: false },
+            { text: "C. Trưởng phòng Kế hoạch tổng hợp.", isCorrect: false },
+            { text: "D. Trưởng khoa Dược bệnh viện.", isCorrect: true },
+        ]
+    },
+    {
+        q: "Câu 122: Bệnh viện từ hạng mấy trở lên thì thành phần ủy viên Hội đồng thuốc và điều trị phải có thêm dược sĩ dược lâm sàng.",
+        options: [
+            { text: "A. Hạng đặc biệt.", isCorrect: false },
+            { text: "B. Hạng I.", isCorrect: false },
+            { text: "C. Hạng II.", isCorrect: true },
+            { text: "D. Hạng III.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 123: Hội đồng thuốc và điều trị họp định kỳ trong khoảng thời gian bao lâu một lần.",
+        options: [
+            { text: "A. 1 tháng 1 lần.", isCorrect: false },
+            { text: "B. 2 tháng 1 lần.", isCorrect: true },
+            { text: "C. 3 tháng 1 lần.", isCorrect: false },
+            { text: "D. 6 tháng 1 lần.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 124: Theo Tổ chức Y tế thế giới (WHO), trên thị trường hiện có khoảng bao nhiêu chủng loại trang thiết bị y tế (TTBYT) khác nhau.",
+        options: [
+            { text: "A. Khoảng 5.000 chủng loại.", isCorrect: false },
+            { text: "B. Khoảng 8.500 chủng loại.", isCorrect: false },
+            { text: "C. Khoảng 10.500 chủng loại.", isCorrect: true },
+            { text: "D. Khoảng 15.000 chủng loại.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 125: Theo Thông tư 07/2007 của Bộ Y tế, trang thiết bị y tế được chia thành mấy nhóm.",
+        options: [
+            { text: "A. 2 nhóm.", isCorrect: false },
+            { text: "B. 3 nhóm.", isCorrect: false },
+            { text: "C. 4 nhóm.", isCorrect: true },
+            { text: "D. 5 nhóm.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 126: Vật tư y tế thuộc nhóm 2 được phân chia thành mấy loại dựa trên chất liệu.",
+        options: [
+            { text: "A. 2 loại.", isCorrect: false },
+            { text: "B. 3 loại.", isCorrect: true },
+            { text: "C. 4 loại.", isCorrect: false },
+            { text: "D. 5 loại.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 127: Bơm kim tiêm, kim luồn tĩnh mạch, túi máu thuộc loại vật tư bằng chất liệu gì trong nhóm 2.",
+        options: [
+            { text: "A. Nhựa.", isCorrect: true },
+            { text: "B. Thủy tinh.", isCorrect: false },
+            { text: "C. Kim loại.", isCorrect: false },
+            { text: "D. Cao su.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 128: Pipetle, Lamen, bình đong thuộc loại vật tư bằng chất liệu gì trong nhóm 2.",
+        options: [
+            { text: "A. Nhựa.", isCorrect: false },
+            { text: "B. Thủy tinh.", isCorrect: true },
+            { text: "C. Kim loại.", isCorrect: false },
+            { text: "D. Gốm sứ.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 129: Dao mổ, khoan xương, hệ thống cố định xương thuộc loại vật tư bằng chất liệu gì trong nhóm 2.",
+        options: [
+            { text: "A. Nhựa.", isCorrect: false },
+            { text: "B. Thủy tinh.", isCorrect: false },
+            { text: "C. Kim loại.", isCorrect: true },
+            { text: "D. Hợp kim đặc biệt.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 130: Yếu tố nào đóng vai trò cốt lõi và quyết định trong 3 yếu tố (Y - Dược - TTBYT) để khám chữa bệnh.",
+        options: [
+            { text: "A. Y (Thầy thuốc).", isCorrect: true },
+            { text: "B. Dược (Thuốc).", isCorrect: false },
+            { text: "C. TTBYT (Trang thiết bị y tế).", isCorrect: false },
+            { text: "D. Cơ sở hạ tầng.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 131: Yếu tố nào đóng vai trò nòng cốt trong 3 yếu tố (Y - Dược - TTBYT) phục vụ khám chữa bệnh.",
+        options: [
+            { text: "A. Y (Thầy thuốc).", isCorrect: false },
+            { text: "B. Dược (Thuốc).", isCorrect: true },
+            { text: "C. TTBYT (Trang thiết bị y tế).", isCorrect: false },
+            { text: "D. Cơ sở hạ tầng.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 132: Hoạt động đánh giá nhu cầu trang thiết bị y tế nằm trong khâu quản lý nào.",
+        options: [
+            { text: "A. Quản lý thiết bị hiện có.", isCorrect: false },
+            { text: "B. Quản lý sử dụng thiết bị.", isCorrect: false },
+            { text: "C. Quản lý bảo dưỡng, sửa chữa.", isCorrect: false },
+            { text: "D. Quản lý đầu tư thiết bị.", isCorrect: true },
+        ]
+    },
+    {
+        q: "Câu 133: Hệ thống PIS (Patient Information Management System) là hệ thống phần mềm quản lý đối tượng nào.",
+        options: [
+            { text: "A. Nhân viên y tế.", isCorrect: false },
+            { text: "B. Bệnh nhân.", isCorrect: true },
+            { text: "C. Tài sản vật tư.", isCorrect: false },
+            { text: "D. Dược phẩm.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 134: Hệ thống HIS (Hospital Information Management System) là hệ thống phần mềm quản lý các phân hệ nào.",
+        options: [
+            { text: "A. Thông tin người bệnh.", isCorrect: false },
+            { text: "B. Quản lý nội bộ hoạt động của bệnh viện.", isCorrect: true },
+            { text: "C. Cấp phát thuốc ngoại trú.", isCorrect: false },
+            { text: "D. Tiếp nhận và thu phí.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 135: Ứng dụng công nghệ thông tin mang lại bao nhiêu lợi ích cơ bản cho đối tượng bác sĩ, điều dưỡng, nhân viên y tế.",
+        options: [
+            { text: "A. 5 lợi ích.", isCorrect: false },
+            { text: "B. 6 lợi ích.", isCorrect: false },
+            { text: "C. 7 lợi ích.", isCorrect: true },
+            { text: "D. 8 lợi ích.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 136: Ứng dụng công nghệ thông tin mang lại bao nhiêu lợi ích cơ bản cho người bệnh.",
+        options: [
+            { text: "A. 5 lợi ích.", isCorrect: false },
+            { text: "B. 6 lợi ích.", isCorrect: false },
+            { text: "C. 7 lợi ích.", isCorrect: true },
+            { text: "D. 8 lợi ích.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 137: Việc định kỳ khám và phân loại sức khỏe cho viên chức, người lao động thuộc nhóm giải pháp nào.",
+        options: [
+            { text: "A. Nâng cao thể lực.", isCorrect: true },
+            { text: "B. Nâng cao trí lực.", isCorrect: false },
+            { text: "C. Nâng cao tâm lực.", isCorrect: false },
+            { text: "D. Cơ cấu và đánh giá nguồn nhân lực.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 138: Nâng cao chất lượng tuyển dụng và chính sách thu hút nhân tài thuộc nhóm giải pháp nào.",
+        options: [
+            { text: "A. Nâng cao thể lực.", isCorrect: false },
+            { text: "B. Nâng cao trí lực.", isCorrect: true },
+            { text: "C. Nâng cao tâm lực.", isCorrect: false },
+            { text: "D. Quản lý, kiểm tra giám sát.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 139: Chỉ thị của Bộ Y tế về việc kiện toàn bộ phận quản lý trang thiết bị y tế mang số hiệu bao nhiêu.",
+        options: [
+            { text: "A. 01/2001/CT.BYT.", isCorrect: false },
+            { text: "B. 01/2002/CT.BYT.", isCorrect: false },
+            { text: "C. 01/2003/CT.BYT.", isCorrect: true },
+            { text: "D. 01/2004/CT.BYT.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 140: Phần mềm quản lý báo cáo thống kê bệnh viện được đề cập sử dụng nền tảng nào.",
+        options: [
+            { text: "A. Microsoft 2000.", isCorrect: false },
+            { text: "B. Microsoft 2003.", isCorrect: true },
+            { text: "C. Microsoft 2007.", isCorrect: false },
+            { text: "D. Microsoft 2010.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 141: Chuẩn trao đổi dữ liệu y khoa quốc tế nào được đề cập trong giải pháp ứng dụng công nghệ thông tin.",
+        options: [
+            { text: "A. HL5.", isCorrect: false },
+            { text: "B. HL6.", isCorrect: false },
+            { text: "C. HL7.", isCorrect: true },
+            { text: "D. HL8.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 142: Bước thứ 2 trong quy trình quản lý tài chính bệnh viện là hoạt động nào.",
+        options: [
+            { text: "A. Lập kế hoạch dự toán thu chi.", isCorrect: false },
+            { text: "B. Thực hiện dự toán.", isCorrect: true },
+            { text: "C. Thực hiện quyết toán.", isCorrect: false },
+            { text: "D. Giám sát, thanh tra, kiểm tra.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 143: Bước thứ 4 trong quy trình quản lý tài chính bệnh viện là hoạt động nào.",
+        options: [
+            { text: "A. Lập kế hoạch dự toán.", isCorrect: false },
+            { text: "B. Thực hiện dự toán.", isCorrect: false },
+            { text: "C. Thực hiện quyết toán.", isCorrect: false },
+            { text: "D. Thực hiện giám sát, thanh tra, kiểm tra và đánh giá.", isCorrect: true },
+        ]
+    },
+    {
+        q: "Câu 144: Việc xác định các nguồn chi cho con người, quản lý hành chính nằm trong bước nào của quy trình quản lý tài chính.",
+        options: [
+            { text: "A. Bước 1: Lập kế hoạch dự toán thu chi tài chính.", isCorrect: true },
+            { text: "B. Bước 2: Thực hiện dự toán.", isCorrect: false },
+            { text: "C. Bước 3: Thực hiện quyết toán.", isCorrect: false },
+            { text: "D. Bước 4: Thực hiện giám sát, thanh tra, kiểm tra.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 145: Biện pháp \"Tăng khả năng điều trị bệnh, hạn chế chuyển tuyến\" thuộc nhóm giải pháp nào.",
+        options: [
+            { text: "A. Huy động tối đa nguồn tài chính bệnh viện.", isCorrect: true },
+            { text: "B. Sử dụng và quản lý tài chính hiệu quả.", isCorrect: false },
+            { text: "C. Cơ cấu nguồn nhân lực.", isCorrect: false },
+            { text: "D. Quản lý trang thiết bị y tế.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 146: Giải pháp quản lý tài chính đề xuất chuyển đổi dần cơ chế tính giá dịch vụ sang hình thức nào.",
+        options: [
+            { text: "A. Thu viện phí theo từng hạng mục.", isCorrect: false },
+            { text: "B. Đặt hàng trọn gói.", isCorrect: true },
+            { text: "C. Miễn phí dịch vụ cơ bản.", isCorrect: false },
+            { text: "D. Tính giá theo thời gian điều trị.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 147: Thành lập hoặc củng cố Hội đồng tư vấn đầu tư trang thiết bị bệnh viện thuộc nhóm giải pháp tăng cường quản lý thiết bị thứ mấy.",
+        options: [
+            { text: "A. Thứ 1.", isCorrect: false },
+            { text: "B. Thứ 2.", isCorrect: true },
+            { text: "C. Thứ 3.", isCorrect: false },
+            { text: "D. Thứ 4.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 148: Việc xây dựng quy chế bệnh án điện tử, chữ ký điện tử thuộc nhóm giải pháp ứng dụng công nghệ thông tin thứ mấy.",
+        options: [
+            { text: "A. Thứ 3.", isCorrect: false },
+            { text: "B. Thứ 4.", isCorrect: false },
+            { text: "C. Thứ 5.", isCorrect: true },
+            { text: "D. Thứ 6.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 149: Hiện tượng trang thiết bị \"đắp chiếu\" gây lãng phí là biểu hiện kém hiệu quả trong khâu nào.",
+        options: [
+            { text: "A. Quản lý TTBYT hiện có.", isCorrect: false },
+            { text: "B. Quản lý sử dụng TTBYT.", isCorrect: true },
+            { text: "C. Quản lý bảo dưỡng.", isCorrect: false },
+            { text: "D. Quản lý đầu tư.", isCorrect: false },
+        ]
+    },
+    {
+        q: "Câu 150: Trong quản lý trang thiết bị, việc sửa chữa kịp thời hướng đến mục tiêu cốt lõi nào.",
+        options: [
+            { text: "A. Tăng lương cho nhân viên kỹ thuật.", isCorrect: false },
+            { text: "B. Tránh gây lãng phí, tăng hiệu quả đầu tư.", isCorrect: true },
+            { text: "C. Đảm bảo yêu cầu thanh lý thiết bị.", isCorrect: false },
+            { text: "D. Nhập khẩu thiết bị mới.", isCorrect: false },
+        ]
+    }
+];
+
+        // Lưu trữ trạng thái kết quả của từng câu
+        let userAnswers = {};
+
+        // Hàm xáo trộn mảng
+        function shuffleArray(array) {
+            let shuffled = JSON.parse(JSON.stringify(array));
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        // Khởi tạo giao diện
+        function initQuiz() {
+            userAnswers = {};
+            updateScoreBoard();
+
+            const quizContainer = document.getElementById('quiz-container');
+            quizContainer.innerHTML = '';
+
+            // Random câu hỏi
+            const shuffledQuestions = shuffleArray(rawQuestions);
+
+            shuffledQuestions.forEach((item, qIndex) => {
+                const card = document.createElement('div');
+                card.className = 'question-card';
+
+                // Tiêu đề câu hỏi
+                const qTitle = document.createElement('div');
+                qTitle.className = 'question-text';
+                qTitle.innerText = `${qIndex + 1}. ${item.q.replace(/^Câu \d+\.\s*/, '')}`;
+                card.appendChild(qTitle);
+
+                // Danh sách đáp án
+                const optionsDiv = document.createElement('div');
+                optionsDiv.className = 'options-container';
+
+                // Random đáp án
+                const shuffledOptions = shuffleArray(item.options);
+                const labels = ['A', 'B', 'C', 'D'];
+
+                shuffledOptions.forEach((opt, oIndex) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'option-btn';
+                    const cleanText = opt.text.replace(/^[A-D]\.\s*/, '');
+                    btn.innerText = `${labels[oIndex]}. ${cleanText}`;
+                    
+                    // Xử lý khi nhấn chọn đáp án (có thể chọn lại)
+                    btn.onclick = () => selectOption(qIndex, btn, opt.isCorrect, optionsDiv, card);
+                    optionsDiv.appendChild(btn);
+                });
+
+                card.appendChild(optionsDiv);
+
+                // Khung thông báo đúng/sai
+                const feedbackDiv = document.createElement('div');
+                feedbackDiv.className = 'feedback';
+                card.appendChild(feedbackDiv);
+
+                quizContainer.appendChild(card);
+            });
+        }
+
+        // Xử lý khi chọn/đổi đáp án
+        function selectOption(qIndex, selectedBtn, isCorrect, optionsContainer, card) {
+            const buttons = optionsContainer.querySelectorAll('.option-btn');
+            
+            // Xóa màu cũ trên tất cả các đáp án của câu này
+            buttons.forEach(btn => {
+                btn.classList.remove('correct', 'wrong');
+            });
+
+            const feedbackDiv = card.querySelector('.feedback');
+
+            // Cập nhật giao diện theo lựa chọn mới
+            if (isCorrect) {
+                selectedBtn.classList.add('correct');
+                feedbackDiv.innerText = "✓ Chính xác!";
+                feedbackDiv.style.color = "#155724";
+                userAnswers[qIndex] = true; // Lưu trạng thái: Đúng
+            } else {
+                selectedBtn.classList.add('wrong');
+                feedbackDiv.innerText = "✗ Chưa đúng! Bạn có thể chọn lại đáp án khác.";
+                feedbackDiv.style.color = "#721c24";
+                userAnswers[qIndex] = false; // Lưu trạng thái: Sai
+            }
+
+            // Cập nhật lại điểm số tổng
+            updateScoreBoard();
+        }
+
+        // Cập nhật thanh điểm số
+        function updateScoreBoard() {
+            const answeredCount = Object.keys(userAnswers).length;
+            const correctCount = Object.values(userAnswers).filter(val => val === true).length;
+
+            document.getElementById('score').innerText = correctCount;
+            document.getElementById('total-answered').innerText = answeredCount;
+        }
+
+        // Chạy khi mở trang
+        window.onload = initQuiz;
+    </script>
+</body>
+</html>
