@@ -211,7 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
 </div>
 
 
-<h1> Kiểm Tra Thủ Thuật</h1>
+
 <div class="list1" style="display: flex; align-items: center; gap: 8px;">
 <i class="fa fa-bullhorn"></i>
 <b><font color="red">Thông báo:</font></b>
@@ -266,13 +266,13 @@ fetch('https://raw.githubusercontent.com/chauhuynh0104/chauhuynh0104.txt/refs/he
                     </label>
 <br/><br/>
 
-  <label style="margin-right: 10px;">
+  <label style="margin-right: 10px;display:none" >
 <input id="ignoreAdjacentCheckbox" type="checkbox"/>
-<span class="chu-thich">Bỏ qua thủ thuật liền kề<span class="noi-dung">VD: 8h00-8h30 xoa bóp. 08h30-08h50 điện châm. liên tiếp mà ko cách 1 phút </span></span>
+<span class="chu-thich">Bỏ qua thủ thuật liền kề<span class="noi-dung">VD: 8h00-8h30 xoa bóp. 08h30-08h50 điện châm. liên tiếp mà không cách 1 phút </span></span>
 </label>
 
   <label style="margin-right: 10px;">
-<input id="showMoreSuggestionsCheckbox" type="checkbox"/> 
+<input id="showMoreSuggestionsCheckbox" type="checkbox"checked/> 
         Hiển thị 6 khung giờ gợi ý         
     </label>
 
@@ -3411,7 +3411,7 @@ if (!file) {
     popup.style.display = 'flex';
     requestAnimationFrame(() => popup.classList.add('show'));
 
-    loadingText.innerHTML = '<i class="fas fa-paper-plane" style="font-size:24px;color:#3498db;margin-bottom:10px;"></i><br/>Đang gửi dữ liệu về máy chủ...';
+    loadingText.innerHTML = '<i class="fas fa-paper-plane" style="font-size:24px;color:#3498db;margin-bottom:10px;"></i><br/>Đang phân tích dữ liệu tổng...';
     progressBar.style.width = '33%';
 	
 	
@@ -3422,7 +3422,7 @@ if (!file) {
 if (!document.getElementById('creditLineBelow')) {
   const credit = document.createElement('div');
   credit.id = 'creditLineBelow';
-  credit.innerText = '© Thiết kế & phát triển bởi Nothing';
+  credit.innerText = '';
   credit.style.marginTop = '10px';
   credit.style.fontSize = '16px';
   credit.style.color = '#FF0000';
@@ -3567,12 +3567,7 @@ setTimeout(() => {
 			
         });
     </script>
-<div class="procedure-info"><center> 
-Design By Nothing<br/>
-                Nếu Có Bất Kỳ Vướng Mắc Gì Vui Lòng LH : <br/>
-                Email: techvietnet@gmail.com<br/>
-                SDT: 0345.428.492</center>
-</div>
+
 
 
 
@@ -3655,7 +3650,7 @@ document.getElementById('folderInput').addEventListener('change', async (e) => {
 <div style="background:#fff;padding:30px 40px;border-radius:10px;text-align:center;box-shadow:0 0 15px rgba(0,0,0,0.3);max-width:90%;font-size:18px">
 <div id="loadingText">
 <i class="fas fa-spinner fa-spin" style="font-size:24px;color:#3498db;margin-bottom:10px;"></i><br/>
-      Đang gửi dữ liệu về máy chủ...
+      Đang phân tích dữ liệu tổng...
     </div>
 <div id="progressBarContainer">
 <div id="progressBar"></div>
