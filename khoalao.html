@@ -196,7 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 <div class="container">
 <div class="login-section" id="loginSection">
-<h2 class="login-title">ĐĂNG NHẬP HỆ THỐNG</h2>
+<h2 class="login-title">ĐĂNG NHẬP</h2>
 <input class="login-input" id="usernameInput" placeholder="Tên đăng nhập" type="text"value="Khoalao"/>
 <input class="login-input" id="passwordInput" placeholder="Mật khẩu" type="password"value="123"/>
 <br/><button class="btn" id="loginBtn">Đăng nhập</button>
@@ -721,7 +721,7 @@ async function checkLogin() {
 
   let loginPopupShown = false;
 
-  // Sau 2s kiểm tra: vẫn ở trang đăng nhập & đang loading?
+  // Sau 5s kiểm tra: vẫn ở trang đăng nhập & đang loading?
 const slowLoginTimer = setTimeout(() => {
     if (!isLoginAction) return; // ✅ Thêm dòng này
     const loginSectionVisible = document.getElementById('loginSection').style.display !== 'none';
@@ -749,7 +749,7 @@ const progressTimer = setInterval(() => {
 
 	
 	}
-  }, 2000);
+  }, 5000);
 
   try {
     const accounts = await loadAccountsFromTXT();
@@ -876,7 +876,7 @@ if (!file) {
     document.getElementById('errorSection').style.display = 'none';
     analyzeBtn.disabled = true;
     analyzeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang kiểm tra...';
-    // ✅ Bắt đầu đếm 2s để hiện popup nếu vẫn đang "Đang kiểm tra..."
+    // ✅ Bắt đầu đếm 5s để hiện popup nếu vẫn đang "Đang kiểm tra..."
 clearTimeout(analyzePopupTimer);
 analyzePopupTimer = setTimeout(() => {
     const btnAnalyze = document.getElementById('analyzeBtn');
@@ -906,7 +906,7 @@ analyzePopupTimer = setTimeout(() => {
             progressBar.style.width = percent + '%';
         }, 100);
     }
-}, 5000);
+}, 10000);
 
     const reader = new FileReader();
     
