@@ -431,6 +431,10 @@ document.getElementById('fileInput').addEventListener('change', function () {
 <select class="login-input" id="operatorSelect">
 <option value="all">Tất cả</option>
 </select>
+&nbsp;&nbsp;
+<label for="patientSearchInput">Lọc theo tên người bệnh:</label>
+<input type="text" class="login-input" id="patientSearchInput" list="patientList" placeholder="Chọn hoặc gõ tên BN..." style="width:auto;" autocomplete="off">
+<datalist id="patientList"></datalist>
 </div><br/>
 
 <table id="resultTable">
@@ -1408,10 +1412,10 @@ let isConflict = true;
                             current.conflictReason = `${prev.procedure}<br>• Bệnh nhân: ${prev.patientName}<br>• Ngày: ${prev.date}<br>• Thời gian: ${prev.displayStart}-${prev.displayEnd}`;
 
                             prev.conflict = true;
-                            if (!prev.conflictReason.includes(current.procedure)) {
-                                prev.conflictReason += (prev.conflictReason ? '<br><br>' : '') + 
-                                    ` ${current.procedure}<br>• Bệnh nhân: ${current.patientName}<br>• Ngày: ${current.date}<br>• Thời gian: ${current.displayStart}-${current.displayEnd}`;
-                            }
+                           const currentInfo = ` ${current.procedure}<br>• Bệnh nhân: ${current.patientName}<br>• Ngày: ${current.date}<br>• Thời gian: ${current.displayStart}-${current.displayEnd}`;
+if (!prev.conflictReason.includes(currentInfo)) {
+    prev.conflictReason += (prev.conflictReason ? '<br><br>' : '') + currentInfo;
+}
                         }
                     }
                 }
@@ -2928,7 +2932,13 @@ function getConflictTotal() {
         operators.map(op => `<option value="${op}">${op.replace(/,/g, '')}</option>`).join('');
     
     operatorSelectError.innerHTML = operatorSelect.innerHTML; // Đồng bộ nội dung
-    
+        // Danh sách bệnh nhân (chỉ những người có trùng giờ) cho dropdown tìm kiếm
+    document.getElementById('patientList').innerHTML =
+        [...new Set(procedures.filter(p => p.conflict).map(p => p.patientName))]
+            .sort((a, b) => a.localeCompare(b, 'vi'))
+            .map(n => `<option value="${n.replace(/"/g, '&quot;')}"></option>`)
+            .join('');
+    document.getElementById('patientSearchInput').value = ''; // xoá bộ lọc cũ khi phân tích file mới
     document.getElementById('operatorFilter').style.display = 'block';
     document.getElementById('operatorFilterError').style.display = 'block';
             
@@ -2950,7 +2960,12 @@ function getConflictTotal() {
         }, 300);
     }
 }
-
+function removeAccents(str) {
+    return (str || '').normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[đĐ]/g, 'd')
+        .toLowerCase();
+}
 function filterByOperator() {
     const operator = document.getElementById('operatorSelect').value;
 
@@ -2968,37 +2983,52 @@ function filterByOperator() {
     const conflictGroups = [];
     const processedRows = new Set();
 
-    filteredProcedures.forEach(proc => {
-        if (!processedRows.has(proc.rowIndex)) {
-            const group = [proc];
-            processedRows.add(proc.rowIndex);
+filteredProcedures.forEach(proc => {
+    if (processedRows.has(proc.rowIndex)) return;
 
-            // Tìm thủ thuật liên quan trong xung đột
-            if (proc.conflictReason) {
-                const conflictMatches = proc.conflictReason.match(/Bệnh nhân: (.*?)<br>• Ngày: (.*?)<br>• Thời gian: (.*?)-/g);
-                if (conflictMatches) {
-                    conflictMatches.forEach(match => {
-                        const patientName = match.match(/Bệnh nhân: (.*?)<br>/)[1];
-                        const date = match.match(/Ngày: (.*?)<br>/)[1];
-                        const time = match.match(/Thời gian: (.*?)-/)[1];
+    const group = [proc];
+    processedRows.add(proc.rowIndex);
 
-                        const conflictProc = filteredProcedures.find(p => 
-                            p.patientName === patientName && 
-                            p.date === date && 
-                            p.displayStart === time &&
-                            !processedRows.has(p.rowIndex)
-                        );
+    // Duyệt lan: thủ thuật mới thêm vào nhóm cũng được tìm tiếp những thủ thuật xung đột với nó
+    for (let gi = 0; gi < group.length; gi++) {
+        const cur = group[gi];
+        if (!cur.conflictReason) continue;
 
-                        if (conflictProc) {
-                            group.push(conflictProc);
-                            processedRows.add(conflictProc.rowIndex);
-                        }
-                    });
-                }
+        const conflictMatches = cur.conflictReason.match(/Bệnh nhân: (.*?)<br>• Ngày: (.*?)<br>• Thời gian: (.*?)-/g);
+        if (!conflictMatches) continue;
+
+        conflictMatches.forEach(match => {
+            const patientName = match.match(/Bệnh nhân: (.*?)<br>/)[1];
+            const date = match.match(/Ngày: (.*?)<br>/)[1];
+            const time = match.match(/Thời gian: (.*?)-/)[1];
+
+            const conflictProc = filteredProcedures.find(p =>
+                p.patientName === patientName &&
+                p.date === date &&
+                p.displayStart === time &&
+                !processedRows.has(p.rowIndex)
+            );
+
+            if (conflictProc) {
+                group.push(conflictProc);
+                processedRows.add(conflictProc.rowIndex);
             }
-            conflictGroups.push(group);
-        }
+        });
+    }
+
+    group.sort((a, b) => a.start - b.start); // xếp theo giờ cho dễ nhìn
+    conflictGroups.push(group);
     });
+
+    // Lọc theo tên người bệnh: giữ lại nhóm nào có bệnh nhân khớp
+    const patientKeyword = removeAccents(document.getElementById('patientSearchInput').value.trim());
+    if (patientKeyword) {
+        const matched = conflictGroups.filter(g =>
+            g.some(p => removeAccents(p.patientName).includes(patientKeyword))
+        );
+        conflictGroups.length = 0;
+        conflictGroups.push(...matched);
+    }
 
    // Hiển thị kết quả
     conflictGroups.forEach(group => {
@@ -3541,7 +3571,7 @@ setTimeout(() => {
             
             // Gán sự kiện cho dropdown lọc
             document.getElementById('operatorSelect').addEventListener('change', filterByOperator);
-            
+            document.getElementById('patientSearchInput').addEventListener('input', filterByOperator);
 			
 			document.getElementById('showDoctorCheckbox').addEventListener('change', filterByOperator);
 			
