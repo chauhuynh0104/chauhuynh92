@@ -431,10 +431,9 @@ document.getElementById('fileInput').addEventListener('change', function () {
 <select class="login-input" id="operatorSelect">
 <option value="all">Tất cả</option>
 </select>
-&nbsp;&nbsp;
+<br/>
 <label for="patientSearchInput">Lọc theo tên người bệnh:</label>
-<input type="text" class="login-input" id="patientSearchInput" list="patientList" placeholder="Chọn hoặc gõ tên BN..." style="width:auto;" autocomplete="off">
-<datalist id="patientList"></datalist>
+<input type="text" class="login-input" id="patientSearchInput" placeholder="Nhập tên BN..." style="width:250px;">
 </div><br/>
 
 <table id="resultTable">
@@ -2932,13 +2931,7 @@ function getConflictTotal() {
         operators.map(op => `<option value="${op}">${op.replace(/,/g, '')}</option>`).join('');
     
     operatorSelectError.innerHTML = operatorSelect.innerHTML; // Đồng bộ nội dung
-        // Danh sách bệnh nhân (chỉ những người có trùng giờ) cho dropdown tìm kiếm
-    document.getElementById('patientList').innerHTML =
-        [...new Set(procedures.filter(p => p.conflict).map(p => p.patientName))]
-            .sort((a, b) => a.localeCompare(b, 'vi'))
-            .map(n => `<option value="${n.replace(/"/g, '&quot;')}"></option>`)
-            .join('');
-    document.getElementById('patientSearchInput').value = ''; // xoá bộ lọc cũ khi phân tích file mới
+    
     document.getElementById('operatorFilter').style.display = 'block';
     document.getElementById('operatorFilterError').style.display = 'block';
             
@@ -2960,12 +2953,15 @@ function getConflictTotal() {
         }, 300);
     }
 }
+
+
 function removeAccents(str) {
     return (str || '').normalize('NFD')
         .replace(/[\u0300-\u036f]/g, '')
         .replace(/[đĐ]/g, 'd')
         .toLowerCase();
 }
+
 function filterByOperator() {
     const operator = document.getElementById('operatorSelect').value;
 
@@ -3570,9 +3566,14 @@ setTimeout(() => {
 
             
             // Gán sự kiện cho dropdown lọc
-            document.getElementById('operatorSelect').addEventListener('change', filterByOperator);
-            document.getElementById('patientSearchInput').addEventListener('input', filterByOperator);
 			
+            document.getElementById('operatorSelect').addEventListener('change', filterByOperator);
+            
+			let patientSearchTimer;
+document.getElementById('patientSearchInput').addEventListener('input', function () {
+    clearTimeout(patientSearchTimer);
+    patientSearchTimer = setTimeout(filterByOperator, 300); // 1000 = 1 giây
+});
 			document.getElementById('showDoctorCheckbox').addEventListener('change', filterByOperator);
 			
 			
