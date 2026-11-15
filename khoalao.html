@@ -317,6 +317,7 @@ document.getElementById('fileInput').addEventListener('change', function () {
   <button id="herbToggleBtn" class="btn" onclick="toggleHerbList()"style="display:none">Sắc thuốc thang</button>
   <button class="btn" onclick="toggleAvailability()" style="display:none">Giờ trống</button>
 <button class="btn" id="patientListBtn" onclick="openPatientList()" style="display:none">Danh sách bệnh nhân</button>
+<button class="btn" id="machineAvailBtn" onclick="toggleMachineAvailability()" style="display:none">Máy trống</button>
 <div id="availabilityTable" style="display: none; margin-bottom: 20px;">
  <div class="mainblok" style="margin-bottom: 10px; display:none;" id="availabilityFilterBlock">
   <label for="filterOperator">Người thực hiện:</label>
@@ -336,11 +337,32 @@ document.getElementById('fileInput').addEventListener('change', function () {
         <th>Khung giờ trống buổi chiều</th>
       </tr>
     </thead>
-    <tbody id="availabilityBody"></tbody>
+        <tbody id="availabilityBody"></tbody>
+  </table>
+</div>
+
+<div id="machineAvailabilityTable" style="display: none; margin-bottom: 20px;">
+  <div class="mainblok" style="margin-bottom: 10px; display:none;" id="machineAvailabilityFilterBlock">
+    <label for="filterMachine">Máy:</label>
+    <select id="filterMachine" class="login-input" style="width:auto;margin-right:20px;"></select>
+
+    <label for="filterMachineDate">Ngày:</label>
+    <select id="filterMachineDate" class="login-input" style="width:auto;"></select>
+  </div>
+
+  <table class="error-table herb-table">
+    <thead>
+      <tr>
+        <th>Mã máy</th>
+        <th>Ngày</th>
+        <th>Khung giờ trống buổi sáng</th>
+        <th>Khung giờ trống buổi chiều</th>
+      </tr>
+    </thead>
+    <tbody id="machineAvailabilityBody"></tbody>
   </table>
 </div>
 <!-- KẾT THÚC: BẢNG GIỜ TRỐNG TỪNG NGƯỜI -->
-
 
 
 
@@ -1651,6 +1673,9 @@ function checkMachineConflicts(procedures, jsonData) {
         }
     });
     
+    // Kiểm tra xung đột theo từng máy VÀ từng ngày
+       window.allMachineProcedures = machineProcedures; // dùng cho nút "Máy trống"
+
     // Kiểm tra xung đột theo từng máy VÀ từng ngày
     const machineGroups = {};
     
@@ -3540,6 +3565,7 @@ setTimeout(() => {
 
     document.querySelectorAll('button.btn').forEach(btn => {
          if (btn.textContent.includes('Giờ trống') || 
+                btn.textContent.includes('Máy trống') || 
                 btn.textContent.includes('Sắc thuốc thang') ||
                 btn.textContent.includes('Danh sách bệnh nhân')) {
                 btn.style.display = 'inline-block';
@@ -3864,6 +3890,122 @@ function showProceduresForOperator(operator, date) {
 
 function closeProcedurePopup() {
     document.getElementById('procedureOverlay').style.display = 'none';
+}
+
+function toggleMachineAvailability() {
+    const table = document.getElementById('machineAvailabilityTable');
+    const filterBlock = document.getElementById('machineAvailabilityFilterBlock');
+    if (table.style.display === 'none') {
+        // Ẩn bảng giờ trống người thực hiện (nếu đang mở)
+        const opTable = document.getElementById('availabilityTable');
+        const opFilter = document.getElementById('availabilityFilterBlock');
+        if (opTable) opTable.style.display = 'none';
+        if (opFilter) opFilter.style.display = 'none';
+
+        table.style.display = 'block';
+        if (filterBlock) filterBlock.style.display = 'block';
+        calculateMachineAvailability();
+    } else {
+        table.style.display = 'none';
+        if (filterBlock) filterBlock.style.display = 'none';
+    }
+}
+
+function calculateMachineAvailability() {
+    // Ẩn các máy có mã chứa chữ "AST" (không phân biệt hoa/thường)
+    const HIDE_MACHINE_KEYWORDS = ['AST'];
+    const list = (window.allMachineProcedures || []).filter(p => {
+        const code = (p.machineCode || '').toString().toUpperCase();
+        return !HIDE_MACHINE_KEYWORDS.some(k => code.includes(k));
+    });
+
+    const groups = {};
+    list.forEach(proc => {
+        const key = `${proc.machineCode}_${proc.date}`;
+        if (!groups[key]) groups[key] = [];
+        groups[key].push(proc);
+    });
+
+    const tbody = document.getElementById('machineAvailabilityBody');
+    tbody.innerHTML = '';
+
+    const machineSelect = document.getElementById('filterMachine');
+    const dateSelect = document.getElementById('filterMachineDate');
+
+    // Dựng lại dropdown mỗi lần mở (đúng với file mới), giữ lựa chọn cũ nếu còn
+    const prevMachine = machineSelect.value || 'all';
+    const prevDate = dateSelect.value || 'all';
+
+    const machines = [...new Set(list.map(p => p.machineCode))].sort();
+    const dates = [...new Set(list.map(p => p.date))].sort((a, b) => {
+        const [da, ma, ya] = a.split('/').map(Number);
+        const [db, mb, yb] = b.split('/').map(Number);
+        return new Date(ya, ma - 1, da) - new Date(yb, mb - 1, db);
+    });
+
+    machineSelect.innerHTML = '<option value="all">Tất cả</option>' +
+        machines.map(m => `<option value="${m}">${m}</option>`).join('');
+    dateSelect.innerHTML = '<option value="all">Tất cả</option>' +
+        dates.map(d => `<option value="${d}">${d}</option>`).join('');
+
+    machineSelect.value = machines.includes(prevMachine) ? prevMachine : 'all';
+    dateSelect.value = dates.includes(prevDate) ? prevDate : 'all';
+
+    if (!machineSelect.dataset.initialized) {
+        machineSelect.dataset.initialized = 'true';
+        machineSelect.addEventListener('change', calculateMachineAvailability);
+        dateSelect.addEventListener('change', calculateMachineAvailability);
+    }
+
+    const selectedMachine = machineSelect.value;
+    const selectedDate = dateSelect.value;
+
+    if (list.length === 0) {
+        tbody.innerHTML = '<tr class="herb-row"><td colspan="4"><center>Không có dữ liệu sử dụng máy</center></td></tr>';
+        return;
+    }
+
+    Object.keys(groups).sort().forEach(key => {
+        const procedures = groups[key];
+        const machine = procedures[0].machineCode;
+        const date = procedures[0].date;
+
+        if ((selectedMachine !== 'all' && machine !== selectedMachine) ||
+            (selectedDate !== 'all' && date !== selectedDate)) return;
+
+        procedures.sort((a, b) => a.start - b.start);
+
+        const morningFree = getFreeSlots(procedures, 7 * 3600, 11.5 * 3600);
+        const afternoonFree = getFreeSlots(procedures, 13.5 * 3600, 17 * 3600);
+
+        const row = document.createElement('tr');
+        row.classList.add('herb-row');
+        row.innerHTML = `
+            <td><a href="#" onclick="showProceduresForMachine(\`${machine}\`, \`${date}\`);return false;" style="color:#3498db;font-weight:bold">${machine}</a></td>
+            <td>${date}</td>
+            <td>${morningFree}</td>
+            <td>${afternoonFree}</td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+function showProceduresForMachine(machine, date) {
+    const overlay = document.getElementById('procedureOverlay');
+    const content = document.getElementById('popupContent');
+    const list = (window.allMachineProcedures || []).filter(p => p.machineCode === machine && p.date === date);
+
+    if (list.length === 0) {
+        content.innerHTML = "<i>Không tìm thấy thủ thuật</i>";
+    } else {
+        list.sort((a, b) => a.start - b.start);
+        content.innerHTML = "<b>Máy:</b> " + machine + "<br><b>Ngày:</b> " + date + "<br><br>" +
+            "<ul style='padding-left:20px'>" + list.map(p =>
+                "<li><b>" + p.patientName + "</b> - " + p.procedure + " (" + p.displayStart + " → " + p.displayEnd + ")</li>"
+            ).join('') + "</ul>";
+    }
+
+    overlay.style.display = 'block';
 }
 </script>
 <!-- Popup thủ thuật chi tiết với overlay -->
