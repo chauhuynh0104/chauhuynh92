@@ -1543,10 +1543,14 @@ function checkMachineErrors(procedures, jsonData) {
                 // Xác định thông báo lỗi cụ thể dựa trên mã máy nhập sai
                 let errorMessage = 'Gắn nhầm máy chưa xác định';
                 
-                if (machineCode.toUpperCase().includes('MĐC')) {
+              if (machineCode.toUpperCase().includes('MĐC') || machineCode.includes('Khamchuabenh')) {
                     errorMessage = 'Gắn nhầm máy điện châm rồi';
                 } else if (machineCode.toUpperCase().includes('ĐHN')) {
                     errorMessage = 'Gắn nhầm đèn hồng ngoại rồi';
+					} else if (machineCode.toUpperCase().includes('KTK')) {
+                    errorMessage = 'Gắn nhầm máy điện xung rồi';
+					} else if (machineCode.toUpperCase().includes('MKG')) {
+                    errorMessage = 'Gắn nhầm máy kéo giãn rồi';
                 } else if (machineCode.toUpperCase().includes('GH') || machineCode.toUpperCase().includes('OGH')) {
                     errorMessage = 'Gắn nhầm máy giác hơi rồi';
                 }
@@ -1714,11 +1718,12 @@ function checkMissingMachineCodes(procedures, jsonData) {
     
     // Danh sách thủ thuật cần kiểm tra mã máy
     const proceduresToCheck = [
-        "điện châm [kim ngắn]",
-        "điều trị bằng tia hồng ngoại", 
-        "giác hơi",
+        "Điện châm [kim ngắn]",
+        "Điều trị bằng tia hồng ngoại", 
+        "Giác hơi",
 		"Điều trị bằng máy kéo giãn cột sống",
 		"Điều trị bằng sóng xung kích",
+		"Điều trị bằng các dòng điện xung",
 		"Điều trị bằng sóng ngắn",
 		"Sắc thuốc thang"
     ];
