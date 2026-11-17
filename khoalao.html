@@ -857,7 +857,7 @@ function checkBannedDoctor(doctorName, bannedDoctors) {
 }
 // ========== HÀM LOAD DANH SÁCH KHOA HỢP LỆ ========== //
 async function loadValidDepartments() {
-    const url = 'https://raw.githubusercontent.com/chauhuynh0104/chauhuynh0104.txt/refs/heads/main/khoa.txt';
+    const url = 'https://raw.githubusercontent.com/chauhuynh0104/chauhuynh0104.txt/refs/heads/main/khoaban.txt';
     try {
         const res = await fetch(url);
         const text = await res.text();
