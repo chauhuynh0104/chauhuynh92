@@ -986,7 +986,7 @@ cleanValidKhoaList.forEach(khoa => {
 if (validKhoaCount === 0) {
     // Không tìm thấy khoa nào hợp lệ
     window.isKhoaLoi = true;
-    const msg = `❌ Máy chủ từ chối "${khoaText || 'Không xác định'}" sử dụng phần mềm.`;
+    const msg = `❌ Không thể phân tích dữ liệu "${khoaText || 'Không xác định'}".`;
 
     showKhoaErrorPopup(msg);
     return;
@@ -1031,7 +1031,7 @@ if (doctorIndex !== -1) {
 // Nếu tìm thấy bác sĩ bị cấm, hiển thị popup lỗi
 if (bannedDoctorFound) {
     window.isKhoaLoi = true;
-    const msg = `❌ Vui Lòng Tôn Trọng Tác Giả. Đừng Cố Bug. Hãy Văn Minh`;
+    const msg = `❌ Dữ liệu gặp sự cố.`;
     showKhoaErrorPopup(msg);
     return;
 }
